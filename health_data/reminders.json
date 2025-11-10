@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "id": 1,
+    "patient_name": "Test Patient",
+    "reminder_type": "Appointment",
+    "message": "Reminder: You have an appointment with Dr. Dr. Sharma on 2025-11-11 at 10:00:00",
+    "language": "\u0939\u093f\u0902\u0926\u0940 (Hindi)",
+    "phone_number": "",
+    "status": "Pending",
+    "created_at": "2025-11-10T12:35:20.978136",
+    "scheduled_for": "2025-11-11T12:35:20.978145"
+  },
+  {
+    "id": 2,
+    "patient_name": "Test Patient",
+    "reminder_type": "Medication",
+    "message": "Take blood pressure medication",
+    "language": "\u0939\u093f\u0902\u0926\u0940 (Hindi)",
+    "phone_number": "",
+    "status": "Pending",
+    "created_at": "2025-11-10T12:36:12.213838",
+    "scheduled_for": "2025-11-11T12:36:12.213849"
+  }
+]
