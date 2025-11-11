@@ -1,8 +1,13 @@
 import json
 import os
-from openai import OpenAI
+from google import genai
+from google.genai import types
 
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+# IMPORTANT: KEEP THIS COMMENT
+# Using Google Gemini API via blueprint:python_gemini
+# Models: gemini-2.5-flash (fast, cheap) and gemini-2.5-pro (complex reasoning)
+
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 
 SUPPORTED_LANGUAGES = {
     "English": "en",
@@ -18,36 +23,30 @@ SUPPORTED_LANGUAGES = {
 }
 
 def validate_api_key():
-    if not OPENAI_API_KEY:
-        return False, "OpenAI API key not configured. Please set OPENAI_API_KEY environment variable."
+    if not GEMINI_API_KEY:
+        return False, "Gemini API key not configured. Please set GEMINI_API_KEY environment variable."
     return True, ""
 
-def get_openai_client():
+def get_gemini_client():
     is_valid, error_msg = validate_api_key()
     if not is_valid:
         raise ValueError(error_msg)
-    # the newest OpenAI model is "gpt-5" which was released August 7, 2025.
-    # do not change this unless explicitly requested by the user
-    return OpenAI(api_key=OPENAI_API_KEY)
+    return genai.Client(api_key=GEMINI_API_KEY)
 
 def translate_text(text, source_language, target_language):
     try:
-        client = get_openai_client()
-        response = client.chat.completions.create(
-            model="gpt-5",
-            messages=[
-                {
-                    "role": "system",
-                    "content": f"You are a professional medical translator. Translate the following text from {source_language} to {target_language}. Maintain medical terminology accuracy and cultural sensitivity. Only provide the translation, no explanations."
-                },
-                {
-                    "role": "user",
-                    "content": text
-                }
-            ],
-            max_completion_tokens=2048
+        client = get_gemini_client()
+        system_instruction = f"You are a professional medical translator. Translate the following text from {source_language} to {target_language}. Maintain medical terminology accuracy and cultural sensitivity. Only provide the translation, no explanations."
+        
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=text,
+            config=types.GenerateContentConfig(
+                system_instruction=system_instruction,
+                max_output_tokens=2048
+            )
         )
-        return {"success": True, "translation": response.choices[0].message.content, "error": None}
+        return {"success": True, "translation": response.text, "error": None}
     except ValueError as e:
         return {"success": False, "translation": None, "error": str(e)}
     except Exception as e:
@@ -55,31 +54,31 @@ def translate_text(text, source_language, target_language):
 
 def analyze_symptoms(symptoms_text, language):
     try:
-        client = get_openai_client()
-        response = client.chat.completions.create(
-            model="gpt-5",
-            messages=[
-                {
-                    "role": "system",
-                    "content": f"You are an AI medical assistant analyzing patient symptoms. The patient is describing symptoms in {language}. Generate a structured medical report with the following sections in JSON format: "
-                    + "1) 'symptoms_summary': Brief summary of reported symptoms "
-                    + "2) 'possible_conditions': List of possible conditions (not a diagnosis) "
-                    + "3) 'severity_level': Low, Medium, or High "
-                    + "4) 'recommendations': General health recommendations "
-                    + "5) 'urgent_care_needed': true or false "
-                    + "6) 'follow_up_questions': Questions a doctor should ask. "
-                    + "Include a disclaimer that this is not a medical diagnosis. "
-                    + "Respond with valid JSON only."
-                },
-                {
-                    "role": "user",
-                    "content": symptoms_text
-                }
-            ],
-            response_format={"type": "json_object"},
-            max_completion_tokens=2048
+        client = get_gemini_client()
+        system_instruction = (
+            f"You are an AI medical assistant analyzing patient symptoms. The patient is describing symptoms in {language}. "
+            "Generate a structured medical report with the following sections in JSON format: "
+            "1) 'symptoms_summary': Brief summary of reported symptoms "
+            "2) 'possible_conditions': List of possible conditions (not a diagnosis) "
+            "3) 'severity_level': Low, Medium, or High "
+            "4) 'recommendations': General health recommendations "
+            "5) 'urgent_care_needed': true or false "
+            "6) 'follow_up_questions': Questions a doctor should ask. "
+            "Include a disclaimer that this is not a medical diagnosis. "
+            "Respond with valid JSON only."
         )
-        result = json.loads(response.choices[0].message.content)
+        
+        response = client.models.generate_content(
+            model="gemini-2.5-pro",
+            contents=symptoms_text,
+            config=types.GenerateContentConfig(
+                system_instruction=system_instruction,
+                response_mime_type="application/json",
+                max_output_tokens=2048
+            )
+        )
+        
+        result = json.loads(response.text)
         result["success"] = True
         result["error"] = None
         return result
@@ -90,7 +89,7 @@ def analyze_symptoms(symptoms_text, language):
             "symptoms_summary": "AI service not configured",
             "possible_conditions": [],
             "severity_level": "Unknown",
-            "recommendations": "Please configure OpenAI API key to use this feature",
+            "recommendations": "Please configure Gemini API key to use this feature",
             "urgent_care_needed": False,
             "follow_up_questions": []
         }
@@ -108,29 +107,27 @@ def analyze_symptoms(symptoms_text, language):
 
 def generate_prescription_translation(prescription_text, doctor_language, patient_language):
     try:
-        client = get_openai_client()
-        response = client.chat.completions.create(
-            model="gpt-5",
-            messages=[
-                {
-                    "role": "system",
-                    "content": f"You are a medical translator specializing in prescriptions. Translate the following prescription from {doctor_language} to {patient_language}. "
-                    + "Maintain exact medication names, dosages, and timing. Format the translation clearly with: "
-                    + "1) Medication names (keep generic/brand names) "
-                    + "2) Dosage and frequency "
-                    + "3) Duration "
-                    + "4) Special instructions "
-                    + "5) Warnings/precautions. "
-                    + "Use simple, clear language that patients can easily understand."
-                },
-                {
-                    "role": "user",
-                    "content": prescription_text
-                }
-            ],
-            max_completion_tokens=2048
+        client = get_gemini_client()
+        system_instruction = (
+            f"You are a medical translator specializing in prescriptions. Translate the following prescription from {doctor_language} to {patient_language}. "
+            "Maintain exact medication names, dosages, and timing. Format the translation clearly with: "
+            "1) Medication names (keep generic/brand names) "
+            "2) Dosage and frequency "
+            "3) Duration "
+            "4) Special instructions "
+            "5) Warnings/precautions. "
+            "Use simple, clear language that patients can easily understand."
         )
-        return {"success": True, "translation": response.choices[0].message.content, "error": None}
+        
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prescription_text,
+            config=types.GenerateContentConfig(
+                system_instruction=system_instruction,
+                max_output_tokens=2048
+            )
+        )
+        return {"success": True, "translation": response.text, "error": None}
     except ValueError as e:
         return {"success": False, "translation": None, "error": str(e)}
     except Exception as e:
@@ -138,41 +135,46 @@ def generate_prescription_translation(prescription_text, doctor_language, patien
 
 def medical_chat_response(message, language, user_role):
     try:
-        client = get_openai_client()
-        system_prompt = ""
+        client = get_gemini_client()
+        system_instruction = ""
         if user_role == "Patient":
-            system_prompt = f"You are a compassionate AI health assistant helping patients in {language}. Provide clear, simple medical information. Always recommend consulting a doctor for serious concerns. Be empathetic and supportive."
+            system_instruction = f"You are a compassionate AI health assistant helping patients in {language}. Provide clear, simple medical information. Always recommend consulting a doctor for serious concerns. Be empathetic and supportive."
         else:
-            system_prompt = f"You are an AI assistant helping doctors with medical information in {language}. Provide evidence-based medical insights, differential diagnoses support, and clinical decision support. Cite medical knowledge when appropriate."
+            system_instruction = f"You are an AI assistant helping doctors with medical information in {language}. Provide evidence-based medical insights, differential diagnoses support, and clinical decision support. Cite medical knowledge when appropriate."
         
-        response = client.chat.completions.create(
-            model="gpt-5",
-            messages=[
-                {
-                    "role": "system",
-                    "content": system_prompt
-                },
-                {
-                    "role": "user",
-                    "content": message
-                }
-            ],
-            max_completion_tokens=2048
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=message,
+            config=types.GenerateContentConfig(
+                system_instruction=system_instruction,
+                max_output_tokens=2048
+            )
         )
-        return {"success": True, "response": response.choices[0].message.content, "error": None}
+        return {"success": True, "response": response.text, "error": None}
     except ValueError as e:
         return {"success": False, "response": None, "error": str(e)}
     except Exception as e:
         return {"success": False, "response": None, "error": f"Chat failed: {str(e)}"}
 
 def transcribe_audio(audio_file_path):
+    """
+    Note: Gemini supports audio transcription. We'll use gemini-2.5-flash for this.
+    """
     try:
-        client = get_openai_client()
-        with open(audio_file_path, "rb") as audio_file:
-            response = client.audio.transcriptions.create(
-                model="whisper-1",
-                file=audio_file
-            )
+        client = get_gemini_client()
+        with open(audio_file_path, "rb") as f:
+            audio_bytes = f.read()
+        
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=[
+                types.Part.from_bytes(
+                    data=audio_bytes,
+                    mime_type="audio/wav",
+                ),
+                "Transcribe this audio accurately. Only provide the transcription text, no explanations."
+            ]
+        )
         return {"success": True, "transcription": response.text, "error": None}
     except ValueError as e:
         return {"success": False, "transcription": None, "error": str(e)}
@@ -181,28 +183,27 @@ def transcribe_audio(audio_file_path):
 
 def generate_doctor_notes(conversation_text, patient_language, doctor_language):
     try:
-        client = get_openai_client()
-        response = client.chat.completions.create(
-            model="gpt-5",
-            messages=[
-                {
-                    "role": "system",
-                    "content": f"You are an AI medical documentation assistant. The conversation was in {patient_language}. Generate structured clinical notes in {doctor_language} with: "
-                    + "1) Chief Complaint "
-                    + "2) History of Present Illness "
-                    + "3) Symptoms Summary "
-                    + "4) Assessment "
-                    + "5) Suggested Plan. "
-                    + "Use standard medical terminology and format."
-                },
-                {
-                    "role": "user",
-                    "content": conversation_text
-                }
-            ],
-            max_completion_tokens=2048
+        client = get_gemini_client()
+        system_instruction = (
+            f"You are an AI medical documentation assistant. The conversation was in {patient_language}. "
+            f"Generate structured clinical notes in {doctor_language} with: "
+            "1) Chief Complaint "
+            "2) History of Present Illness "
+            "3) Symptoms Summary "
+            "4) Assessment "
+            "5) Suggested Plan. "
+            "Use standard medical terminology and format."
         )
-        return {"success": True, "notes": response.choices[0].message.content, "error": None}
+        
+        response = client.models.generate_content(
+            model="gemini-2.5-pro",
+            contents=conversation_text,
+            config=types.GenerateContentConfig(
+                system_instruction=system_instruction,
+                max_output_tokens=2048
+            )
+        )
+        return {"success": True, "notes": response.text, "error": None}
     except ValueError as e:
         return {"success": False, "notes": None, "error": str(e)}
     except Exception as e:
