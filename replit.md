@@ -5,7 +5,8 @@ A comprehensive multilingual healthcare platform that enables seamless communica
 
 ## Current Status
 **MVP Complete** - All core features implemented and tested
-**Last Updated:** November 10, 2025
+**AI Provider:** Switched to Google Gemini (FREE tier with generous limits)
+**Last Updated:** November 11, 2025
 
 ## Key Features Implemented
 
@@ -74,14 +75,14 @@ English, Hindi (हिंदी), Marathi (मराठी), Tamil (தமிழ
 
 ### Dependencies
 - **Streamlit** - Web UI framework
-- **OpenAI API** - AI-powered features (GPT-5, Whisper)
+- **Google Gemini API** - AI-powered features (gemini-2.5-flash, gemini-2.5-pro)
 - **SpeechRecognition** - Audio input processing
 - **gTTS** - Text-to-speech output
 - **audio-recorder-streamlit** - Voice recording component
 - **Pandas** - Data management
 
 ### Environment Variables
-- **OPENAI_API_KEY** - Required for all AI features
+- **GEMINI_API_KEY** - Required for all AI features (FREE tier available)
 - **SESSION_SECRET** - Session management
 
 ## Data Storage
@@ -101,7 +102,9 @@ All AI helper functions return structured responses:
 }
 ```
 
-The UI checks `success` before processing responses and displays user-friendly error messages when API calls fail or when OPENAI_API_KEY is not configured.
+The UI checks `success` before processing responses and displays user-friendly error messages when API calls fail or when GEMINI_API_KEY is not configured.
+
+**Retry Logic:** Automatic retry with exponential backoff for API overload errors (503 UNAVAILABLE), with user-friendly message after max retries.
 
 ## Security Features
 - API key validation before OpenAI calls
@@ -151,7 +154,9 @@ The UI checks `success` before processing responses and displays user-friendly e
 - Real Twilio SMS integration
 
 ## Development Notes
-- All OpenAI calls use GPT-5 model (released August 7, 2025)
+- All AI calls use Google Gemini models (gemini-2.5-flash for speed, gemini-2.5-pro for complex reasoning)
+- Gemini FREE tier: 60 requests/minute, no credit card required
+- Automatic retry logic for API overload (503) errors with exponential backoff
 - Error handling prevents crashes when API key is missing
 - CRUD operations available for all data entities
 - UI optimized for low digital literacy users
@@ -161,8 +166,10 @@ The UI checks `success` before processing responses and displays user-friendly e
 - ✅ App successfully runs on port 5000
 - ✅ Role selection works
 - ✅ Language switching functional
-- ✅ Error handling tested (missing API key)
-- ⏳ End-to-end testing with valid API key pending
+- ✅ Gemini API integration working
+- ✅ Multilingual chat tested (Hindi)
+- ✅ Error handling tested (API key validation and retry logic)
+- ✅ End-to-end testing completed
 
 ## Known Limitations (MVP)
 - SMS reminders are mocked (not actually sent)

@@ -1,5 +1,6 @@
 import json
 import os
+import time
 from google import genai
 from google.genai import types
 
@@ -8,6 +9,8 @@ from google.genai import types
 # Models: gemini-2.5-flash (fast, cheap) and gemini-2.5-pro (complex reasoning)
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+MAX_RETRIES = 3
+RETRY_DELAY = 2
 
 SUPPORTED_LANGUAGES = {
     "English": "en",
@@ -33,8 +36,22 @@ def get_gemini_client():
         raise ValueError(error_msg)
     return genai.Client(api_key=GEMINI_API_KEY)
 
+def call_gemini_with_retry(func):
+    for attempt in range(MAX_RETRIES):
+        try:
+            return func()
+        except Exception as e:
+            error_msg = str(e)
+            if "503" in error_msg or "overloaded" in error_msg.lower() or "UNAVAILABLE" in error_msg:
+                if attempt < MAX_RETRIES - 1:
+                    time.sleep(RETRY_DELAY * (attempt + 1))
+                    continue
+                else:
+                    return {"success": False, "error": "The AI service is currently busy. Please try again in a moment."}
+            raise e
+
 def translate_text(text, source_language, target_language):
-    try:
+    def _translate():
         client = get_gemini_client()
         system_instruction = f"You are a professional medical translator. Translate the following text from {source_language} to {target_language}. Maintain medical terminology accuracy and cultural sensitivity. Only provide the translation, no explanations."
         
@@ -47,6 +64,12 @@ def translate_text(text, source_language, target_language):
             )
         )
         return {"success": True, "translation": response.text, "error": None}
+    
+    try:
+        result = call_gemini_with_retry(_translate)
+        if isinstance(result, dict) and not result.get("success"):
+            return result
+        return result
     except ValueError as e:
         return {"success": False, "translation": None, "error": str(e)}
     except Exception as e:
@@ -134,7 +157,7 @@ def generate_prescription_translation(prescription_text, doctor_language, patien
         return {"success": False, "translation": None, "error": f"Translation failed: {str(e)}"}
 
 def medical_chat_response(message, language, user_role):
-    try:
+    def _chat():
         client = get_gemini_client()
         system_instruction = ""
         if user_role == "Patient":
@@ -151,6 +174,12 @@ def medical_chat_response(message, language, user_role):
             )
         )
         return {"success": True, "response": response.text, "error": None}
+    
+    try:
+        result = call_gemini_with_retry(_chat)
+        if isinstance(result, dict) and not result.get("success"):
+            return result
+        return result
     except ValueError as e:
         return {"success": False, "response": None, "error": str(e)}
     except Exception as e:
