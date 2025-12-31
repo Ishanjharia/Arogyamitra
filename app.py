@@ -8,15 +8,20 @@ import base64
 
 import ai_helper
 import data_manager
+import auth_manager
 
 st.set_page_config(
-    page_title="AI Health Assistant",
+    page_title="Arogya Mitra - आरोग्य मित्र",
     page_icon="🏥",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 def initialize_session_state():
+    if 'authenticated' not in st.session_state:
+        st.session_state.authenticated = False
+    if 'current_user' not in st.session_state:
+        st.session_state.current_user = None
     if 'user_role' not in st.session_state:
         st.session_state.user_role = None
     if 'user_language' not in st.session_state:
@@ -27,6 +32,8 @@ def initialize_session_state():
         st.session_state.chat_history = []
     if 'translation_chat' not in st.session_state:
         st.session_state.translation_chat = []
+    if 'auth_page' not in st.session_state:
+        st.session_state.auth_page = "login"
 
 def play_audio_text(text, language_code):
     try:
@@ -43,35 +50,114 @@ def play_audio_text(text, language_code):
     except Exception as e:
         st.warning(f"Could not play audio: {str(e)}")
 
-def role_selection_page():
-    st.title("🏥 AI Health Assistant")
-    st.subheader("Welcome to Multilingual Healthcare Platform")
+def login_page():
+    st.title("🏥 Arogya Mitra - आरोग्य मित्र")
+    st.subheader("Your Multilingual Health Companion")
     
     st.markdown("---")
     
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("### 👤 I am a Patient")
-        st.write("Access symptom checker, book appointments, view prescriptions, and communicate with doctors in your language")
-        if st.button("Continue as Patient", key="patient_btn", use_container_width=True):
-            st.session_state.user_role = "Patient"
-            st.rerun()
+    col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
-        st.markdown("### 👨‍⚕️ I am a Doctor")
-        st.write("Manage consultations, write prescriptions, access AI documentation tools, and communicate with patients")
-        if st.button("Continue as Doctor", key="doctor_btn", use_container_width=True):
-            st.session_state.user_role = "Doctor"
+        st.markdown("### 🔐 Sign In")
+        
+        email = st.text_input("Email", placeholder="Enter your email")
+        password = st.text_input("Password", type="password", placeholder="Enter your password")
+        
+        if st.button("Sign In", type="primary", use_container_width=True):
+            if email and password:
+                result = auth_manager.authenticate_user(email, password)
+                if result["success"]:
+                    st.session_state.authenticated = True
+                    st.session_state.current_user = result["user"]
+                    st.session_state.user_role = result["user"]["role"]
+                    st.session_state.patient_name = result["user"]["name"]
+                    st.session_state.user_language = result["user"].get("language", "English")
+                    st.success(f"Welcome back, {result['user']['name']}!")
+                    st.rerun()
+                else:
+                    st.error(result["error"])
+            else:
+                st.warning("Please enter both email and password")
+        
+        st.markdown("---")
+        st.markdown("Don't have an account?")
+        if st.button("Create New Account", use_container_width=True):
+            st.session_state.auth_page = "signup"
             st.rerun()
     
     st.markdown("---")
-    st.info("💡 This platform supports Hindi, Marathi, Tamil, Telugu, Bengali, Gujarati, Kannada, Malayalam, Punjabi, and English")
+    st.info("💡 Arogya Mitra supports Hindi, Marathi, Tamil, Telugu, Bengali, Gujarati, Kannada, Malayalam, Punjabi, and English")
+
+def signup_page():
+    st.title("🏥 Arogya Mitra - आरोग्य मित्र")
+    st.subheader("Create Your Account")
+    
+    st.markdown("---")
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    with col2:
+        st.markdown("### 📝 Sign Up")
+        
+        name = st.text_input("Full Name", placeholder="Enter your full name")
+        email = st.text_input("Email", placeholder="Enter your email")
+        phone = st.text_input("Phone Number (optional)", placeholder="+91...")
+        password = st.text_input("Password", type="password", placeholder="Create a password (min 6 characters)")
+        confirm_password = st.text_input("Confirm Password", type="password", placeholder="Confirm your password")
+        
+        st.markdown("### 👤 I am a:")
+        role = st.radio("Select your role", ["Patient", "Doctor"], horizontal=True)
+        
+        language = st.selectbox(
+            "Preferred Language",
+            options=list(ai_helper.SUPPORTED_LANGUAGES.keys()),
+            index=0
+        )
+        
+        if st.button("Create Account", type="primary", use_container_width=True):
+            if not name or not email or not password:
+                st.warning("Please fill in all required fields")
+            elif len(password) < 6:
+                st.warning("Password must be at least 6 characters")
+            elif password != confirm_password:
+                st.error("Passwords do not match")
+            else:
+                result = auth_manager.create_user(
+                    name=name,
+                    email=email,
+                    password=password,
+                    role=role,
+                    language=language,
+                    phone=phone
+                )
+                if result["success"]:
+                    st.success("Account created successfully! Please sign in.")
+                    st.session_state.auth_page = "login"
+                    st.rerun()
+                else:
+                    st.error(result["error"])
+        
+        st.markdown("---")
+        st.markdown("Already have an account?")
+        if st.button("Back to Sign In", use_container_width=True):
+            st.session_state.auth_page = "login"
+            st.rerun()
+
+def role_selection_page():
+    if st.session_state.auth_page == "signup":
+        signup_page()
+    else:
+        login_page()
 
 def sidebar_navigation():
     with st.sidebar:
-        st.title(f"🏥 Health Assistant")
-        st.markdown(f"**Role:** {st.session_state.user_role}")
+        st.title("🏥 Arogya Mitra")
+        st.caption("आरोग्य मित्र - Your Health Friend")
+        
+        if st.session_state.current_user:
+            st.markdown(f"**👤 {st.session_state.current_user['name']}**")
+            st.markdown(f"*{st.session_state.user_role}*")
         
         st.markdown("---")
         
@@ -86,9 +172,6 @@ def sidebar_navigation():
         st.markdown("---")
         
         if st.session_state.user_role == "Patient":
-            st.markdown("### 👤 Patient Information")
-            st.session_state.patient_name = st.text_input("Your Name", st.session_state.patient_name)
-            
             menu_options = [
                 "🏠 Home",
                 "🔍 Symptom Checker",
@@ -113,9 +196,13 @@ def sidebar_navigation():
         
         st.markdown("---")
         if st.button("🚪 Logout", use_container_width=True):
+            st.session_state.authenticated = False
+            st.session_state.current_user = None
             st.session_state.user_role = None
+            st.session_state.patient_name = ""
             st.session_state.chat_history = []
             st.session_state.translation_chat = []
+            st.session_state.auth_page = "login"
             st.rerun()
         
         return selected_menu
@@ -629,8 +716,12 @@ def patient_records_doctor():
                 st.info("No appointments found")
 
 def home_page():
-    st.title("🏥 AI Health Assistant")
-    st.markdown(f"### Welcome, {st.session_state.user_role}!")
+    st.title("🏥 Arogya Mitra - आरोग्य मित्र")
+    
+    if st.session_state.current_user:
+        st.markdown(f"### Welcome, {st.session_state.current_user['name']}! 🙏")
+    else:
+        st.markdown(f"### Welcome, {st.session_state.user_role}!")
     
     if st.session_state.user_role == "Patient":
         st.markdown("---")
@@ -685,7 +776,7 @@ def main():
     data_manager.ensure_data_directory()
     initialize_session_state()
     
-    if not st.session_state.user_role:
+    if not st.session_state.authenticated:
         role_selection_page()
     else:
         menu = sidebar_navigation()
