@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "name": "Test Patient kHJiLw",
+    "email": "testpatient_khjilw@test.com",
+    "password_hash": "3e3b7b748d23a2a4e717de75387410c2be448978e429d3d70ff44ecc96912f04",
+    "salt": "56bc40dccb8418545582b94ba89af3d0",
+    "role": "Patient",
+    "language": "English",
+    "phone": "",
+    "created_at": "2025-12-31T12:14:25.705236",
+    "last_login": "2025-12-31T12:14:44.887907"
+  }
+]

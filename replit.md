@@ -1,4 +1,4 @@
-# AI Health Assistant
+# Arogya Mitra (आरोग्य मित्र) - Your Health Friend
 
 ## Project Overview
 A comprehensive multilingual healthcare platform that enables seamless communication between patients and doctors in their preferred languages (Hindi, Marathi, Tamil, Telugu, Bengali, Gujarati, Kannada, Malayalam, Punjabi, and English).
@@ -6,7 +6,8 @@ A comprehensive multilingual healthcare platform that enables seamless communica
 ## Current Status
 **MVP Complete** - All core features implemented and tested
 **AI Provider:** Switched to Google Gemini (FREE tier with generous limits)
-**Last Updated:** November 11, 2025
+**Authentication:** Complete user signup/login/logout system implemented
+**Last Updated:** December 31, 2025
 
 ## Key Features Implemented
 
@@ -66,9 +67,10 @@ A comprehensive multilingual healthcare platform that enables seamless communica
 ## Technical Architecture
 
 ### Core Modules
-- **app.py** - Main Streamlit application with role-based UI
-- **ai_helper.py** - OpenAI integration for translation, analysis, and chat
+- **app.py** - Main Streamlit application with role-based UI and authentication
+- **ai_helper.py** - Gemini API integration for translation, analysis, and chat
 - **data_manager.py** - JSON-based data persistence with full CRUD operations
+- **auth_manager.py** - User authentication with password hashing and session management
 
 ### Supported Languages
 English, Hindi (हिंदी), Marathi (मराठी), Tamil (தமிழ்), Telugu (తెలుగు), Bengali (বাংলা), Gujarati (ગુજરાતી), Kannada (ಕನ್ನಡ), Malayalam (മലയാളം), Punjabi (ਪੰਜਾਬੀ)
@@ -87,6 +89,7 @@ English, Hindi (हिंदी), Marathi (मराठी), Tamil (தமிழ
 
 ## Data Storage
 Location: `health_data/` directory
+- `users.json` - User accounts (with hashed passwords)
 - `appointments.json` - Appointment records
 - `prescriptions.json` - Prescription data
 - `health_records.json` - Patient health records
@@ -107,7 +110,10 @@ The UI checks `success` before processing responses and displays user-friendly e
 **Retry Logic:** Automatic retry with exponential backoff for API overload errors (503 UNAVAILABLE), with user-friendly message after max retries.
 
 ## Security Features
-- API key validation before OpenAI calls
+- **User Authentication** - Complete signup/login/logout system
+- **Password Hashing** - SHA-256 with unique salt per user
+- **Session Management** - Secure session state for authenticated users
+- API key validation before Gemini calls
 - No exposed secrets in code
 - Structured error handling prevents crashes
 - Environment-based configuration
