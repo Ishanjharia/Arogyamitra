@@ -10,5 +10,41 @@
     "phone": "",
     "created_at": "2025-12-31T12:14:25.705236",
     "last_login": "2025-12-31T12:14:44.887907"
+  },
+  {
+    "id": 2,
+    "name": "Ishan Jharia",
+    "email": "ishanjharia63527@gmail.com",
+    "password_hash": "b924fd9acfe08213e3d377d9d2cce8c730ee82db0c74eb605c36b40cd2758f11",
+    "salt": "0af5454690b7b6c3b6b41130a372feae",
+    "role": "Patient",
+    "language": "\u0939\u093f\u0902\u0926\u0940 (Hindi)",
+    "phone": "9131132558",
+    "created_at": "2026-01-01T13:41:21.863424",
+    "last_login": "2026-01-01T14:16:43.593922"
+  },
+  {
+    "id": 3,
+    "name": "shravan",
+    "email": "shravankumardravidam",
+    "password_hash": "5cd0d75d889143469556f977def294333c335806011267c7fc113545ec508d5f",
+    "salt": "64eb5a4542bcba0d1435fc058fef27bd",
+    "role": "Patient",
+    "language": "English",
+    "phone": "7702403938",
+    "created_at": "2026-01-01T14:12:49.432539",
+    "last_login": "2026-01-01T14:19:55.096406"
+  },
+  {
+    "id": 4,
+    "name": "Ishan",
+    "email": "ishanjharia@gmail.com",
+    "password_hash": "85b4639d980ba612fa8c8791d822df560d9aea8c293e3d00d403e8b88a0f32bd",
+    "salt": "a5cc78bb3ca04294d36d3b2705517b41",
+    "role": "Doctor",
+    "language": "English",
+    "phone": "9131132558",
+    "created_at": "2026-01-01T14:13:22.801896",
+    "last_login": "2026-01-01T14:13:30.841962"
   }
 ]
