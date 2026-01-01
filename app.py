@@ -167,6 +167,12 @@ def sidebar_navigation():
             options=list(ai_helper.SUPPORTED_LANGUAGES.keys()),
             index=list(ai_helper.SUPPORTED_LANGUAGES.keys()).index(st.session_state.user_language)
         )
+        if selected_language != st.session_state.user_language:
+            st.session_state.user_language = selected_language
+            if st.session_state.current_user:
+                auth_manager.update_user(st.session_state.current_user['id'], language=selected_language)
+                st.session_state.current_user['language'] = selected_language
+                st.toast(f"Language saved: {selected_language}")
         st.session_state.user_language = selected_language
         
         st.markdown("---")

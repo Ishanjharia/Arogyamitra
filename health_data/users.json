@@ -30,10 +30,10 @@
     "password_hash": "5cd0d75d889143469556f977def294333c335806011267c7fc113545ec508d5f",
     "salt": "64eb5a4542bcba0d1435fc058fef27bd",
     "role": "Patient",
-    "language": "English",
+    "language": "\u0c24\u0c46\u0c32\u0c41\u0c17\u0c41 (Telugu)",
     "phone": "7702403938",
     "created_at": "2026-01-01T14:12:49.432539",
-    "last_login": "2026-01-01T14:19:55.096406"
+    "last_login": "2026-01-01T14:32:58.458311"
   },
   {
     "id": 4,
@@ -46,5 +46,17 @@
     "phone": "9131132558",
     "created_at": "2026-01-01T14:13:22.801896",
     "last_login": "2026-01-01T14:13:30.841962"
+  },
+  {
+    "id": 5,
+    "name": "Lang Test User 1nPsg8",
+    "email": "langtest_1npsg8@test.com",
+    "password_hash": "83c2f2c185e587c1a4965ca0f41e4f8368f5ea6f5119250988f1e791d46dd6b3",
+    "salt": "ce2310082b86becc430d9a6c54efa0f4",
+    "role": "Patient",
+    "language": "\u0939\u093f\u0902\u0926\u0940 (Hindi)",
+    "phone": "",
+    "created_at": "2026-01-01T14:33:01.463386",
+    "last_login": "2026-01-01T14:33:45.216719"
   }
 ]
