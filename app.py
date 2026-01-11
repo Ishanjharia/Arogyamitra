@@ -505,10 +505,26 @@ def sidebar_navigation():
         return selected_menu
 
 def symptom_checker_page():
-    st.title("🔍 AI Symptom Checker")
-    st.markdown(f"**Language:** {st.session_state.user_language}")
+    inject_custom_css()
     
-    st.info("⚠️ This is not a medical diagnosis. Please consult a qualified doctor for proper medical advice.")
+    st.markdown("""
+    <div class="main-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+        <h1>🔍 AI Symptom Checker</h1>
+        <p>Describe your symptoms and get instant AI-powered analysis</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown(f"""
+    <div style="text-align: center; margin: 1rem 0;">
+        <span class="language-badge">🌐 {st.session_state.user_language}</span>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div class="info-box warning">
+        ⚠️ <strong>Important:</strong> This is not a medical diagnosis. Please consult a qualified doctor for proper medical advice.
+    </div>
+    """, unsafe_allow_html=True)
     
     tab1, tab2 = st.tabs(["💬 Text Input", "🎤 Voice Input"])
     
@@ -628,10 +644,26 @@ def symptom_checker_page():
                         st.error(f"Transcription error: {result.get('error')}")
 
 def ai_chat_page():
-    st.title("💬 AI Medical Chat Assistant")
-    st.markdown(f"**Language:** {st.session_state.user_language}")
+    inject_custom_css()
     
-    st.info("Ask me health-related questions in your preferred language!")
+    st.markdown("""
+    <div class="main-header" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+        <h1>💬 AI Medical Chat Assistant</h1>
+        <p>Ask health questions and get instant responses in your language</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown(f"""
+    <div style="text-align: center; margin: 1rem 0;">
+        <span class="language-badge">🌐 {st.session_state.user_language}</span>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div class="info-box info">
+        💡 Ask me health-related questions in your preferred language! I'm here to help.
+    </div>
+    """, unsafe_allow_html=True)
     
     for message in st.session_state.chat_history:
         with st.chat_message(message["role"]):
@@ -662,7 +694,14 @@ def ai_chat_page():
                     st.session_state.chat_history.append({"role": "assistant", "content": error_msg})
 
 def translation_chat_page():
-    st.title("🌐 Patient-Doctor Real-Time Translation")
+    inject_custom_css()
+    
+    st.markdown("""
+    <div class="main-header" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+        <h1>🌐 Patient-Doctor Translation</h1>
+        <p>Real-time communication across languages</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     
@@ -740,8 +779,15 @@ def translation_chat_page():
             st.rerun()
 
 def prescription_page():
+    inject_custom_css()
+    
     if st.session_state.user_role == "Doctor":
-        st.title("📝 Write Prescription")
+        st.markdown("""
+        <div class="main-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+            <h1>📝 Write Prescription</h1>
+            <p>Create prescriptions with automatic translation</p>
+        </div>
+        """, unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         
@@ -833,7 +879,14 @@ Instructions: {instructions}
             st.warning("Please enter your name in the sidebar to view prescriptions")
 
 def health_records_page():
-    st.title("📁 Health Records")
+    inject_custom_css()
+    
+    st.markdown("""
+    <div class="main-header" style="background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);">
+        <h1>📁 Health Records</h1>
+        <p>Your digital health history in one place</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     if st.session_state.patient_name:
         records = data_manager.get_health_records(st.session_state.patient_name)
@@ -857,7 +910,14 @@ def health_records_page():
         st.warning("Please enter your name in the sidebar to view records")
 
 def appointment_booking_page():
-    st.title("📅 Book Appointment")
+    inject_custom_css()
+    
+    st.markdown("""
+    <div class="main-header" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
+        <h1>📅 Book Appointment</h1>
+        <p>Schedule your consultation with a doctor</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     
@@ -923,7 +983,14 @@ def appointment_booking_page():
             st.info("No appointments yet")
 
 def view_appointments_doctor():
-    st.title("📅 Appointments Overview")
+    inject_custom_css()
+    
+    st.markdown("""
+    <div class="main-header" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
+        <h1>📅 Appointments Overview</h1>
+        <p>Manage all your patient appointments</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     appointments = data_manager.get_appointments()
     
@@ -935,7 +1002,14 @@ def view_appointments_doctor():
         st.info("No appointments scheduled yet")
 
 def reminders_page():
-    st.title("🔔 My Reminders")
+    inject_custom_css()
+    
+    st.markdown("""
+    <div class="main-header" style="background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);">
+        <h1>🔔 My Reminders</h1>
+        <p>Never miss your medications or appointments</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     if st.session_state.patient_name:
         reminders = data_manager.get_reminders(st.session_state.patient_name)
@@ -979,9 +1053,16 @@ def reminders_page():
         st.warning("Please enter your name in the sidebar")
 
 def patient_records_doctor():
-    st.title("📊 Patient Records")
+    inject_custom_css()
     
-    search_patient = st.text_input("Search Patient by Name")
+    st.markdown("""
+    <div class="main-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+        <h1>📊 Patient Records</h1>
+        <p>Access and manage patient health data</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    search_patient = st.text_input("🔍 Search Patient by Name")
     
     if search_patient:
         st.markdown(f"### Records for: {search_patient}")
