@@ -17,6 +17,240 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+def inject_custom_css():
+    st.markdown("""
+    <style>
+    /* Main gradient header */
+    .main-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem;
+        border-radius: 15px;
+        color: white;
+        text-align: center;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+    
+    .main-header h1 {
+        margin: 0;
+        font-size: 2.5rem;
+    }
+    
+    .main-header p {
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
+        font-size: 1.2rem;
+    }
+    
+    /* Feature cards */
+    .feature-card {
+        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin: 0.5rem 0;
+        border-left: 5px solid;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+    
+    .feature-card.green { border-left-color: #10b981; }
+    .feature-card.blue { border-left-color: #3b82f6; }
+    .feature-card.purple { border-left-color: #8b5cf6; }
+    .feature-card.orange { border-left-color: #f59e0b; }
+    .feature-card.pink { border-left-color: #ec4899; }
+    .feature-card.teal { border-left-color: #14b8a6; }
+    
+    .feature-card h3 {
+        margin: 0 0 0.5rem 0;
+        color: #1f2937;
+    }
+    
+    .feature-card p {
+        margin: 0;
+        color: #6b7280;
+    }
+    
+    /* Colorful info boxes */
+    .info-box {
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+    }
+    
+    .info-box.success {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        border: 1px solid #10b981;
+        color: #065f46;
+    }
+    
+    .info-box.warning {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border: 1px solid #f59e0b;
+        color: #92400e;
+    }
+    
+    .info-box.info {
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        border: 1px solid #3b82f6;
+        color: #1e40af;
+    }
+    
+    /* Welcome banner */
+    .welcome-banner {
+        background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+        border: 2px solid #ec4899;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .welcome-banner h2 {
+        color: #be185d;
+        margin: 0;
+    }
+    
+    /* Stats cards */
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.2rem;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .stat-card.green { background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); }
+    .stat-card.blue { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); }
+    .stat-card.purple { background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); }
+    .stat-card.orange { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); }
+    
+    /* Auth form styling */
+    .auth-container {
+        background: linear-gradient(145deg, #ffffff 0%, #f3f4f6 100%);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+    }
+    
+    /* Sidebar styling */
+    section[data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+    }
+    
+    section[data-testid="stSidebar"] .stMarkdown {
+        color: white;
+    }
+    
+    section[data-testid="stSidebar"] h1, 
+    section[data-testid="stSidebar"] h2, 
+    section[data-testid="stSidebar"] h3 {
+        color: white !important;
+    }
+    
+    /* Button styling */
+    .stButton > button[kind="primary"] {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .stButton > button[kind="primary"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .stButton > button[kind="secondary"] {
+        background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        border: 2px solid #9ca3af;
+        border-radius: 10px;
+        color: #374151;
+    }
+    
+    /* Input styling */
+    .stTextInput > div > div > input {
+        border-radius: 10px;
+        border: 2px solid #e5e7eb;
+        padding: 0.75rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .stTextInput > div > div > input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    }
+    
+    /* Chat messages */
+    .chat-user {
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        border-radius: 15px 15px 5px 15px;
+        padding: 1rem;
+        margin: 0.5rem 0;
+        border: 1px solid #93c5fd;
+    }
+    
+    .chat-assistant {
+        background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+        border-radius: 15px 15px 15px 5px;
+        padding: 1rem;
+        margin: 0.5rem 0;
+        border: 1px solid #c4b5fd;
+    }
+    
+    /* Severity indicators */
+    .severity-high {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border: 2px solid #ef4444;
+        border-radius: 10px;
+        padding: 1rem;
+        color: #991b1b;
+    }
+    
+    .severity-medium {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border: 2px solid #f59e0b;
+        border-radius: 10px;
+        padding: 1rem;
+        color: #92400e;
+    }
+    
+    .severity-low {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        border: 2px solid #10b981;
+        border-radius: 10px;
+        padding: 1rem;
+        color: #065f46;
+    }
+    
+    /* Language badge */
+    .language-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 100%);
+        color: #3730a3;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    /* Divider with gradient */
+    .gradient-divider {
+        height: 3px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #ec4899 100%);
+        border-radius: 2px;
+        margin: 1.5rem 0;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 def initialize_session_state():
     if 'authenticated' not in st.session_state:
         st.session_state.authenticated = False
@@ -51,18 +285,28 @@ def play_audio_text(text, language_code):
         st.warning(f"Could not play audio: {str(e)}")
 
 def login_page():
-    st.title("🏥 Arogya Mitra - आरोग्य मित्र")
-    st.subheader("Your Multilingual Health Companion")
+    inject_custom_css()
     
-    st.markdown("---")
+    st.markdown("""
+    <div class="main-header">
+        <h1>🏥 Arogya Mitra</h1>
+        <p>आरोग्य मित्र - Your Multilingual Health Companion</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
-        st.markdown("### 🔐 Sign In")
+        st.markdown("""
+        <div class="auth-container">
+            <h2 style="text-align: center; color: #667eea; margin-bottom: 1.5rem;">🔐 Welcome Back!</h2>
+        </div>
+        """, unsafe_allow_html=True)
         
-        email = st.text_input("Email", placeholder="Enter your email")
-        password = st.text_input("Password", type="password", placeholder="Enter your password")
+        email = st.text_input("📧 Email", placeholder="Enter your email")
+        password = st.text_input("🔑 Password", type="password", placeholder="Enter your password")
+        
+        st.markdown("<br>", unsafe_allow_html=True)
         
         if st.button("Sign In", type="primary", use_container_width=True):
             if email and password:
@@ -73,55 +317,89 @@ def login_page():
                     st.session_state.user_role = result["user"]["role"]
                     st.session_state.patient_name = result["user"]["name"]
                     st.session_state.user_language = result["user"].get("language", "English")
-                    st.success(f"Welcome back, {result['user']['name']}!")
+                    st.balloons()
+                    st.success(f"🎉 Welcome back, {result['user']['name']}!")
                     st.rerun()
                 else:
-                    st.error(result["error"])
+                    st.error(f"❌ {result['error']}")
             else:
-                st.warning("Please enter both email and password")
+                st.warning("⚠️ Please enter both email and password")
         
-        st.markdown("---")
-        st.markdown("Don't have an account?")
-        if st.button("Create New Account", use_container_width=True):
+        st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+        
+        st.markdown("<p style='text-align: center; color: #6b7280;'>New to Arogya Mitra?</p>", unsafe_allow_html=True)
+        if st.button("✨ Create New Account", use_container_width=True):
             st.session_state.auth_page = "signup"
             st.rerun()
     
-    st.markdown("---")
-    st.info("💡 Arogya Mitra supports Hindi, Marathi, Tamil, Telugu, Bengali, Gujarati, Kannada, Malayalam, Punjabi, and English")
+    st.markdown("""
+    <div class="info-box info" style="text-align: center; margin-top: 2rem;">
+        💡 <strong>Supported Languages:</strong> Hindi, Marathi, Tamil, Telugu, Bengali, Gujarati, Kannada, Malayalam, Punjabi & English
+    </div>
+    """, unsafe_allow_html=True)
 
 def signup_page():
-    st.title("🏥 Arogya Mitra - आरोग्य मित्र")
-    st.subheader("Create Your Account")
+    inject_custom_css()
     
-    st.markdown("---")
+    st.markdown("""
+    <div class="main-header">
+        <h1>🏥 Arogya Mitra</h1>
+        <p>आरोग्य मित्र - Join Our Health Community</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
-        st.markdown("### 📝 Sign Up")
+        st.markdown("""
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <h2 style="color: #667eea;">✨ Create Your Account</h2>
+            <p style="color: #6b7280;">Start your journey to better health</p>
+        </div>
+        """, unsafe_allow_html=True)
         
-        name = st.text_input("Full Name", placeholder="Enter your full name")
-        email = st.text_input("Email", placeholder="Enter your email")
-        phone = st.text_input("Phone Number (optional)", placeholder="+91...")
-        password = st.text_input("Password", type="password", placeholder="Create a password (min 6 characters)")
-        confirm_password = st.text_input("Confirm Password", type="password", placeholder="Confirm your password")
+        name = st.text_input("👤 Full Name", placeholder="Enter your full name")
+        email = st.text_input("📧 Email", placeholder="Enter your email")
+        phone = st.text_input("📱 Phone Number (optional)", placeholder="+91...")
         
-        st.markdown("### 👤 I am a:")
-        role = st.radio("Select your role", ["Patient", "Doctor"], horizontal=True)
+        col_pass1, col_pass2 = st.columns(2)
+        with col_pass1:
+            password = st.text_input("🔑 Password", type="password", placeholder="Min 6 characters")
+        with col_pass2:
+            confirm_password = st.text_input("🔑 Confirm", type="password", placeholder="Confirm password")
+        
+        st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+        
+        st.markdown("#### 👤 I am a:")
+        col_role1, col_role2 = st.columns(2)
+        with col_role1:
+            patient_selected = st.button("🏃 Patient", use_container_width=True, type="primary" if st.session_state.get('signup_role', 'Patient') == 'Patient' else "secondary")
+            if patient_selected:
+                st.session_state.signup_role = "Patient"
+        with col_role2:
+            doctor_selected = st.button("👨‍⚕️ Doctor", use_container_width=True, type="primary" if st.session_state.get('signup_role', 'Patient') == 'Doctor' else "secondary")
+            if doctor_selected:
+                st.session_state.signup_role = "Doctor"
+        
+        role = st.session_state.get('signup_role', 'Patient')
+        
+        st.markdown("<br>", unsafe_allow_html=True)
         
         language = st.selectbox(
-            "Preferred Language",
+            "🌐 Preferred Language",
             options=list(ai_helper.SUPPORTED_LANGUAGES.keys()),
             index=0
         )
         
-        if st.button("Create Account", type="primary", use_container_width=True):
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        if st.button("🚀 Create My Account", type="primary", use_container_width=True):
             if not name or not email or not password:
-                st.warning("Please fill in all required fields")
+                st.warning("⚠️ Please fill in all required fields")
             elif len(password) < 6:
-                st.warning("Password must be at least 6 characters")
+                st.warning("⚠️ Password must be at least 6 characters")
             elif password != confirm_password:
-                st.error("Passwords do not match")
+                st.error("❌ Passwords do not match")
             else:
                 result = auth_manager.create_user(
                     name=name,
@@ -132,15 +410,17 @@ def signup_page():
                     phone=phone
                 )
                 if result["success"]:
-                    st.success("Account created successfully! Please sign in.")
+                    st.balloons()
+                    st.success("🎉 Account created successfully! Please sign in.")
                     st.session_state.auth_page = "login"
                     st.rerun()
                 else:
-                    st.error(result["error"])
+                    st.error(f"❌ {result['error']}")
         
-        st.markdown("---")
-        st.markdown("Already have an account?")
-        if st.button("Back to Sign In", use_container_width=True):
+        st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+        
+        st.markdown("<p style='text-align: center; color: #6b7280;'>Already have an account?</p>", unsafe_allow_html=True)
+        if st.button("⬅️ Back to Sign In", use_container_width=True):
             st.session_state.auth_page = "login"
             st.rerun()
 
@@ -151,13 +431,24 @@ def role_selection_page():
         login_page()
 
 def sidebar_navigation():
+    inject_custom_css()
+    
     with st.sidebar:
-        st.title("🏥 Arogya Mitra")
-        st.caption("आरोग्य मित्र - Your Health Friend")
+        st.markdown("""
+        <div style="text-align: center; padding: 1rem 0;">
+            <h1 style="color: white; margin: 0;">🏥 Arogya Mitra</h1>
+            <p style="color: #c7d2fe; margin: 0.25rem 0 0 0; font-size: 0.9rem;">आरोग्य मित्र - Your Health Friend</p>
+        </div>
+        """, unsafe_allow_html=True)
         
         if st.session_state.current_user:
-            st.markdown(f"**👤 {st.session_state.current_user['name']}**")
-            st.markdown(f"*{st.session_state.user_role}*")
+            role_color = "#10b981" if st.session_state.user_role == "Patient" else "#3b82f6"
+            st.markdown(f"""
+            <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 0.75rem; margin: 0.5rem 0; text-align: center;">
+                <p style="color: white; margin: 0; font-weight: bold;">👤 {st.session_state.current_user['name']}</p>
+                <span style="background: {role_color}; color: white; padding: 0.2rem 0.6rem; border-radius: 15px; font-size: 0.8rem;">{st.session_state.user_role}</span>
+            </div>
+            """, unsafe_allow_html=True)
         
         st.markdown("---")
         
@@ -722,61 +1013,160 @@ def patient_records_doctor():
                 st.info("No appointments found")
 
 def home_page():
-    st.title("🏥 Arogya Mitra - आरोग्य मित्र")
+    inject_custom_css()
     
-    if st.session_state.current_user:
-        st.markdown(f"### Welcome, {st.session_state.current_user['name']}! 🙏")
-    else:
-        st.markdown(f"### Welcome, {st.session_state.user_role}!")
+    user_name = st.session_state.current_user['name'] if st.session_state.current_user else st.session_state.user_role
+    
+    st.markdown(f"""
+    <div class="welcome-banner">
+        <h2>🙏 Namaste, {user_name}!</h2>
+        <p style="color: #9d174d; margin-top: 0.5rem;">Welcome to Arogya Mitra - Your Health Friend</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    lang_display = st.session_state.user_language
+    st.markdown(f"""
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+        <span class="language-badge">🌐 {lang_display}</span>
+    </div>
+    """, unsafe_allow_html=True)
     
     if st.session_state.user_role == "Patient":
-        st.markdown("---")
+        st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+        
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            st.markdown("### 🔍 Symptom Checker")
-            st.write("Describe your symptoms in your language and get AI-powered analysis")
+            st.markdown("""
+            <div class="feature-card green">
+                <h3>🔍 Symptom Checker</h3>
+                <p>Describe your symptoms in your language and get AI-powered analysis</p>
+            </div>
+            """, unsafe_allow_html=True)
             
         with col2:
-            st.markdown("### 💬 AI Chat")
-            st.write("Ask health questions and get instant responses in your language")
+            st.markdown("""
+            <div class="feature-card blue">
+                <h3>💬 AI Health Chat</h3>
+                <p>Ask health questions and get instant responses in your language</p>
+            </div>
+            """, unsafe_allow_html=True)
         
         with col3:
-            st.markdown("### 📅 Appointments")
-            st.write("Book and manage your appointments with doctors")
+            st.markdown("""
+            <div class="feature-card purple">
+                <h3>📅 Appointments</h3>
+                <p>Book and manage your appointments with doctors easily</p>
+            </div>
+            """, unsafe_allow_html=True)
         
-        st.markdown("---")
+        st.markdown("<br>", unsafe_allow_html=True)
         
-        st.markdown("### 🌟 Key Features")
-        st.write("✅ Voice-enabled symptom description")
-        st.write("✅ Multilingual support (10+ Indian languages)")
-        st.write("✅ Prescription translation")
-        st.write("✅ Digital health records")
-        st.write("✅ SMS reminders for medications")
+        col4, col5, col6 = st.columns(3)
+        
+        with col4:
+            st.markdown("""
+            <div class="feature-card orange">
+                <h3>📋 Prescriptions</h3>
+                <p>View prescriptions translated to your language</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col5:
+            st.markdown("""
+            <div class="feature-card pink">
+                <h3>📁 Health Records</h3>
+                <p>Keep all your health records in one place</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col6:
+            st.markdown("""
+            <div class="feature-card teal">
+                <h3>🔔 Reminders</h3>
+                <p>Never miss your medications or appointments</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="info-box success">
+            <strong>🌟 Key Features for Patients:</strong><br>
+            ✅ Voice-enabled symptom description &nbsp;|&nbsp; 
+            ✅ 10+ Indian languages &nbsp;|&nbsp; 
+            ✅ Prescription translation &nbsp;|&nbsp; 
+            ✅ Digital health records &nbsp;|&nbsp; 
+            ✅ SMS reminders
+        </div>
+        """, unsafe_allow_html=True)
         
     else:
-        st.markdown("---")
-        col1, col2 = st.columns(2)
+        st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+        
+        col1, col2, col3 = st.columns(3)
         
         with col1:
-            st.markdown("### 🌐 Real-Time Translation")
-            st.write("Communicate with patients in their native language")
+            st.markdown("""
+            <div class="feature-card blue">
+                <h3>🌐 Translation Chat</h3>
+                <p>Communicate with patients in their native language in real-time</p>
+            </div>
+            """, unsafe_allow_html=True)
             
         with col2:
-            st.markdown("### 📝 Smart Prescriptions")
-            st.write("Write prescriptions that auto-translate to patient's language")
+            st.markdown("""
+            <div class="feature-card green">
+                <h3>📝 Smart Prescriptions</h3>
+                <p>Write prescriptions that auto-translate to patient's language</p>
+            </div>
+            """, unsafe_allow_html=True)
         
-        st.markdown("---")
+        with col3:
+            st.markdown("""
+            <div class="feature-card purple">
+                <h3>💬 AI Assistant</h3>
+                <p>Get AI-powered clinical insights and decision support</p>
+            </div>
+            """, unsafe_allow_html=True)
         
-        st.markdown("### 🌟 Doctor Features")
-        st.write("✅ Patient-doctor translation chat")
-        st.write("✅ Automated prescription translation")
-        st.write("✅ Patient record management")
-        st.write("✅ AI medical chat assistant")
-        st.write("✅ Appointment overview")
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        col4, col5 = st.columns(2)
+        
+        with col4:
+            st.markdown("""
+            <div class="feature-card orange">
+                <h3>📊 Patient Records</h3>
+                <p>Access and manage comprehensive patient health data</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col5:
+            st.markdown("""
+            <div class="feature-card pink">
+                <h3>📅 Appointments</h3>
+                <p>View and manage your appointment schedule</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="info-box info">
+            <strong>🌟 Doctor Features:</strong><br>
+            ✅ Real-time translation chat &nbsp;|&nbsp; 
+            ✅ Auto-translated prescriptions &nbsp;|&nbsp; 
+            ✅ Patient record management &nbsp;|&nbsp; 
+            ✅ AI clinical assistant
+        </div>
+        """, unsafe_allow_html=True)
     
-    st.markdown("---")
-    st.info("💡 Select an option from the sidebar to get started!")
+    st.markdown("""
+    <div class="info-box warning" style="text-align: center; margin-top: 1rem;">
+        👆 <strong>Select an option from the sidebar menu to get started!</strong>
+    </div>
+    """, unsafe_allow_html=True)
 
 def main():
     data_manager.ensure_data_directory()
