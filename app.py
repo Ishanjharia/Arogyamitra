@@ -840,43 +840,100 @@ def symptom_checker_page():
                     analysis = ai_helper.analyze_symptoms(symptoms_text, st.session_state.user_language)
                     
                     if analysis.get("success"):
-                        st.success("✅ Analysis Complete!")
+                        st.markdown("""
+                        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1rem; border-radius: 10px; text-align: center; margin: 1rem 0;">
+                            <h2 style="margin: 0; color: white;">📊 Symptom Analysis Report</h2>
+                            <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">AI-powered health assessment</p>
+                        </div>
+                        """, unsafe_allow_html=True)
                         
-                        st.markdown("### 📊 Symptom Analysis Report")
+                        severity = analysis.get('severity_level', 'Unknown')
+                        severity_colors = {
+                            'Low': ('#10b981', '#d1fae5', '🟢'),
+                            'Medium': ('#f59e0b', '#fef3c7', '🟡'),
+                            'High': ('#ef4444', '#fee2e2', '🔴'),
+                            'Critical': ('#dc2626', '#fecaca', '🚨')
+                        }
+                        sev_color, sev_bg, sev_icon = severity_colors.get(severity, ('#6b7280', '#f3f4f6', '⚪'))
                         
                         col1, col2 = st.columns(2)
                         with col1:
-                            st.markdown("**Severity Level:**")
-                            if analysis.get('severity_level') == 'High':
-                                st.error(f"🔴 {analysis.get('severity_level', 'Unknown')}")
-                            elif analysis.get('severity_level') == 'Medium':
-                                st.warning(f"🟡 {analysis.get('severity_level', 'Unknown')}")
-                            else:
-                                st.info(f"🟢 {analysis.get('severity_level', 'Unknown')}")
+                            st.markdown(f"""
+                            <div style="background: {sev_bg}; border-left: 4px solid {sev_color}; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                                <p style="margin: 0; font-size: 0.85rem; color: #6b7280; font-weight: 600;">SEVERITY LEVEL</p>
+                                <p style="margin: 0.5rem 0 0 0; font-size: 1.5rem; font-weight: bold; color: {sev_color};">{sev_icon} {severity}</p>
+                            </div>
+                            """, unsafe_allow_html=True)
                         
                         with col2:
-                            st.markdown("**Urgent Care Needed:**")
-                            if analysis.get('urgent_care_needed'):
-                                st.error("⚠️ Yes - Please seek immediate medical attention")
+                            urgent = analysis.get('urgent_care_needed', False)
+                            if urgent:
+                                st.markdown("""
+                                <div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                                    <p style="margin: 0; font-size: 0.85rem; color: #6b7280; font-weight: 600;">URGENT CARE</p>
+                                    <p style="margin: 0.5rem 0 0 0; font-size: 1.25rem; font-weight: bold; color: #ef4444;">⚠️ Seek Immediate Care</p>
+                                </div>
+                                """, unsafe_allow_html=True)
                             else:
-                                st.success("✓ No immediate urgency detected")
+                                st.markdown("""
+                                <div style="background: #d1fae5; border-left: 4px solid #10b981; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                                    <p style="margin: 0; font-size: 0.85rem; color: #6b7280; font-weight: 600;">URGENT CARE</p>
+                                    <p style="margin: 0.5rem 0 0 0; font-size: 1.25rem; font-weight: bold; color: #10b981;">✓ No Immediate Urgency</p>
+                                </div>
+                                """, unsafe_allow_html=True)
                         
-                        st.markdown("**Summary:**")
-                        st.write(analysis.get('symptoms_summary', 'N/A'))
+                        summary = analysis.get('symptoms_summary', 'N/A')
+                        st.markdown(f"""
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 1.25rem; border-radius: 10px; margin-bottom: 1rem;">
+                            <h4 style="margin: 0 0 0.75rem 0; color: #1e293b; display: flex; align-items: center; gap: 0.5rem;">
+                                🧾 Summary
+                            </h4>
+                            <p style="margin: 0; color: #475569; line-height: 1.6;">{summary}</p>
+                        </div>
+                        """, unsafe_allow_html=True)
                         
-                        st.markdown("**Possible Conditions to Discuss with Doctor:**")
-                        for condition in analysis.get('possible_conditions', []):
-                            st.write(f"• {condition}")
+                        conditions = analysis.get('possible_conditions', [])
+                        if conditions:
+                            conditions_html = "".join([f"<li style='margin: 0.5rem 0; color: #475569;'>{cond}</li>" for cond in conditions])
+                            st.markdown(f"""
+                            <div style="background: #fef3c7; border: 1px solid #fcd34d; padding: 1.25rem; border-radius: 10px; margin-bottom: 1rem;">
+                                <h4 style="margin: 0 0 0.75rem 0; color: #92400e; display: flex; align-items: center; gap: 0.5rem;">
+                                    🩺 Possible Conditions to Discuss
+                                </h4>
+                                <ul style="margin: 0; padding-left: 1.5rem;">{conditions_html}</ul>
+                            </div>
+                            """, unsafe_allow_html=True)
                         
-                        st.markdown("**Recommendations:**")
-                        st.write(analysis.get('recommendations', 'Please consult a doctor'))
+                        recommendations = analysis.get('recommendations', 'Please consult a doctor')
+                        if isinstance(recommendations, list):
+                            recs_html = "".join([f"<li style='margin: 0.5rem 0; color: #475569;'>{rec}</li>" for rec in recommendations])
+                            recs_content = f"<ul style='margin: 0; padding-left: 1.5rem;'>{recs_html}</ul>"
+                        else:
+                            recs_content = f"<p style='margin: 0; color: #475569; line-height: 1.6;'>{recommendations}</p>"
                         
-                        st.markdown("**Questions for Your Doctor:**")
-                        for question in analysis.get('follow_up_questions', []):
-                            st.write(f"• {question}")
+                        st.markdown(f"""
+                        <div style="background: #dbeafe; border: 1px solid #93c5fd; padding: 1.25rem; border-radius: 10px; margin-bottom: 1rem;">
+                            <h4 style="margin: 0 0 0.75rem 0; color: #1e40af; display: flex; align-items: center; gap: 0.5rem;">
+                                ✅ Recommendations
+                            </h4>
+                            {recs_content}
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
+                        questions = analysis.get('follow_up_questions', [])
+                        if questions:
+                            questions_html = "".join([f"<li style='margin: 0.5rem 0; color: #475569;'>{q}</li>" for q in questions])
+                            st.markdown(f"""
+                            <div style="background: #f3e8ff; border: 1px solid #c4b5fd; padding: 1.25rem; border-radius: 10px; margin-bottom: 1rem;">
+                                <h4 style="margin: 0 0 0.75rem 0; color: #7c3aed; display: flex; align-items: center; gap: 0.5rem;">
+                                    ❓ Questions for Your Doctor
+                                </h4>
+                                <ul style="margin: 0; padding-left: 1.5rem;">{questions_html}</ul>
+                            </div>
+                            """, unsafe_allow_html=True)
                         
                         if st.session_state.patient_name:
-                            if st.button("💾 Save to Health Records"):
+                            if st.button("💾 Save to Health Records", type="primary"):
                                 data_manager.add_health_record(
                                     patient_name=st.session_state.patient_name,
                                     record_type="Symptom Analysis",
@@ -923,11 +980,47 @@ def symptom_checker_page():
                             analysis = ai_helper.analyze_symptoms(transcription, st.session_state.user_language)
                             
                             if analysis.get("success"):
-                                st.markdown("### 📊 Analysis Report")
-                                st.json(analysis)
+                                st.markdown("""
+                                <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1rem; border-radius: 10px; text-align: center; margin: 1rem 0;">
+                                    <h2 style="margin: 0; color: white;">📊 Voice Analysis Report</h2>
+                                </div>
+                                """, unsafe_allow_html=True)
+                                
+                                severity = analysis.get('severity_level', 'Unknown')
+                                severity_colors = {
+                                    'Low': ('#10b981', '#d1fae5', '🟢'),
+                                    'Medium': ('#f59e0b', '#fef3c7', '🟡'),
+                                    'High': ('#ef4444', '#fee2e2', '🔴'),
+                                    'Critical': ('#dc2626', '#fecaca', '🚨')
+                                }
+                                sev_color, sev_bg, sev_icon = severity_colors.get(severity, ('#6b7280', '#f3f4f6', '⚪'))
+                                
+                                st.markdown(f"""
+                                <div style="background: {sev_bg}; border-left: 4px solid {sev_color}; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                                    <p style="margin: 0; font-size: 0.85rem; color: #6b7280; font-weight: 600;">SEVERITY: <span style="color: {sev_color}; font-size: 1.25rem;">{sev_icon} {severity}</span></p>
+                                </div>
+                                """, unsafe_allow_html=True)
+                                
+                                summary = analysis.get('symptoms_summary', 'N/A')
+                                st.markdown(f"""
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                                    <h4 style="margin: 0 0 0.5rem 0; color: #1e293b;">🧾 Summary</h4>
+                                    <p style="margin: 0; color: #475569;">{summary}</p>
+                                </div>
+                                """, unsafe_allow_html=True)
+                                
+                                conditions = analysis.get('possible_conditions', [])
+                                if conditions:
+                                    conditions_html = "".join([f"<li style='margin: 0.25rem 0;'>{c}</li>" for c in conditions])
+                                    st.markdown(f"""
+                                    <div style="background: #fef3c7; border: 1px solid #fcd34d; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                                        <h4 style="margin: 0 0 0.5rem 0; color: #92400e;">🩺 Possible Conditions</h4>
+                                        <ul style="margin: 0; padding-left: 1.5rem;">{conditions_html}</ul>
+                                    </div>
+                                    """, unsafe_allow_html=True)
                                 
                                 if st.session_state.patient_name:
-                                    if st.button("💾 Save Analysis"):
+                                    if st.button("💾 Save Analysis", type="primary"):
                                         data_manager.add_health_record(
                                             patient_name=st.session_state.patient_name,
                                             record_type="Voice Symptom Analysis",
