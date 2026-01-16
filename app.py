@@ -78,36 +78,42 @@ def inject_custom_css():
     }
     size_mult = size_multipliers.get(text_size, '1.0')
     
+    COLOR_PRIMARY = '#4F7CF3'
+    COLOR_SUCCESS = '#2CB9A8'
+    COLOR_WARNING = '#F4B740'
+    COLOR_DANGER = '#E5533D'
+    COLOR_INFO = '#6366F1'
+    
     theme_palettes = {
         'Light': {
-            'bg_primary': '#ffffff',
-            'bg_secondary': '#f8f9fa',
-            'bg_card': '#ffffff',
-            'text_primary': '#1f2937',
-            'text_secondary': '#6b7280',
-            'border_color': '#e5e7eb',
-            'sidebar_bg': 'linear-gradient(180deg, #667eea 0%, #764ba2 100%)',
-            'sidebar_text': '#ffffff'
+            'bg_primary': '#F7F9FC',
+            'bg_secondary': '#EEF2FF',
+            'bg_card': '#FFFFFF',
+            'text_primary': '#1F2937',
+            'text_secondary': '#6B7280',
+            'border_color': '#E5E7EB',
+            'sidebar_bg': '#EEF2FF',
+            'sidebar_text': '#1F2937'
         },
         'Dark': {
-            'bg_primary': '#1a1a2e',
-            'bg_secondary': '#16213e',
-            'bg_card': '#1f2937',
-            'text_primary': '#f3f4f6',
-            'text_secondary': '#d1d5db',
-            'border_color': '#374151',
-            'sidebar_bg': 'linear-gradient(180deg, #1a1a2e 0%, #16213e 100%)',
-            'sidebar_text': '#ffffff'
+            'bg_primary': '#0F172A',
+            'bg_secondary': '#1E293B',
+            'bg_card': '#1E293B',
+            'text_primary': '#E5E7EB',
+            'text_secondary': '#9CA3AF',
+            'border_color': '#334155',
+            'sidebar_bg': '#020617',
+            'sidebar_text': '#E5E7EB'
         },
         'High Contrast': {
             'bg_primary': '#000000',
             'bg_secondary': '#000000',
-            'bg_card': '#000000',
-            'text_primary': '#ffffff',
-            'text_secondary': '#ffff00',
-            'border_color': '#ffffff',
+            'bg_card': '#0A0A0A',
+            'text_primary': '#FFFFFF',
+            'text_secondary': '#FFD400',
+            'border_color': '#FFFFFF',
             'sidebar_bg': '#000000',
-            'sidebar_text': '#ffffff'
+            'sidebar_text': '#FFFFFF'
         }
     }
     
@@ -137,51 +143,84 @@ def inject_custom_css():
         color: {text_primary} !important;
     }}
     
-    /* Sidebar styling */
+    /* Sidebar styling - solid color, no gradient */
     .stApp [data-testid="stSidebar"],
-    .stApp section[data-testid="stSidebar"] > div {{
+    .stApp section[data-testid="stSidebar"] > div,
+    section[data-testid="stSidebar"] {{
         background: {sidebar_bg} !important;
+    }}
+    
+    section[data-testid="stSidebar"] .stMarkdown,
+    section[data-testid="stSidebar"] h1, 
+    section[data-testid="stSidebar"] h2, 
+    section[data-testid="stSidebar"] h3,
+    section[data-testid="stSidebar"] .stRadio label,
+    section[data-testid="stSidebar"] .stRadio label span,
+    section[data-testid="stSidebar"] .stSelectbox label {{
+        color: {sidebar_text} !important;
+    }}
+    
+    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label {{
+        color: {sidebar_text} !important;
+        background: {'rgba(255, 255, 255, 0.1)' if is_dark_theme else 'rgba(79, 124, 243, 0.1)'};
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        margin: 0.25rem 0;
+        transition: background 0.2s ease;
+    }}
+    
+    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label:hover {{
+        background: {'rgba(255, 255, 255, 0.2)' if is_dark_theme else 'rgba(79, 124, 243, 0.2)'};
     }}
     
     /* High contrast specific overrides */
     {f'''
     .stApp p, .stApp span, .stApp label, .stApp div {{
-        color: #ffffff !important;
+        color: #FFFFFF !important;
     }}
     .stApp h1, .stApp h2, .stApp h3, .stApp h4 {{
-        color: #ffff00 !important;
+        color: #FFD400 !important;
     }}
     .stApp a {{
-        color: #00ffff !important;
+        color: #00FFFF !important;
     }}
     .stApp button {{
-        border: 2px solid #ffffff !important;
+        border: 2px solid #FFFFFF !important;
+    }}
+    .info-box, .stat-card, .feature-card {{
+        background: #0A0A0A !important;
+        border: 2px solid #FFFFFF !important;
+    }}
+    .info-box *, .stat-card *, .feature-card * {{
+        color: #FFFFFF !important;
     }}
     ''' if is_high_contrast else ''}
     
-    /* Main gradient header */
+    /* Main gradient header - keep gradient */
     .main-header {{
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, {COLOR_PRIMARY} 0%, {COLOR_INFO} 100%);
         padding: 2rem;
         border-radius: 15px;
         color: white;
         text-align: center;
         margin-bottom: 2rem;
-        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        box-shadow: 0 10px 30px rgba(79, 124, 243, 0.3);
     }}
     
     .main-header h1 {{
         margin: 0;
         font-size: 2.5rem;
+        color: white !important;
     }}
     
     .main-header p {{
         margin: 0.5rem 0 0 0;
         opacity: 0.9;
         font-size: 1.2rem;
+        color: white !important;
     }}
     
-    /* Feature cards */
+    /* Feature cards - solid colors with semantic borders */
     .feature-card {{
         background: {bg_card};
         border-radius: 15px;
@@ -197,12 +236,12 @@ def inject_custom_css():
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
     }}
     
-    .feature-card.green {{ border-left-color: #10b981; }}
-    .feature-card.blue {{ border-left-color: #3b82f6; }}
-    .feature-card.purple {{ border-left-color: #8b5cf6; }}
-    .feature-card.orange {{ border-left-color: #f59e0b; }}
-    .feature-card.pink {{ border-left-color: #ec4899; }}
-    .feature-card.teal {{ border-left-color: #14b8a6; }}
+    .feature-card.green {{ border-left-color: {COLOR_SUCCESS}; }}
+    .feature-card.blue {{ border-left-color: {COLOR_PRIMARY}; }}
+    .feature-card.purple {{ border-left-color: {COLOR_INFO}; }}
+    .feature-card.orange {{ border-left-color: {COLOR_WARNING}; }}
+    .feature-card.pink {{ border-left-color: {COLOR_DANGER}; }}
+    .feature-card.teal {{ border-left-color: {COLOR_SUCCESS}; }}
     
     .feature-card h3 {{
         margin: 0 0 0.5rem 0;
@@ -214,7 +253,7 @@ def inject_custom_css():
         color: {text_secondary};
     }}
     
-    /* Colorful info boxes */
+    /* Info boxes - solid colors, no gradients */
     .info-box {{
         padding: 1rem 1.5rem;
         border-radius: 10px;
@@ -222,27 +261,27 @@ def inject_custom_css():
     }}
     
     .info-box.success {{
-        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-        border: 1px solid #10b981;
-        color: #065f46;
+        background: {'#0A0A0A' if is_high_contrast else ('#1E293B' if is_dark_theme else '#ECFDF5')};
+        border: 2px solid {COLOR_SUCCESS};
+        color: {text_primary};
     }}
     
     .info-box.warning {{
-        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-        border: 1px solid #f59e0b;
-        color: #92400e;
+        background: {'#0A0A0A' if is_high_contrast else ('#1E293B' if is_dark_theme else '#FFFBEB')};
+        border: 2px solid {COLOR_WARNING};
+        color: {text_primary};
     }}
     
     .info-box.info {{
-        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-        border: 1px solid #3b82f6;
-        color: #1e40af;
+        background: {'#0A0A0A' if is_high_contrast else ('#1E293B' if is_dark_theme else '#EEF2FF')};
+        border: 2px solid {COLOR_INFO};
+        color: {text_primary};
     }}
     
-    /* Welcome banner */
+    /* Welcome banner - keep gradient */
     .welcome-banner {{
-        background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
-        border: 2px solid #ec4899;
+        background: linear-gradient(135deg, {COLOR_PRIMARY}15 0%, {COLOR_INFO}15 100%);
+        border: 2px solid {COLOR_PRIMARY};
         border-radius: 15px;
         padding: 1.5rem;
         text-align: center;
@@ -250,171 +289,131 @@ def inject_custom_css():
     }}
     
     .welcome-banner h2 {{
-        color: #be185d;
+        color: {COLOR_PRIMARY if not is_high_contrast else '#FFD400'};
         margin: 0;
     }}
     
-    /* Stats cards */
+    /* Stats cards - solid colors */
     .stat-card {{
-        background: white;
+        background: {bg_card};
         border-radius: 12px;
         padding: 1.2rem;
         text-align: center;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border: 1px solid {border_color};
     }}
     
-    .stat-card.green {{ background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); }}
-    .stat-card.blue {{ background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); }}
-    .stat-card.purple {{ background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); }}
-    .stat-card.orange {{ background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); }}
+    .stat-card.green {{ border-left: 4px solid {COLOR_SUCCESS}; }}
+    .stat-card.blue {{ border-left: 4px solid {COLOR_PRIMARY}; }}
+    .stat-card.purple {{ border-left: 4px solid {COLOR_INFO}; }}
+    .stat-card.orange {{ border-left: 4px solid {COLOR_WARNING}; }}
     
     /* Auth form styling */
     .auth-container {{
-        background: linear-gradient(145deg, #ffffff 0%, #f3f4f6 100%);
+        background: {bg_card};
         border-radius: 20px;
         padding: 2rem;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        border: 1px solid #e5e7eb;
-    }}
-    
-    /* Sidebar styling */
-    section[data-testid="stSidebar"] {{
-        background: linear-gradient(180deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
-    }}
-    
-    section[data-testid="stSidebar"] .stMarkdown {{
-        color: white;
-    }}
-    
-    section[data-testid="stSidebar"] h1, 
-    section[data-testid="stSidebar"] h2, 
-    section[data-testid="stSidebar"] h3 {{
-        color: white !important;
-    }}
-    
-    /* Sidebar radio buttons (navigation) - make them white */
-    section[data-testid="stSidebar"] .stRadio label {{
-        color: white !important;
-    }}
-    
-    section[data-testid="stSidebar"] .stRadio label span {{
-        color: white !important;
-    }}
-    
-    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label {{
-        color: white !important;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-        margin: 0.25rem 0;
-        transition: background 0.2s ease;
-    }}
-    
-    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label:hover {{
-        background: rgba(255, 255, 255, 0.2);
-    }}
-    
-    section[data-testid="stSidebar"] .stRadio div[data-baseweb="radio"] {{
-        background-color: white;
-    }}
-    
-    /* Sidebar selectbox styling */
-    section[data-testid="stSidebar"] .stSelectbox label {{
-        color: white !important;
+        border: 1px solid {border_color};
     }}
     
     /* Button styling */
     .stButton > button[kind="primary"] {{
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: {COLOR_PRIMARY};
         border: none;
         border-radius: 10px;
         padding: 0.75rem 2rem;
         font-weight: 600;
+        color: white;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
     }}
     
     .stButton > button[kind="primary"]:hover {{
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 6px 20px rgba(79, 124, 243, 0.4);
     }}
     
     .stButton > button[kind="secondary"] {{
-        background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-        border: 2px solid #9ca3af;
+        background: {bg_secondary};
+        border: 2px solid {border_color};
         border-radius: 10px;
-        color: #374151;
+        color: {text_primary};
     }}
     
     /* Input styling */
     .stTextInput > div > div > input {{
         border-radius: 10px;
-        border: 2px solid #e5e7eb;
+        border: 2px solid {border_color};
         padding: 0.75rem;
+        background: {bg_card};
+        color: {text_primary};
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }}
     
     .stTextInput > div > div > input:focus {{
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        border-color: {COLOR_PRIMARY};
+        box-shadow: 0 0 0 3px rgba(79, 124, 243, 0.2);
     }}
     
-    /* Chat messages */
+    /* Chat messages - solid colors */
     .chat-user {{
-        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        background: {'#1E293B' if is_dark_theme else '#EEF2FF'};
         border-radius: 15px 15px 5px 15px;
         padding: 1rem;
         margin: 0.5rem 0;
-        border: 1px solid #93c5fd;
+        border: 1px solid {COLOR_PRIMARY};
+        color: {text_primary};
     }}
     
     .chat-assistant {{
-        background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+        background: {'#1E293B' if is_dark_theme else '#F5F3FF'};
         border-radius: 15px 15px 15px 5px;
         padding: 1rem;
         margin: 0.5rem 0;
-        border: 1px solid #c4b5fd;
+        border: 1px solid {COLOR_INFO};
+        color: {text_primary};
     }}
     
-    /* Severity indicators */
+    /* Severity indicators - solid colors with semantic colors */
     .severity-high {{
-        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-        border: 2px solid #ef4444;
+        background: {'#0A0A0A' if is_high_contrast else ('#1E293B' if is_dark_theme else '#FEF2F2')};
+        border: 2px solid {COLOR_DANGER};
         border-radius: 10px;
         padding: 1rem;
-        color: #991b1b;
+        color: {text_primary};
     }}
     
     .severity-medium {{
-        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-        border: 2px solid #f59e0b;
+        background: {'#0A0A0A' if is_high_contrast else ('#1E293B' if is_dark_theme else '#FFFBEB')};
+        border: 2px solid {COLOR_WARNING};
         border-radius: 10px;
         padding: 1rem;
-        color: #92400e;
+        color: {text_primary};
     }}
     
     .severity-low {{
-        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-        border: 2px solid #10b981;
+        background: {'#0A0A0A' if is_high_contrast else ('#1E293B' if is_dark_theme else '#ECFDF5')};
+        border: 2px solid {COLOR_SUCCESS};
         border-radius: 10px;
         padding: 1rem;
-        color: #065f46;
+        color: {text_primary};
     }}
     
-    /* Language badge */
+    /* Language badge - solid color */
     .language-badge {{
         display: inline-block;
-        background: linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 100%);
-        color: #3730a3;
+        background: {COLOR_INFO};
+        color: white;
         padding: 0.25rem 0.75rem;
         border-radius: 20px;
         font-size: 0.9rem;
         font-weight: 500;
     }}
     
-    /* Divider with gradient */
+    /* Divider */
     .gradient-divider {{
         height: 3px;
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #ec4899 100%);
+        background: {COLOR_PRIMARY};
         border-radius: 2px;
         margin: 1.5rem 0;
     }}
