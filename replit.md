@@ -7,7 +7,14 @@ A comprehensive multilingual healthcare platform that enables seamless communica
 **MVP Complete** - All core features implemented and tested
 **AI Provider:** Switched to Google Gemini (FREE tier with generous limits)
 **Authentication:** Complete user signup/login/logout system implemented
-**Last Updated:** December 31, 2025
+**Last Updated:** January 16, 2026
+
+## Recent Updates (January 2026)
+- Added Medication Tracker with add/complete/delete capabilities
+- Added Read Aloud functionality for prescriptions and health records (using gTTS)
+- Added PDF Export for prescriptions and health records (using fpdf2)
+- Added Quick Navigation from home page buttons
+- Updated sidebar menu to include Medication Tracker
 
 ## Key Features Implemented
 
@@ -42,6 +49,17 @@ A comprehensive multilingual healthcare platform that enables seamless communica
    - Medication reminders
    - Appointment notifications
    - SMS integration (mock for MVP)
+
+7. **Medication Tracker**
+   - Add/track active medications
+   - Mark medications as completed
+   - Daily schedule view
+   - Dosage and frequency tracking
+
+8. **Accessibility Features**
+   - Read Aloud for prescriptions and health records
+   - PDF Export/Download for prescriptions and health records
+   - Quick action buttons on home page
 
 ### Doctor Features
 1. **Patient-Doctor Translation Chat**

@@ -5,10 +5,55 @@ from audio_recorder_streamlit import audio_recorder
 from gtts import gTTS
 import tempfile
 import base64
+import random
+from fpdf import FPDF
 
 import ai_helper
 import data_manager
 import auth_manager
+
+HEALTH_TIPS = {
+    "English": [
+        "💧 Drink at least 8 glasses of water daily to stay hydrated.",
+        "🚶 Walk for 30 minutes daily to improve heart health.",
+        "🥗 Include more fruits and vegetables in your diet.",
+        "😴 Get 7-8 hours of quality sleep every night.",
+        "🧘 Practice deep breathing for 5 minutes to reduce stress.",
+        "🍎 Eat a healthy breakfast to kickstart your metabolism.",
+        "🚭 Avoid smoking and limit alcohol consumption.",
+        "🧴 Wash hands frequently to prevent infections.",
+        "📱 Take regular breaks from screens to protect your eyes.",
+        "❤️ Regular health check-ups can catch problems early."
+    ],
+    "हिंदी (Hindi)": [
+        "💧 हाइड्रेटेड रहने के लिए रोज़ाना कम से कम 8 गिलास पानी पिएं।",
+        "🚶 दिल की सेहत के लिए रोज़ 30 मिनट टहलें।",
+        "🥗 अपने आहार में अधिक फल और सब्ज़ियाँ शामिल करें।",
+        "😴 हर रात 7-8 घंटे की अच्छी नींद लें।",
+        "🧘 तनाव कम करने के लिए 5 मिनट गहरी सांस लें।",
+        "🍎 मेटाबॉलिज्म बढ़ाने के लिए स्वस्थ नाश्ता करें।",
+        "🚭 धूम्रपान से बचें और शराब सीमित करें।",
+        "🧴 संक्रमण से बचने के लिए बार-बार हाथ धोएं।",
+        "📱 आंखों की सुरक्षा के लिए स्क्रीन से नियमित ब्रेक लें।",
+        "❤️ नियमित स्वास्थ्य जांच समस्याओं को जल्दी पकड़ सकती है।"
+    ],
+    "मराठी (Marathi)": [
+        "💧 हायड्रेटेड राहण्यासाठी दररोज किमान 8 ग्लास पाणी प्या।",
+        "🚶 हृदयाच्या आरोग्यासाठी दररोज 30 मिनिटे चाला।",
+        "🥗 आहारात अधिक फळे आणि भाज्या समाविष्ट करा।",
+        "😴 दररात्री 7-8 तासांची चांगली झोप घ्या।",
+        "🧘 तणाव कमी करण्यासाठी 5 मिनिटे दीर्घ श्वास घ्या।"
+    ]
+}
+
+EMERGENCY_CONTACTS = {
+    "ambulance": "102",
+    "police": "100",
+    "fire": "101",
+    "women_helpline": "1091",
+    "child_helpline": "1098",
+    "emergency": "112"
+}
 
 st.set_page_config(
     page_title="Arogya Mitra - आरोग्य मित्र",
@@ -342,6 +387,109 @@ def initialize_session_state():
     if 'text_size' not in st.session_state:
         st.session_state.text_size = "Medium"
 
+def get_health_tip(language):
+    tips = HEALTH_TIPS.get(language, HEALTH_TIPS.get("English", []))
+    if tips:
+        return random.choice(tips)
+    return "💡 Stay healthy and take care of yourself!"
+
+def get_recent_activity(patient_name, limit=5):
+    activities = []
+    
+    appointments = data_manager.get_appointments(patient_name)
+    for apt in appointments[-3:]:
+        activities.append({
+            "type": "appointment",
+            "icon": "📅",
+            "title": f"Appointment with Dr. {apt.get('doctor_name', 'Unknown')}",
+            "date": apt.get('date', ''),
+            "status": apt.get('status', 'Scheduled')
+        })
+    
+    prescriptions = data_manager.get_prescriptions(patient_name)
+    for presc in prescriptions[-3:]:
+        activities.append({
+            "type": "prescription",
+            "icon": "💊",
+            "title": f"Prescription from Dr. {presc.get('doctor_name', 'Unknown')}",
+            "date": presc.get('date', ''),
+            "status": "Active"
+        })
+    
+    records = data_manager.get_health_records(patient_name)
+    for rec in records[-3:]:
+        activities.append({
+            "type": "record",
+            "icon": "📋",
+            "title": rec.get('record_type', 'Health Record'),
+            "date": rec.get('date', ''),
+            "status": "Saved"
+        })
+    
+    activities.sort(key=lambda x: x.get('date', ''), reverse=True)
+    return activities[:limit]
+
+def generate_prescription_pdf(prescription):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", "B", 16)
+    pdf.cell(0, 10, "Arogya Mitra - Prescription", ln=True, align="C")
+    pdf.ln(10)
+    
+    pdf.set_font("Arial", "", 12)
+    pdf.cell(0, 8, f"Patient: {prescription.get('patient_name', 'N/A')}", ln=True)
+    pdf.cell(0, 8, f"Doctor: {prescription.get('doctor_name', 'N/A')}", ln=True)
+    pdf.cell(0, 8, f"Date: {prescription.get('date', 'N/A')}", ln=True)
+    pdf.ln(5)
+    
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 8, "Medication:", ln=True)
+    pdf.set_font("Arial", "", 11)
+    pdf.multi_cell(0, 6, prescription.get('medication', 'N/A'))
+    pdf.ln(3)
+    
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 8, "Dosage:", ln=True)
+    pdf.set_font("Arial", "", 11)
+    pdf.multi_cell(0, 6, prescription.get('dosage', 'N/A'))
+    pdf.ln(3)
+    
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 8, "Instructions:", ln=True)
+    pdf.set_font("Arial", "", 11)
+    pdf.multi_cell(0, 6, prescription.get('instructions', 'N/A'))
+    
+    pdf.ln(10)
+    pdf.set_font("Arial", "I", 9)
+    pdf.cell(0, 6, "Generated by Arogya Mitra - Your Health Friend", ln=True, align="C")
+    
+    return pdf.output(dest='S').encode('latin-1')
+
+def generate_health_record_pdf(record):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", "B", 16)
+    pdf.cell(0, 10, "Arogya Mitra - Health Record", ln=True, align="C")
+    pdf.ln(10)
+    
+    pdf.set_font("Arial", "", 12)
+    pdf.cell(0, 8, f"Patient: {record.get('patient_name', 'N/A')}", ln=True)
+    pdf.cell(0, 8, f"Record Type: {record.get('record_type', 'N/A')}", ln=True)
+    pdf.cell(0, 8, f"Date: {record.get('date', 'N/A')}", ln=True)
+    pdf.cell(0, 8, f"Language: {record.get('language', 'N/A')}", ln=True)
+    pdf.ln(5)
+    
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 8, "Description:", ln=True)
+    pdf.set_font("Arial", "", 11)
+    pdf.multi_cell(0, 6, record.get('description', 'N/A'))
+    
+    pdf.ln(10)
+    pdf.set_font("Arial", "I", 9)
+    pdf.cell(0, 6, "Generated by Arogya Mitra - Your Health Friend", ln=True, align="C")
+    
+    return pdf.output(dest='S').encode('latin-1')
+
 def play_audio_text(text, language_code):
     try:
         tts = gTTS(text=text, lang=language_code, slow=False)
@@ -568,7 +716,8 @@ def sidebar_navigation():
                 "📋 My Prescriptions",
                 "📁 Health Records",
                 "📅 Book Appointment",
-                "🔔 My Reminders"
+                "🔔 My Reminders",
+                "💊 Medication Tracker"
             ]
         else:
             menu_options = [
@@ -965,6 +1114,24 @@ Instructions: {instructions}
                         if rx.get('translated_text'):
                             st.markdown(f"**Translation ({rx['language']}):**")
                             st.info(rx['translated_text'])
+                        
+                        action_col1, action_col2 = st.columns(2)
+                        with action_col1:
+                            if st.button(f"🔊 Read Aloud", key=f"read_rx_{i}"):
+                                text_to_read = rx.get('translated_text', rx.get('instructions', ''))
+                                lang_code = ai_helper.SUPPORTED_LANGUAGES.get(rx.get('language', 'English'), 'en')
+                                play_audio_text(text_to_read, lang_code)
+                                st.success("Playing audio...")
+                        
+                        with action_col2:
+                            pdf_data = generate_prescription_pdf(rx)
+                            st.download_button(
+                                label="📥 Download PDF",
+                                data=pdf_data,
+                                file_name=f"prescription_{rx['date']}_{i}.pdf",
+                                mime="application/pdf",
+                                key=f"pdf_rx_{i}"
+                            )
             else:
                 st.info("No prescriptions found. Visit a doctor to get prescriptions.")
         else:
@@ -996,6 +1163,24 @@ def health_records_page():
                     if record.get('report_data'):
                         st.markdown("**Analysis Report:**")
                         st.json(record['report_data'])
+                    
+                    action_col1, action_col2 = st.columns(2)
+                    with action_col1:
+                        if st.button(f"🔊 Read Aloud", key=f"read_rec_{i}"):
+                            text_to_read = record.get('description', '')
+                            lang_code = ai_helper.SUPPORTED_LANGUAGES.get(record.get('language', 'English'), 'en')
+                            play_audio_text(text_to_read, lang_code)
+                            st.success("Playing audio...")
+                    
+                    with action_col2:
+                        pdf_data = generate_health_record_pdf(record)
+                        st.download_button(
+                            label="📥 Download PDF",
+                            data=pdf_data,
+                            file_name=f"health_record_{record['date']}_{i}.pdf",
+                            mime="application/pdf",
+                            key=f"pdf_rec_{i}"
+                        )
         else:
             st.info("No health records yet. Use the Symptom Checker to create your first record.")
     else:
@@ -1144,6 +1329,101 @@ def reminders_page():
     else:
         st.warning("Please enter your name in the sidebar")
 
+def medication_tracker_page():
+    inject_custom_css()
+    
+    st.markdown("""
+    <div class="main-header" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);">
+        <h1>💊 Medication Tracker</h1>
+        <p>Track and manage your medications</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.session_state.patient_name:
+        tab1, tab2 = st.tabs(["📋 My Medications", "➕ Add Medication"])
+        
+        with tab1:
+            medications = data_manager.get_medications(st.session_state.patient_name)
+            
+            if medications:
+                st.success(f"You have {len(medications)} medication(s)")
+                
+                for med in medications:
+                    status_color = "green" if med['status'] == "Active" else "orange"
+                    st.markdown(f"""
+                    <div class="feature-card {status_color}">
+                        <h3>💊 {med['medication_name']}</h3>
+                        <p><strong>Dosage:</strong> {med['dosage']} | <strong>Frequency:</strong> {med['frequency']}</p>
+                        <p><strong>Started:</strong> {med['start_date']} | <strong>Status:</strong> {med['status']}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        if med['status'] == "Active":
+                            if st.button(f"⏹️ Mark Complete", key=f"complete_{med['id']}"):
+                                data_manager.update_medication(med['id'], status="Completed")
+                                st.success("Medication marked as completed!")
+                                st.rerun()
+                    with col2:
+                        if st.button(f"🗑️ Remove", key=f"delete_{med['id']}"):
+                            data_manager.delete_medication(med['id'])
+                            st.success("Medication removed!")
+                            st.rerun()
+            else:
+                st.info("No medications being tracked. Add a medication to start tracking!")
+        
+        with tab2:
+            st.markdown("### ➕ Add New Medication")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                med_name = st.text_input("Medication Name")
+                dosage = st.text_input("Dosage (e.g., 500mg)")
+                start_date = st.date_input("Start Date")
+            
+            with col2:
+                frequency = st.selectbox("Frequency", [
+                    "Once daily",
+                    "Twice daily", 
+                    "Three times daily",
+                    "Every 8 hours",
+                    "Every 12 hours",
+                    "As needed",
+                    "Weekly"
+                ])
+                end_date = st.date_input("End Date (optional)", value=None)
+                notes = st.text_area("Notes (optional)")
+            
+            if st.button("➕ Add Medication", type="primary"):
+                if med_name and dosage:
+                    data_manager.add_medication(
+                        patient_name=st.session_state.patient_name,
+                        medication_name=med_name,
+                        dosage=dosage,
+                        frequency=frequency,
+                        start_date=str(start_date),
+                        end_date=str(end_date) if end_date else None,
+                        notes=notes
+                    )
+                    st.success("✅ Medication added successfully!")
+                    st.balloons()
+                    st.rerun()
+                else:
+                    st.warning("Please fill in medication name and dosage")
+        
+        st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+        
+        st.markdown("### 📅 Today's Schedule")
+        active_meds = [m for m in data_manager.get_medications(st.session_state.patient_name) if m['status'] == 'Active']
+        if active_meds:
+            for med in active_meds:
+                st.markdown(f"- 💊 **{med['medication_name']}** - {med['dosage']} ({med['frequency']})")
+        else:
+            st.info("No active medications scheduled for today")
+    else:
+        st.warning("Please enter your name in the sidebar")
+
 def patient_records_doctor():
     inject_custom_css()
     
@@ -1205,15 +1485,81 @@ def home_page():
     """, unsafe_allow_html=True)
     
     if st.session_state.user_role == "Patient":
+        st.markdown("### ⚡ Quick Actions")
+        qa_col1, qa_col2, qa_col3, qa_col4 = st.columns(4)
+        
+        with qa_col1:
+            if st.button("🔍 Check Symptoms", use_container_width=True, type="primary"):
+                st.session_state.quick_nav = "symptom"
+                st.rerun()
+        with qa_col2:
+            if st.button("💬 Chat with AI", use_container_width=True):
+                st.session_state.quick_nav = "chat"
+                st.rerun()
+        with qa_col3:
+            if st.button("📅 Book Appointment", use_container_width=True):
+                st.session_state.quick_nav = "appointment"
+                st.rerun()
+        with qa_col4:
+            if st.button("🚨 Emergency SOS", use_container_width=True, type="secondary"):
+                st.session_state.show_sos = True
+        
+        if st.session_state.get('show_sos', False):
+            st.markdown("""
+            <div class="severity-high">
+                <h3>🚨 Emergency Contacts (India)</h3>
+            </div>
+            """, unsafe_allow_html=True)
+            sos_col1, sos_col2, sos_col3 = st.columns(3)
+            with sos_col1:
+                st.markdown("**🚑 Ambulance:** 102")
+                st.markdown("**👮 Police:** 100")
+            with sos_col2:
+                st.markdown("**🔥 Fire:** 101")
+                st.markdown("**📞 Emergency:** 112")
+            with sos_col3:
+                st.markdown("**👩 Women Helpline:** 1091")
+                st.markdown("**👶 Child Helpline:** 1098")
+            if st.button("✖️ Close Emergency Info"):
+                st.session_state.show_sos = False
+                st.rerun()
+        
         st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
         
+        health_tip = get_health_tip(st.session_state.user_language)
+        st.markdown(f"""
+        <div class="info-box info">
+            <strong>💡 Health Tip of the Day:</strong><br>
+            {health_tip}
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+        
+        st.markdown("### 📊 Recent Activity")
+        activities = get_recent_activity(st.session_state.patient_name)
+        
+        if activities:
+            for activity in activities:
+                st.markdown(f"""
+                <div class="feature-card {'green' if activity['type'] == 'appointment' else 'orange' if activity['type'] == 'prescription' else 'blue'}">
+                    <p style="margin: 0;"><strong>{activity['icon']} {activity['title']}</strong></p>
+                    <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem;">📅 {activity['date']} • Status: {activity['status']}</p>
+                </div>
+                """, unsafe_allow_html=True)
+        else:
+            st.info("No recent activity yet. Start by checking your symptoms or booking an appointment!")
+        
+        st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+        
+        st.markdown("### 🎯 Features")
         col1, col2, col3 = st.columns(3)
         
         with col1:
             st.markdown("""
             <div class="feature-card green">
                 <h3>🔍 Symptom Checker</h3>
-                <p>Describe your symptoms in your language and get AI-powered analysis</p>
+                <p>AI-powered health analysis in your language</p>
             </div>
             """, unsafe_allow_html=True)
             
@@ -1221,7 +1567,7 @@ def home_page():
             st.markdown("""
             <div class="feature-card blue">
                 <h3>💬 AI Health Chat</h3>
-                <p>Ask health questions and get instant responses in your language</p>
+                <p>Get instant health answers</p>
             </div>
             """, unsafe_allow_html=True)
         
@@ -1229,11 +1575,9 @@ def home_page():
             st.markdown("""
             <div class="feature-card purple">
                 <h3>📅 Appointments</h3>
-                <p>Book and manage your appointments with doctors easily</p>
+                <p>Easy doctor booking</p>
             </div>
             """, unsafe_allow_html=True)
-        
-        st.markdown("<br>", unsafe_allow_html=True)
         
         col4, col5, col6 = st.columns(3)
         
@@ -1241,7 +1585,7 @@ def home_page():
             st.markdown("""
             <div class="feature-card orange">
                 <h3>📋 Prescriptions</h3>
-                <p>View prescriptions translated to your language</p>
+                <p>Translated medications</p>
             </div>
             """, unsafe_allow_html=True)
         
@@ -1249,7 +1593,7 @@ def home_page():
             st.markdown("""
             <div class="feature-card pink">
                 <h3>📁 Health Records</h3>
-                <p>Keep all your health records in one place</p>
+                <p>Digital health history</p>
             </div>
             """, unsafe_allow_html=True)
         
@@ -1257,22 +1601,9 @@ def home_page():
             st.markdown("""
             <div class="feature-card teal">
                 <h3>🔔 Reminders</h3>
-                <p>Never miss your medications or appointments</p>
+                <p>Never miss medications</p>
             </div>
             """, unsafe_allow_html=True)
-        
-        st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
-        
-        st.markdown("""
-        <div class="info-box success">
-            <strong>🌟 Key Features for Patients:</strong><br>
-            ✅ Voice-enabled symptom description &nbsp;|&nbsp; 
-            ✅ 10+ Indian languages &nbsp;|&nbsp; 
-            ✅ Prescription translation &nbsp;|&nbsp; 
-            ✅ Digital health records &nbsp;|&nbsp; 
-            ✅ SMS reminders
-        </div>
-        """, unsafe_allow_html=True)
         
     else:
         st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
@@ -1350,6 +1681,19 @@ def main():
     else:
         menu = sidebar_navigation()
         
+        quick_nav = st.session_state.get('quick_nav')
+        if quick_nav:
+            st.session_state.quick_nav = None
+            if quick_nav == "symptom":
+                symptom_checker_page()
+                return
+            elif quick_nav == "chat":
+                ai_chat_page()
+                return
+            elif quick_nav == "appointment":
+                appointment_booking_page()
+                return
+        
         if menu == "🏠 Home":
             home_page()
         elif menu == "🔍 Symptom Checker":
@@ -1368,6 +1712,8 @@ def main():
             view_appointments_doctor()
         elif menu == "🔔 My Reminders":
             reminders_page()
+        elif menu == "💊 Medication Tracker":
+            medication_tracker_page()
         elif menu == "📊 Patient Records":
             patient_records_doctor()
 

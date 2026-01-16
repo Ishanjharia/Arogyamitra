@@ -262,3 +262,69 @@ def get_health_records_dataframe(patient_name=None):
     if records:
         return pd.DataFrame(records)
     return pd.DataFrame(columns=['patient_name', 'record_type', 'description', 'date'])
+
+MEDICATIONS_FILE = os.path.join(DATA_DIR, "medications.json")
+
+def ensure_medications_file():
+    ensure_data_directory()
+    if not os.path.exists(MEDICATIONS_FILE):
+        with open(MEDICATIONS_FILE, 'w') as f:
+            json.dump([], f)
+
+def add_medication(patient_name, medication_name, dosage, frequency, start_date, end_date=None, notes=""):
+    ensure_medications_file()
+    medications = load_json_file(MEDICATIONS_FILE)
+    
+    medication = {
+        "id": len(medications) + 1,
+        "patient_name": patient_name,
+        "medication_name": medication_name,
+        "dosage": dosage,
+        "frequency": frequency,
+        "start_date": start_date,
+        "end_date": end_date,
+        "notes": notes,
+        "status": "Active",
+        "created_at": datetime.now().isoformat()
+    }
+    
+    medications.append(medication)
+    save_json_file(MEDICATIONS_FILE, medications)
+    return medication
+
+def get_medications(patient_name=None):
+    ensure_medications_file()
+    medications = load_json_file(MEDICATIONS_FILE)
+    
+    if patient_name:
+        medications = [m for m in medications if 
+                      patient_name.lower() in m.get('patient_name', '').lower()]
+    
+    return medications
+
+def update_medication(medication_id, **kwargs):
+    ensure_medications_file()
+    medications = load_json_file(MEDICATIONS_FILE)
+    
+    for med in medications:
+        if med['id'] == medication_id:
+            for key, value in kwargs.items():
+                if key in med:
+                    med[key] = value
+            save_json_file(MEDICATIONS_FILE, medications)
+            return med
+    
+    return None
+
+def delete_medication(medication_id):
+    ensure_medications_file()
+    medications = load_json_file(MEDICATIONS_FILE)
+    medications = [m for m in medications if m['id'] != medication_id]
+    save_json_file(MEDICATIONS_FILE, medications)
+    return True
+
+def get_medications_dataframe(patient_name=None):
+    medications = get_medications(patient_name)
+    if medications:
+        return pd.DataFrame(medications)
+    return pd.DataFrame(columns=['patient_name', 'medication_name', 'dosage', 'frequency', 'start_date', 'status'])
