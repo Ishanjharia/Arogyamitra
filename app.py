@@ -762,28 +762,6 @@ def sidebar_navigation():
         
         st.markdown("---")
         
-        st.markdown("### ⚙️ Display Settings")
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            theme_options = ["Light", "Dark", "High Contrast"]
-            current_theme = st.session_state.theme_mode if st.session_state.theme_mode in theme_options else "Light"
-            current_idx = theme_options.index(current_theme)
-            theme_mode = st.selectbox("🎨 Theme", theme_options, index=current_idx, key="theme_select")
-            if theme_mode != st.session_state.theme_mode:
-                st.session_state.theme_mode = theme_mode
-                st.rerun()
-        
-        with col2:
-            text_sizes = ["Small", "Medium", "Large"]
-            current_size_idx = text_sizes.index(st.session_state.text_size) if st.session_state.text_size in text_sizes else 1
-            text_size = st.selectbox("📏 Text Size", text_sizes, index=current_size_idx, key="text_size_select")
-            if text_size != st.session_state.text_size:
-                st.session_state.text_size = text_size
-                st.rerun()
-        
-        st.markdown("---")
-        
         if st.session_state.user_role == "Patient":
             menu_options = [
                 "🏠 Home",
