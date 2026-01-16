@@ -62,12 +62,16 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+def generate_whatsapp_share_url(text):
+    import urllib.parse
+    encoded_text = urllib.parse.quote(text)
+    return f"https://wa.me/?text={encoded_text}"
+
 def inject_custom_css():
-    # Get theme and text size settings
     dark_mode = st.session_state.get('dark_mode', False)
     text_size = st.session_state.get('text_size', 'Medium')
+    high_contrast = st.session_state.get('high_contrast', False)
     
-    # Text size multipliers
     size_multipliers = {
         'Small': '0.9',
         'Medium': '1.0',
@@ -75,8 +79,14 @@ def inject_custom_css():
     }
     size_mult = size_multipliers.get(text_size, '1.0')
     
-    # Dark mode colors
-    if dark_mode:
+    if high_contrast:
+        bg_primary = '#000000'
+        bg_secondary = '#000000'
+        bg_card = '#000000'
+        text_primary = '#ffffff'
+        text_secondary = '#ffff00'
+        border_color = '#ffffff'
+    elif dark_mode:
         bg_primary = '#1a1a2e'
         bg_secondary = '#16213e'
         bg_card = '#1f2937'
@@ -386,6 +396,10 @@ def initialize_session_state():
         st.session_state.dark_mode = False
     if 'text_size' not in st.session_state:
         st.session_state.text_size = "Medium"
+    if 'high_contrast' not in st.session_state:
+        st.session_state.high_contrast = False
+    if 'family_members' not in st.session_state:
+        st.session_state.family_members = []
 
 def get_health_tip(language):
     tips = HEALTH_TIPS.get(language, HEALTH_TIPS.get("English", []))
@@ -691,17 +705,25 @@ def sidebar_navigation():
         
         st.markdown("### ⚙️ Display Settings")
         
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
         with col1:
             dark_mode = st.toggle("🌙 Dark", value=st.session_state.dark_mode, key="dark_toggle")
             if dark_mode != st.session_state.dark_mode:
                 st.session_state.dark_mode = dark_mode
+                st.session_state.high_contrast = False
                 st.rerun()
         
         with col2:
+            high_contrast = st.toggle("🔲 Hi-Con", value=st.session_state.high_contrast, key="contrast_toggle")
+            if high_contrast != st.session_state.high_contrast:
+                st.session_state.high_contrast = high_contrast
+                st.session_state.dark_mode = False
+                st.rerun()
+        
+        with col3:
             text_sizes = ["Small", "Medium", "Large"]
             current_idx = text_sizes.index(st.session_state.text_size) if st.session_state.text_size in text_sizes else 1
-            text_size = st.selectbox("📏 Text", text_sizes, index=current_idx, label_visibility="collapsed")
+            text_size = st.selectbox("📏", text_sizes, index=current_idx, label_visibility="collapsed")
             if text_size != st.session_state.text_size:
                 st.session_state.text_size = text_size
                 st.rerun()
@@ -712,12 +734,14 @@ def sidebar_navigation():
             menu_options = [
                 "🏠 Home",
                 "🔍 Symptom Checker",
+                "📊 Symptom History",
                 "💬 Chat with AI",
                 "📋 My Prescriptions",
                 "📁 Health Records",
                 "📅 Book Appointment",
                 "🔔 My Reminders",
-                "💊 Medication Tracker"
+                "💊 Medication Tracker",
+                "👨‍👩‍👧 Family Accounts"
             ]
         else:
             menu_options = [
@@ -1115,7 +1139,7 @@ Instructions: {instructions}
                             st.markdown(f"**Translation ({rx['language']}):**")
                             st.info(rx['translated_text'])
                         
-                        action_col1, action_col2 = st.columns(2)
+                        action_col1, action_col2, action_col3 = st.columns(3)
                         with action_col1:
                             if st.button(f"🔊 Read Aloud", key=f"read_rx_{i}"):
                                 text_to_read = rx.get('translated_text', rx.get('instructions', ''))
@@ -1126,12 +1150,17 @@ Instructions: {instructions}
                         with action_col2:
                             pdf_data = generate_prescription_pdf(rx)
                             st.download_button(
-                                label="📥 Download PDF",
+                                label="📥 PDF",
                                 data=pdf_data,
                                 file_name=f"prescription_{rx['date']}_{i}.pdf",
                                 mime="application/pdf",
                                 key=f"pdf_rx_{i}"
                             )
+                        
+                        with action_col3:
+                            share_text = f"Prescription from Dr. {rx['doctor_name']}\nMedication: {rx['medication']}\nDosage: {rx['dosage']}\nInstructions: {rx.get('instructions', '')}"
+                            whatsapp_url = generate_whatsapp_share_url(share_text)
+                            st.markdown(f"<a href='{whatsapp_url}' target='_blank' style='display:inline-block;background:#25D366;color:white;padding:0.5rem 1rem;border-radius:5px;text-decoration:none;'>📱 WhatsApp</a>", unsafe_allow_html=True)
             else:
                 st.info("No prescriptions found. Visit a doctor to get prescriptions.")
         else:
@@ -1164,7 +1193,7 @@ def health_records_page():
                         st.markdown("**Analysis Report:**")
                         st.json(record['report_data'])
                     
-                    action_col1, action_col2 = st.columns(2)
+                    action_col1, action_col2, action_col3 = st.columns(3)
                     with action_col1:
                         if st.button(f"🔊 Read Aloud", key=f"read_rec_{i}"):
                             text_to_read = record.get('description', '')
@@ -1175,12 +1204,17 @@ def health_records_page():
                     with action_col2:
                         pdf_data = generate_health_record_pdf(record)
                         st.download_button(
-                            label="📥 Download PDF",
+                            label="📥 PDF",
                             data=pdf_data,
                             file_name=f"health_record_{record['date']}_{i}.pdf",
                             mime="application/pdf",
                             key=f"pdf_rec_{i}"
                         )
+                    
+                    with action_col3:
+                        share_text = f"Health Record: {record.get('record_type', 'Report')}\nDate: {record['date']}\nDescription: {record.get('description', '')[:200]}"
+                        whatsapp_url = generate_whatsapp_share_url(share_text)
+                        st.markdown(f"<a href='{whatsapp_url}' target='_blank' style='display:inline-block;background:#25D366;color:white;padding:0.5rem 1rem;border-radius:5px;text-decoration:none;'>📱 WhatsApp</a>", unsafe_allow_html=True)
         else:
             st.info("No health records yet. Use the Symptom Checker to create your first record.")
     else:
@@ -1421,6 +1455,155 @@ def medication_tracker_page():
                 st.markdown(f"- 💊 **{med['medication_name']}** - {med['dosage']} ({med['frequency']})")
         else:
             st.info("No active medications scheduled for today")
+    else:
+        st.warning("Please enter your name in the sidebar")
+
+def symptom_history_page():
+    inject_custom_css()
+    
+    st.markdown("""
+    <div class="main-header" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+        <h1>📊 Symptom History</h1>
+        <p>Visualize your health journey over time</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.session_state.patient_name:
+        records = data_manager.get_health_records(st.session_state.patient_name)
+        symptom_records = [r for r in records if r.get('record_type') == 'Symptom Analysis']
+        
+        if symptom_records:
+            st.success(f"Found {len(symptom_records)} symptom report(s)")
+            
+            st.markdown("### 📈 Symptom Timeline")
+            
+            dates = []
+            severities = []
+            severity_map = {'Low': 1, 'Medium': 2, 'High': 3, 'Critical': 4}
+            
+            for record in symptom_records:
+                dates.append(record.get('date', 'Unknown'))
+                report_data = record.get('report_data', {})
+                severity = report_data.get('severity', 'Medium') if isinstance(report_data, dict) else 'Medium'
+                severities.append(severity_map.get(severity, 2))
+            
+            if dates and severities:
+                import pandas as pd
+                chart_data = pd.DataFrame({
+                    'Date': dates,
+                    'Severity Level': severities
+                })
+                st.bar_chart(chart_data.set_index('Date'))
+                
+                st.markdown("""
+                <div class="info-box info">
+                    <strong>📊 Severity Scale:</strong><br>
+                    1 = Low | 2 = Medium | 3 = High | 4 = Critical
+                </div>
+                """, unsafe_allow_html=True)
+            
+            st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+            
+            st.markdown("### 📋 Detailed History")
+            for i, record in enumerate(symptom_records, 1):
+                with st.expander(f"📄 Report #{i} - {record.get('date', 'Unknown')}"):
+                    st.markdown(f"**Description:** {record.get('description', 'N/A')}")
+                    if record.get('report_data'):
+                        if isinstance(record['report_data'], dict):
+                            st.markdown(f"**Severity:** {record['report_data'].get('severity', 'N/A')}")
+                            if record['report_data'].get('possible_conditions'):
+                                st.markdown("**Possible Conditions:**")
+                                for cond in record['report_data'].get('possible_conditions', []):
+                                    st.markdown(f"- {cond}")
+        else:
+            st.info("No symptom history yet. Use the Symptom Checker to record your first symptoms!")
+            
+            if st.button("🔍 Go to Symptom Checker", type="primary"):
+                st.session_state.quick_nav = "symptom"
+                st.rerun()
+    else:
+        st.warning("Please enter your name in the sidebar")
+
+def family_accounts_page():
+    inject_custom_css()
+    
+    st.markdown("""
+    <div class="main-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+        <h1>👨‍👩‍👧 Family Accounts</h1>
+        <p>Manage health records for your family members</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.session_state.patient_name:
+        tab1, tab2 = st.tabs(["👥 Family Members", "➕ Add Member"])
+        
+        with tab1:
+            family_members = st.session_state.get('family_members', [])
+            
+            if family_members:
+                st.success(f"You have {len(family_members)} family member(s)")
+                
+                for i, member in enumerate(family_members):
+                    st.markdown(f"""
+                    <div class="feature-card {'green' if member.get('relationship') == 'Child' else 'blue'}">
+                        <h3>👤 {member['name']}</h3>
+                        <p><strong>Relationship:</strong> {member.get('relationship', 'N/A')} | <strong>Age:</strong> {member.get('age', 'N/A')}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        if st.button(f"📋 View Records", key=f"view_family_{i}"):
+                            st.session_state.patient_name = member['name']
+                            st.rerun()
+                    with col2:
+                        if st.button(f"🗑️ Remove", key=f"remove_family_{i}"):
+                            st.session_state.family_members.pop(i)
+                            st.success(f"Removed {member['name']}")
+                            st.rerun()
+            else:
+                st.info("No family members added yet. Add a family member to manage their health records!")
+        
+        with tab2:
+            st.markdown("### ➕ Add Family Member")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                member_name = st.text_input("Family Member Name")
+                relationship = st.selectbox("Relationship", [
+                    "Spouse", "Child", "Parent", "Sibling", "Grandparent", "Other"
+                ])
+            
+            with col2:
+                age = st.number_input("Age", min_value=0, max_value=120, value=30)
+                phone = st.text_input("Phone (optional)", placeholder="+91...")
+            
+            if st.button("➕ Add Family Member", type="primary"):
+                if member_name:
+                    new_member = {
+                        "name": member_name,
+                        "relationship": relationship,
+                        "age": age,
+                        "phone": phone,
+                        "added_by": st.session_state.patient_name
+                    }
+                    if 'family_members' not in st.session_state:
+                        st.session_state.family_members = []
+                    st.session_state.family_members.append(new_member)
+                    st.success(f"✅ Added {member_name} to your family!")
+                    st.balloons()
+                    st.rerun()
+                else:
+                    st.warning("Please enter the family member's name")
+        
+        st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="info-box info">
+            <strong>💡 Tip:</strong> You can switch between family members to view their health records, 
+            prescriptions, and appointments. All data is kept separate for each family member.
+        </div>
+        """, unsafe_allow_html=True)
     else:
         st.warning("Please enter your name in the sidebar")
 
@@ -1714,6 +1897,10 @@ def main():
             reminders_page()
         elif menu == "💊 Medication Tracker":
             medication_tracker_page()
+        elif menu == "📊 Symptom History":
+            symptom_history_page()
+        elif menu == "👨‍👩‍👧 Family Accounts":
+            family_accounts_page()
         elif menu == "📊 Patient Records":
             patient_records_doctor()
 
