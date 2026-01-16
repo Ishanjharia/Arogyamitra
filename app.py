@@ -731,7 +731,7 @@ def sidebar_navigation():
         st.markdown("""
         <div style="text-align: center; padding: 1rem 0;">
             <h1 style="color: white; margin: 0;">🏥 Arogya Mitra</h1>
-            <p style="color: #c7d2fe; margin: 0.25rem 0 0 0; font-size: 0.9rem;">आरोग्य मित्र - Your Health Friend</p>
+            <p style="color: rgba(255,255,255,0.9); margin: 0.25rem 0 0 0; font-size: 0.9rem;">आरोग्य मित्र - Your Health Friend</p>
         </div>
         """, unsafe_allow_html=True)
         
