@@ -18,10 +18,48 @@ st.set_page_config(
 )
 
 def inject_custom_css():
-    st.markdown("""
+    # Get theme and text size settings
+    dark_mode = st.session_state.get('dark_mode', False)
+    text_size = st.session_state.get('text_size', 'Medium')
+    
+    # Text size multipliers
+    size_multipliers = {
+        'Small': '0.9',
+        'Medium': '1.0',
+        'Large': '1.2'
+    }
+    size_mult = size_multipliers.get(text_size, '1.0')
+    
+    # Dark mode colors
+    if dark_mode:
+        bg_primary = '#1a1a2e'
+        bg_secondary = '#16213e'
+        bg_card = '#1f2937'
+        text_primary = '#f3f4f6'
+        text_secondary = '#d1d5db'
+        border_color = '#374151'
+    else:
+        bg_primary = '#ffffff'
+        bg_secondary = '#f8f9fa'
+        bg_card = '#ffffff'
+        text_primary = '#1f2937'
+        text_secondary = '#6b7280'
+        border_color = '#e5e7eb'
+    
+    st.markdown(f"""
     <style>
+    /* Base font size adjustment */
+    html, body, .stApp {{
+        font-size: calc(16px * {size_mult}) !important;
+    }}
+    
+    /* Dark mode body */
+    .stApp {{
+        background-color: {bg_primary if dark_mode else 'transparent'};
+    }}
+    
     /* Main gradient header */
-    .main-header {
+    .main-header {{
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         padding: 2rem;
         border-radius: 15px;
@@ -29,240 +67,240 @@ def inject_custom_css():
         text-align: center;
         margin-bottom: 2rem;
         box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-    }
+    }}
     
-    .main-header h1 {
+    .main-header h1 {{
         margin: 0;
         font-size: 2.5rem;
-    }
+    }}
     
-    .main-header p {
+    .main-header p {{
         margin: 0.5rem 0 0 0;
         opacity: 0.9;
         font-size: 1.2rem;
-    }
+    }}
     
     /* Feature cards */
-    .feature-card {
-        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    .feature-card {{
+        background: {bg_card};
         border-radius: 15px;
         padding: 1.5rem;
         margin: 0.5rem 0;
         border-left: 5px solid;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+    }}
     
-    .feature-card:hover {
+    .feature-card:hover {{
         transform: translateY(-5px);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-    }
+    }}
     
-    .feature-card.green { border-left-color: #10b981; }
-    .feature-card.blue { border-left-color: #3b82f6; }
-    .feature-card.purple { border-left-color: #8b5cf6; }
-    .feature-card.orange { border-left-color: #f59e0b; }
-    .feature-card.pink { border-left-color: #ec4899; }
-    .feature-card.teal { border-left-color: #14b8a6; }
+    .feature-card.green {{ border-left-color: #10b981; }}
+    .feature-card.blue {{ border-left-color: #3b82f6; }}
+    .feature-card.purple {{ border-left-color: #8b5cf6; }}
+    .feature-card.orange {{ border-left-color: #f59e0b; }}
+    .feature-card.pink {{ border-left-color: #ec4899; }}
+    .feature-card.teal {{ border-left-color: #14b8a6; }}
     
-    .feature-card h3 {
+    .feature-card h3 {{
         margin: 0 0 0.5rem 0;
-        color: #1f2937;
-    }
+        color: {text_primary};
+    }}
     
-    .feature-card p {
+    .feature-card p {{
         margin: 0;
-        color: #6b7280;
-    }
+        color: {text_secondary};
+    }}
     
     /* Colorful info boxes */
-    .info-box {
+    .info-box {{
         padding: 1rem 1.5rem;
         border-radius: 10px;
         margin: 1rem 0;
-    }
+    }}
     
-    .info-box.success {
+    .info-box.success {{
         background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
         border: 1px solid #10b981;
         color: #065f46;
-    }
+    }}
     
-    .info-box.warning {
+    .info-box.warning {{
         background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
         border: 1px solid #f59e0b;
         color: #92400e;
-    }
+    }}
     
-    .info-box.info {
+    .info-box.info {{
         background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
         border: 1px solid #3b82f6;
         color: #1e40af;
-    }
+    }}
     
     /* Welcome banner */
-    .welcome-banner {
+    .welcome-banner {{
         background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
         border: 2px solid #ec4899;
         border-radius: 15px;
         padding: 1.5rem;
         text-align: center;
         margin-bottom: 1.5rem;
-    }
+    }}
     
-    .welcome-banner h2 {
+    .welcome-banner h2 {{
         color: #be185d;
         margin: 0;
-    }
+    }}
     
     /* Stats cards */
-    .stat-card {
+    .stat-card {{
         background: white;
         border-radius: 12px;
         padding: 1.2rem;
         text-align: center;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    }
+    }}
     
-    .stat-card.green { background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); }
-    .stat-card.blue { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); }
-    .stat-card.purple { background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); }
-    .stat-card.orange { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); }
+    .stat-card.green {{ background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); }}
+    .stat-card.blue {{ background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); }}
+    .stat-card.purple {{ background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); }}
+    .stat-card.orange {{ background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); }}
     
     /* Auth form styling */
-    .auth-container {
+    .auth-container {{
         background: linear-gradient(145deg, #ffffff 0%, #f3f4f6 100%);
         border-radius: 20px;
         padding: 2rem;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
         border: 1px solid #e5e7eb;
-    }
+    }}
     
     /* Sidebar styling */
-    section[data-testid="stSidebar"] {
+    section[data-testid="stSidebar"] {{
         background: linear-gradient(180deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
-    }
+    }}
     
-    section[data-testid="stSidebar"] .stMarkdown {
+    section[data-testid="stSidebar"] .stMarkdown {{
         color: white;
-    }
+    }}
     
     section[data-testid="stSidebar"] h1, 
     section[data-testid="stSidebar"] h2, 
-    section[data-testid="stSidebar"] h3 {
+    section[data-testid="stSidebar"] h3 {{
         color: white !important;
-    }
+    }}
     
     /* Sidebar radio buttons (navigation) - make them white */
-    section[data-testid="stSidebar"] .stRadio label {
+    section[data-testid="stSidebar"] .stRadio label {{
         color: white !important;
-    }
+    }}
     
-    section[data-testid="stSidebar"] .stRadio label span {
+    section[data-testid="stSidebar"] .stRadio label span {{
         color: white !important;
-    }
+    }}
     
-    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label {
+    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label {{
         color: white !important;
         background: rgba(255, 255, 255, 0.1);
         border-radius: 8px;
         padding: 0.5rem 1rem;
         margin: 0.25rem 0;
         transition: background 0.2s ease;
-    }
+    }}
     
-    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label:hover {
+    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label:hover {{
         background: rgba(255, 255, 255, 0.2);
-    }
+    }}
     
-    section[data-testid="stSidebar"] .stRadio div[data-baseweb="radio"] {
+    section[data-testid="stSidebar"] .stRadio div[data-baseweb="radio"] {{
         background-color: white;
-    }
+    }}
     
     /* Sidebar selectbox styling */
-    section[data-testid="stSidebar"] .stSelectbox label {
+    section[data-testid="stSidebar"] .stSelectbox label {{
         color: white !important;
-    }
+    }}
     
     /* Button styling */
-    .stButton > button[kind="primary"] {
+    .stButton > button[kind="primary"] {{
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
         border-radius: 10px;
         padding: 0.75rem 2rem;
         font-weight: 600;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
+    }}
     
-    .stButton > button[kind="primary"]:hover {
+    .stButton > button[kind="primary"]:hover {{
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-    }
+    }}
     
-    .stButton > button[kind="secondary"] {
+    .stButton > button[kind="secondary"] {{
         background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
         border: 2px solid #9ca3af;
         border-radius: 10px;
         color: #374151;
-    }
+    }}
     
     /* Input styling */
-    .stTextInput > div > div > input {
+    .stTextInput > div > div > input {{
         border-radius: 10px;
         border: 2px solid #e5e7eb;
         padding: 0.75rem;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
+    }}
     
-    .stTextInput > div > div > input:focus {
+    .stTextInput > div > div > input:focus {{
         border-color: #667eea;
         box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
-    }
+    }}
     
     /* Chat messages */
-    .chat-user {
+    .chat-user {{
         background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
         border-radius: 15px 15px 5px 15px;
         padding: 1rem;
         margin: 0.5rem 0;
         border: 1px solid #93c5fd;
-    }
+    }}
     
-    .chat-assistant {
+    .chat-assistant {{
         background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
         border-radius: 15px 15px 15px 5px;
         padding: 1rem;
         margin: 0.5rem 0;
         border: 1px solid #c4b5fd;
-    }
+    }}
     
     /* Severity indicators */
-    .severity-high {
+    .severity-high {{
         background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
         border: 2px solid #ef4444;
         border-radius: 10px;
         padding: 1rem;
         color: #991b1b;
-    }
+    }}
     
-    .severity-medium {
+    .severity-medium {{
         background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
         border: 2px solid #f59e0b;
         border-radius: 10px;
         padding: 1rem;
         color: #92400e;
-    }
+    }}
     
-    .severity-low {
+    .severity-low {{
         background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
         border: 2px solid #10b981;
         border-radius: 10px;
         padding: 1rem;
         color: #065f46;
-    }
+    }}
     
     /* Language badge */
-    .language-badge {
+    .language-badge {{
         display: inline-block;
         background: linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 100%);
         color: #3730a3;
@@ -270,15 +308,15 @@ def inject_custom_css():
         border-radius: 20px;
         font-size: 0.9rem;
         font-weight: 500;
-    }
+    }}
     
     /* Divider with gradient */
-    .gradient-divider {
+    .gradient-divider {{
         height: 3px;
         background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #ec4899 100%);
         border-radius: 2px;
         margin: 1.5rem 0;
-    }
+    }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -299,6 +337,10 @@ def initialize_session_state():
         st.session_state.translation_chat = []
     if 'auth_page' not in st.session_state:
         st.session_state.auth_page = "login"
+    if 'dark_mode' not in st.session_state:
+        st.session_state.dark_mode = False
+    if 'text_size' not in st.session_state:
+        st.session_state.text_size = "Medium"
 
 def play_audio_text(text, language_code):
     try:
@@ -496,6 +538,25 @@ def sidebar_navigation():
                 st.session_state.current_user['language'] = selected_language
                 st.toast(f"Language saved: {selected_language}")
         st.session_state.user_language = selected_language
+        
+        st.markdown("---")
+        
+        st.markdown("### ⚙️ Display Settings")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            dark_mode = st.toggle("🌙 Dark", value=st.session_state.dark_mode, key="dark_toggle")
+            if dark_mode != st.session_state.dark_mode:
+                st.session_state.dark_mode = dark_mode
+                st.rerun()
+        
+        with col2:
+            text_sizes = ["Small", "Medium", "Large"]
+            current_idx = text_sizes.index(st.session_state.text_size) if st.session_state.text_size in text_sizes else 1
+            text_size = st.selectbox("📏 Text", text_sizes, index=current_idx, label_visibility="collapsed")
+            if text_size != st.session_state.text_size:
+                st.session_state.text_size = text_size
+                st.rerun()
         
         st.markdown("---")
         

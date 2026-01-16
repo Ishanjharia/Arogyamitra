@@ -94,5 +94,17 @@
     "phone": "",
     "created_at": "2026-01-16T16:42:07.198919",
     "last_login": "2026-01-16T16:42:13.976876"
+  },
+  {
+    "id": 9,
+    "name": "Accessibility Test",
+    "email": "accessibilitytest@test.com",
+    "password_hash": "c9bfcbdc4e8a852089de256ee604d6b93c5b9f9feba9405da14bcfe21be2fac2",
+    "salt": "3f44b96cb8865a47d3a54cf1f15fdeed",
+    "role": "Patient",
+    "language": "English",
+    "phone": "",
+    "created_at": "2026-01-16T17:04:11.219139",
+    "last_login": "2026-01-16T17:04:23.958584"
   }
 ]
