@@ -354,6 +354,12 @@ wheels = [
 ]
 
 [[package]]
+name = "fpdf"
+version = "1.7.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/37/c6/608a9e6c172bf9124aa687ec8b9f0e8e5d697d59a5f4fad0e2d5ec2a7556/fpdf-1.7.2.tar.gz", hash = "sha256:125840783289e7d12552b1e86ab692c37322e7a65b96a99e0ea86cca041b6779", size = 39504, upload-time = "2015-01-21T00:07:47.493Z" }
+
+[[package]]
 name = "fpdf2"
 version = "2.8.5"
 source = { registry = "https://pypi.org/simple" }
@@ -1306,6 +1312,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "audio-recorder-streamlit" },
+    { name = "fpdf" },
     { name = "fpdf2" },
     { name = "google-genai" },
     { name = "gtts" },
@@ -1315,12 +1322,14 @@ dependencies = [
     { name = "python-dateutil" },
     { name = "sift-stack-py" },
     { name = "speechrecognition" },
+    { name = "st-theme" },
     { name = "streamlit" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "audio-recorder-streamlit", specifier = ">=0.0.10" },
+    { name = "fpdf", specifier = ">=1.7.2" },
     { name = "fpdf2", specifier = ">=2.8.5" },
     { name = "google-genai", specifier = ">=1.49.0" },
     { name = "gtts", specifier = ">=2.5.4" },
@@ -1330,6 +1339,7 @@ requires-dist = [
     { name = "python-dateutil", specifier = ">=2.9.0.post0" },
     { name = "sift-stack-py", specifier = ">=0.9.6" },
     { name = "speechrecognition", specifier = ">=3.14.3" },
+    { name = "st-theme", specifier = ">=1.2.3" },
     { name = "streamlit", specifier = ">=1.51.0" },
 ]
 
@@ -1545,6 +1555,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a9/7b/51d8b756aa1066b3f95bcbe3795f382f630ca9d2559ed808dada022141bf/speechrecognition-3.14.3.tar.gz", hash = "sha256:bdd2000a9897832b33095e33adfa48580787255706092e1346d1c6c36adae0a4", size = 32858109, upload-time = "2025-05-12T23:42:29.671Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/aa/cd/4b5f5d04c8a4e25c376858d0ad28c325f079f17c82bf379185abf45e41bf/speechrecognition-3.14.3-py3-none-any.whl", hash = "sha256:1859fbb09ae23fa759200f5b0677307f1fb16e2c5c798f4259fcc41dd5399fe6", size = 32853520, upload-time = "2025-05-12T23:42:23.485Z" },
+]
+
+[[package]]
+name = "st-theme"
+version = "1.2.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "streamlit" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/31/84/3e2fd95f5acaf6c92a51e7f038f1120235c65bb0b8be9bf43aa9fb4267e5/st-theme-1.2.3.tar.gz", hash = "sha256:ca97aece1a48ded6e83fd742c27cb0851e1bce2100ab4b6c37c7b6e003b65b42", size = 73873, upload-time = "2024-05-03T19:25:50.657Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/30/09/cd7134f1ed5074a7d456640e7ba9a8c8e68a831837b4e7bfd9f29e5700a4/st_theme-1.2.3-py3-none-any.whl", hash = "sha256:0a54d9817dd5f8a6d7b0d071b25ae72eacf536c63a5fb97374923938021b1389", size = 75205, upload-time = "2024-05-03T19:25:47.858Z" },
 ]
 
 [[package]]
