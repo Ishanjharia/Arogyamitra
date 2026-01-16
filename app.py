@@ -68,15 +68,168 @@ def generate_whatsapp_share_url(text):
     return f"https://wa.me/?text={encoded_text}"
 
 def inject_custom_css():
+    theme_mode = st.session_state.get('theme_mode', 'Light')
+    text_size = st.session_state.get('text_size', 'Medium')
+    
+    size_multipliers = {
+        'Small': '0.9',
+        'Medium': '1.0',
+        'Large': '1.2'
+    }
+    size_mult = size_multipliers.get(text_size, '1.0')
+    
     COLOR_PRIMARY = '#4F7CF3'
     COLOR_SUCCESS = '#2CB9A8'
     COLOR_WARNING = '#F4B740'
     COLOR_DANGER = '#E5533D'
     COLOR_INFO = '#6366F1'
     
+    theme_palettes = {
+        'Light': {
+            'bg_primary': '#F7F9FC',
+            'bg_secondary': '#EEF2FF',
+            'bg_card': '#FFFFFF',
+            'text_primary': '#1F2937',
+            'text_secondary': '#6B7280',
+            'border_color': '#E5E7EB',
+            'sidebar_bg': '#EEF2FF',
+            'sidebar_text': '#1F2937'
+        },
+        'Dark': {
+            'bg_primary': '#0F172A',
+            'bg_secondary': '#1E293B',
+            'bg_card': '#1E293B',
+            'text_primary': '#E5E7EB',
+            'text_secondary': '#9CA3AF',
+            'border_color': '#334155',
+            'sidebar_bg': '#020617',
+            'sidebar_text': '#E5E7EB'
+        },
+        'High Contrast': {
+            'bg_primary': '#000000',
+            'bg_secondary': '#000000',
+            'bg_card': '#0A0A0A',
+            'text_primary': '#FFFFFF',
+            'text_secondary': '#FFD400',
+            'border_color': '#FFFFFF',
+            'sidebar_bg': '#000000',
+            'sidebar_text': '#FFFFFF'
+        }
+    }
+    
+    palette = theme_palettes.get(theme_mode, theme_palettes['Light'])
+    bg_primary = palette['bg_primary']
+    bg_secondary = palette['bg_secondary']
+    bg_card = palette['bg_card']
+    text_primary = palette['text_primary']
+    text_secondary = palette['text_secondary']
+    border_color = palette['border_color']
+    sidebar_bg = palette['sidebar_bg']
+    sidebar_text = palette['sidebar_text']
+    
+    is_dark_theme = theme_mode in ['Dark', 'High Contrast']
+    is_high_contrast = theme_mode == 'High Contrast'
+    
     st.markdown(f"""
     <style>
-    /* Main gradient header */
+    /* Override Streamlit's CSS variables to ensure our theme wins */
+    :root {{
+        --primary-color: {COLOR_PRIMARY} !important;
+        --background-color: {bg_primary} !important;
+        --secondary-background-color: {bg_secondary} !important;
+        --text-color: {text_primary} !important;
+    }}
+    
+    .stApp {{
+        --primary-color: {COLOR_PRIMARY} !important;
+        --background-color: {bg_primary} !important;
+        --secondary-background-color: {bg_secondary} !important;
+        --text-color: {text_primary} !important;
+    }}
+    
+    /* Base font size adjustment */
+    html, body, .stApp {{
+        font-size: calc(16px * {size_mult}) !important;
+    }}
+    
+    /* Theme body styles - force our colors on ALL containers */
+    .stApp,
+    .stApp > div,
+    .stApp [data-testid="stAppViewContainer"],
+    .stApp [data-testid="stMain"],
+    .stApp main,
+    .stApp [data-testid="stVerticalBlock"],
+    .stApp .main .block-container {{
+        background-color: {bg_primary} !important;
+        color: {text_primary} !important;
+    }}
+    
+    /* Force all text to use our theme colors */
+    .stApp .stMarkdown, .stApp p, .stApp span, .stApp label,
+    .stApp [data-testid="stMarkdownContainer"] {{
+        color: {text_primary} !important;
+    }}
+    
+    /* Override Streamlit's header/toolbar area */
+    .stApp header[data-testid="stHeader"],
+    .stApp [data-testid="stToolbar"] {{
+        background-color: {bg_primary} !important;
+    }}
+    
+    /* Sidebar styling - solid color, no gradient */
+    .stApp [data-testid="stSidebar"],
+    .stApp section[data-testid="stSidebar"] > div,
+    section[data-testid="stSidebar"] {{
+        background: {sidebar_bg} !important;
+    }}
+    
+    section[data-testid="stSidebar"] .stMarkdown,
+    section[data-testid="stSidebar"] h1, 
+    section[data-testid="stSidebar"] h2, 
+    section[data-testid="stSidebar"] h3,
+    section[data-testid="stSidebar"] .stRadio label,
+    section[data-testid="stSidebar"] .stRadio label span,
+    section[data-testid="stSidebar"] .stSelectbox label {{
+        color: {sidebar_text} !important;
+    }}
+    
+    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label {{
+        color: {sidebar_text} !important;
+        background: {'rgba(255, 255, 255, 0.1)' if is_dark_theme else 'rgba(79, 124, 243, 0.1)'};
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        margin: 0.25rem 0;
+        transition: background 0.2s ease;
+    }}
+    
+    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label:hover {{
+        background: {'rgba(255, 255, 255, 0.2)' if is_dark_theme else 'rgba(79, 124, 243, 0.2)'};
+    }}
+    
+    /* High contrast specific overrides */
+    {f'''
+    .stApp p, .stApp span, .stApp label, .stApp div {{
+        color: #FFFFFF !important;
+    }}
+    .stApp h1, .stApp h2, .stApp h3, .stApp h4 {{
+        color: #FFD400 !important;
+    }}
+    .stApp a {{
+        color: #00FFFF !important;
+    }}
+    .stApp button {{
+        border: 2px solid #FFFFFF !important;
+    }}
+    .info-box, .stat-card, .feature-card {{
+        background: #0A0A0A !important;
+        border: 2px solid #FFFFFF !important;
+    }}
+    .info-box *, .stat-card *, .feature-card * {{
+        color: #FFFFFF !important;
+    }}
+    ''' if is_high_contrast else ''}
+    
+    /* Main gradient header - keep gradient */
     .main-header {{
         background: linear-gradient(135deg, {COLOR_PRIMARY} 0%, {COLOR_INFO} 100%);
         padding: 2rem;
@@ -100,8 +253,9 @@ def inject_custom_css():
         color: white !important;
     }}
     
-    /* Feature cards */
+    /* Feature cards - solid colors with semantic borders */
     .feature-card {{
+        background: {bg_card};
         border-radius: 15px;
         padding: 1.5rem;
         margin: 0.5rem 0;
@@ -124,13 +278,15 @@ def inject_custom_css():
     
     .feature-card h3 {{
         margin: 0 0 0.5rem 0;
+        color: {text_primary};
     }}
     
     .feature-card p {{
         margin: 0;
+        color: {text_secondary};
     }}
     
-    /* Info boxes */
+    /* Info boxes - solid colors, no gradients */
     .info-box {{
         padding: 1rem 1.5rem;
         border-radius: 10px;
@@ -138,21 +294,24 @@ def inject_custom_css():
     }}
     
     .info-box.success {{
-        background: #ECFDF5;
+        background: {'#0A0A0A' if is_high_contrast else ('#1E293B' if is_dark_theme else '#ECFDF5')};
         border: 2px solid {COLOR_SUCCESS};
+        color: {text_primary};
     }}
     
     .info-box.warning {{
-        background: #FFFBEB;
+        background: {'#0A0A0A' if is_high_contrast else ('#1E293B' if is_dark_theme else '#FFFBEB')};
         border: 2px solid {COLOR_WARNING};
+        color: {text_primary};
     }}
     
     .info-box.info {{
-        background: #EEF2FF;
+        background: {'#0A0A0A' if is_high_contrast else ('#1E293B' if is_dark_theme else '#EEF2FF')};
         border: 2px solid {COLOR_INFO};
+        color: {text_primary};
     }}
     
-    /* Welcome banner */
+    /* Welcome banner - keep gradient */
     .welcome-banner {{
         background: linear-gradient(135deg, {COLOR_PRIMARY}15 0%, {COLOR_INFO}15 100%);
         border: 2px solid {COLOR_PRIMARY};
@@ -163,16 +322,18 @@ def inject_custom_css():
     }}
     
     .welcome-banner h2 {{
-        color: {COLOR_PRIMARY};
+        color: {COLOR_PRIMARY if not is_high_contrast else '#FFD400'};
         margin: 0;
     }}
     
-    /* Stats cards */
+    /* Stats cards - solid colors */
     .stat-card {{
+        background: {bg_card};
         border-radius: 12px;
         padding: 1.2rem;
         text-align: center;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border: 1px solid {border_color};
     }}
     
     .stat-card.green {{ border-left: 4px solid {COLOR_SUCCESS}; }}
@@ -182,51 +343,96 @@ def inject_custom_css():
     
     /* Auth form styling */
     .auth-container {{
+        background: {bg_card};
         border-radius: 20px;
         padding: 2rem;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid {border_color};
     }}
     
-    /* Chat messages */
+    /* Button styling */
+    .stButton > button[kind="primary"] {{
+        background: {COLOR_PRIMARY};
+        border: none;
+        border-radius: 10px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        color: white;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }}
+    
+    .stButton > button[kind="primary"]:hover {{
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(79, 124, 243, 0.4);
+    }}
+    
+    .stButton > button[kind="secondary"] {{
+        background: {bg_secondary};
+        border: 2px solid {border_color};
+        border-radius: 10px;
+        color: {text_primary};
+    }}
+    
+    /* Input styling */
+    .stTextInput > div > div > input {{
+        border-radius: 10px;
+        border: 2px solid {border_color};
+        padding: 0.75rem;
+        background: {bg_card};
+        color: {text_primary};
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }}
+    
+    .stTextInput > div > div > input:focus {{
+        border-color: {COLOR_PRIMARY};
+        box-shadow: 0 0 0 3px rgba(79, 124, 243, 0.2);
+    }}
+    
+    /* Chat messages - solid colors */
     .chat-user {{
-        background: #EEF2FF;
+        background: {'#1E293B' if is_dark_theme else '#EEF2FF'};
         border-radius: 15px 15px 5px 15px;
         padding: 1rem;
         margin: 0.5rem 0;
         border: 1px solid {COLOR_PRIMARY};
+        color: {text_primary};
     }}
     
     .chat-assistant {{
-        background: #F5F3FF;
+        background: {'#1E293B' if is_dark_theme else '#F5F3FF'};
         border-radius: 15px 15px 15px 5px;
         padding: 1rem;
         margin: 0.5rem 0;
         border: 1px solid {COLOR_INFO};
+        color: {text_primary};
     }}
     
-    /* Severity indicators */
+    /* Severity indicators - solid colors with semantic colors */
     .severity-high {{
-        background: #FEF2F2;
+        background: {'#0A0A0A' if is_high_contrast else ('#1E293B' if is_dark_theme else '#FEF2F2')};
         border: 2px solid {COLOR_DANGER};
         border-radius: 10px;
         padding: 1rem;
+        color: {text_primary};
     }}
     
     .severity-medium {{
-        background: #FFFBEB;
+        background: {'#0A0A0A' if is_high_contrast else ('#1E293B' if is_dark_theme else '#FFFBEB')};
         border: 2px solid {COLOR_WARNING};
         border-radius: 10px;
         padding: 1rem;
+        color: {text_primary};
     }}
     
     .severity-low {{
-        background: #ECFDF5;
+        background: {'#0A0A0A' if is_high_contrast else ('#1E293B' if is_dark_theme else '#ECFDF5')};
         border: 2px solid {COLOR_SUCCESS};
         border-radius: 10px;
         padding: 1rem;
+        color: {text_primary};
     }}
     
-    /* Language badge */
+    /* Language badge - solid color */
     .language-badge {{
         display: inline-block;
         background: {COLOR_INFO};
@@ -243,19 +449,6 @@ def inject_custom_css():
         background: {COLOR_PRIMARY};
         border-radius: 2px;
         margin: 1.5rem 0;
-    }}
-    
-    /* Sidebar navigation styling */
-    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label {{
-        background: rgba(79, 124, 243, 0.1);
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-        margin: 0.25rem 0;
-        transition: background 0.2s ease;
-    }}
-    
-    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label:hover {{
-        background: rgba(79, 124, 243, 0.2);
     }}
     </style>
     """, unsafe_allow_html=True)
@@ -277,6 +470,10 @@ def initialize_session_state():
         st.session_state.translation_chat = []
     if 'auth_page' not in st.session_state:
         st.session_state.auth_page = "login"
+    if 'theme_mode' not in st.session_state:
+        st.session_state.theme_mode = "Light"
+    if 'text_size' not in st.session_state:
+        st.session_state.text_size = "Medium"
     if 'family_members' not in st.session_state:
         st.session_state.family_members = []
 
@@ -579,6 +776,28 @@ def sidebar_navigation():
                 st.session_state.current_user['language'] = selected_language
                 st.toast(f"Language saved: {selected_language}")
         st.session_state.user_language = selected_language
+        
+        st.markdown("---")
+        
+        st.markdown("### ⚙️ Display Settings")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            theme_options = ["Light", "Dark", "High Contrast"]
+            current_theme = st.session_state.theme_mode if st.session_state.theme_mode in theme_options else "Light"
+            current_idx = theme_options.index(current_theme)
+            theme_mode = st.selectbox("🎨 Theme", theme_options, index=current_idx, key="theme_select")
+            if theme_mode != st.session_state.theme_mode:
+                st.session_state.theme_mode = theme_mode
+                st.rerun()
+        
+        with col2:
+            text_sizes = ["Small", "Medium", "Large"]
+            current_size_idx = text_sizes.index(st.session_state.text_size) if st.session_state.text_size in text_sizes else 1
+            text_size = st.selectbox("📏 Text Size", text_sizes, index=current_size_idx, key="text_size_select")
+            if text_size != st.session_state.text_size:
+                st.session_state.text_size = text_size
+                st.rerun()
         
         st.markdown("---")
         

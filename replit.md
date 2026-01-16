@@ -66,9 +66,9 @@ A comprehensive multilingual healthcare platform that enables seamless communica
    - Read Aloud for prescriptions and health records
    - PDF Export/Download for prescriptions and health records
    - Quick action buttons on home page
+   - High Contrast Mode (black bg, white/yellow text)
    - Voice Commands for hands-free navigation
    - WhatsApp Sharing for easy sharing with family/doctors
-   - Theme controlled via Streamlit's built-in Settings (Light/Dark)
 
 9. **Symptom History**
    - Visual timeline graph showing symptom severity over time
