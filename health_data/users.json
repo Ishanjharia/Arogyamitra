@@ -82,5 +82,17 @@
     "phone": "",
     "created_at": "2026-01-11T08:05:12.088432",
     "last_login": "2026-01-11T08:05:18.956667"
+  },
+  {
+    "id": 8,
+    "name": "Sidebar Test",
+    "email": "sidebartest@test.com",
+    "password_hash": "f490658365e60955ea02c801c26930cf6bd15de58a271898c76c044d34710539",
+    "salt": "3f60af10aeb8ec32de4bde014bdaea80",
+    "role": "Patient",
+    "language": "English",
+    "phone": "",
+    "created_at": "2026-01-16T16:42:07.198919",
+    "last_login": "2026-01-16T16:42:13.976876"
   }
 ]

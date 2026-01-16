@@ -153,6 +153,37 @@ def inject_custom_css():
         color: white !important;
     }
     
+    /* Sidebar radio buttons (navigation) - make them white */
+    section[data-testid="stSidebar"] .stRadio label {
+        color: white !important;
+    }
+    
+    section[data-testid="stSidebar"] .stRadio label span {
+        color: white !important;
+    }
+    
+    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label {
+        color: white !important;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        margin: 0.25rem 0;
+        transition: background 0.2s ease;
+    }
+    
+    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"] label:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+    
+    section[data-testid="stSidebar"] .stRadio div[data-baseweb="radio"] {
+        background-color: white;
+    }
+    
+    /* Sidebar selectbox styling */
+    section[data-testid="stSidebar"] .stSelectbox label {
+        color: white !important;
+    }
+    
     /* Button styling */
     .stButton > button[kind="primary"] {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
