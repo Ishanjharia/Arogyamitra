@@ -787,29 +787,7 @@ def sidebar_navigation():
         
         st.markdown("---")
         
-        if 'selected_menu_index' not in st.session_state:
-            st.session_state.selected_menu_index = 0
-        
-        quick_nav = st.session_state.get('quick_nav')
-        if quick_nav:
-            st.session_state.quick_nav = None
-            nav_mapping = {
-                "symptom": "🔍 Symptom Checker",
-                "chat": "💬 Chat with AI" if st.session_state.user_role == "Patient" else "💬 AI Chat Assistant",
-                "appointment": "📅 Book Appointment" if st.session_state.user_role == "Patient" else "📅 View Appointments",
-                "prescription": "📋 My Prescriptions" if st.session_state.user_role == "Patient" else "📝 Write Prescription",
-                "records": "📁 Health Records",
-                "reminders": "🔔 My Reminders"
-            }
-            target_menu = nav_mapping.get(quick_nav)
-            if target_menu and target_menu in menu_options:
-                st.session_state.selected_menu_index = menu_options.index(target_menu)
-        
-        current_idx = min(st.session_state.selected_menu_index, len(menu_options) - 1)
-        selected_menu = st.radio("Navigation", menu_options, index=current_idx, label_visibility="collapsed", key="nav_radio")
-        
-        if menu_options.index(selected_menu) != st.session_state.selected_menu_index:
-            st.session_state.selected_menu_index = menu_options.index(selected_menu)
+        selected_menu = st.radio("Navigation", menu_options, label_visibility="collapsed", key="nav_radio")
         
         st.markdown("---")
         if st.button("🚪 Logout", use_container_width=True):
@@ -1572,11 +1550,7 @@ def symptom_history_page():
                                 for cond in record['report_data'].get('possible_conditions', []):
                                     st.markdown(f"- {cond}")
         else:
-            st.info("No symptom history yet. Use the Symptom Checker to record your first symptoms!")
-            
-            if st.button("🔍 Go to Symptom Checker", type="primary"):
-                st.session_state.quick_nav = "symptom"
-                st.rerun()
+            st.info("No symptom history yet. Use the Symptom Checker from the sidebar menu to record your first symptoms!")
     else:
         st.warning("Please enter your name in the sidebar")
 
@@ -1724,115 +1698,6 @@ def home_page():
     """, unsafe_allow_html=True)
     
     if st.session_state.user_role == "Patient":
-        st.markdown("### ⚡ Quick Actions")
-        qa_col1, qa_col2, qa_col3, qa_col4, qa_col5 = st.columns(5)
-        
-        with qa_col1:
-            if st.button("🔍 Check Symptoms", use_container_width=True, type="primary"):
-                st.session_state.quick_nav = "symptom"
-                st.rerun()
-        with qa_col2:
-            if st.button("💬 Chat with AI", use_container_width=True):
-                st.session_state.quick_nav = "chat"
-                st.rerun()
-        with qa_col3:
-            if st.button("📅 Book Appointment", use_container_width=True):
-                st.session_state.quick_nav = "appointment"
-                st.rerun()
-        with qa_col4:
-            if st.button("🚨 Emergency SOS", use_container_width=True, type="secondary"):
-                st.session_state.show_sos = True
-        with qa_col5:
-            if st.button("🎤 Voice Command", use_container_width=True):
-                st.session_state.show_voice_cmd = True
-        
-        if st.session_state.get('show_voice_cmd', False):
-            st.markdown("""
-            <div class="info-box info">
-                <strong>🎤 Voice Commands:</strong><br>
-                Say: "Check symptoms", "Chat", "Book appointment", "Prescriptions", "Health records", "Reminders", or "Medications"
-            </div>
-            """, unsafe_allow_html=True)
-            
-            voice_audio = audio_recorder(
-                text="Speak your command",
-                recording_color="#8b5cf6",
-                neutral_color="#6366f1",
-                icon_size="2x",
-                key="voice_cmd_recorder"
-            )
-            
-            if voice_audio:
-                with st.spinner("🔄 Processing voice command..."):
-                    with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as fp:
-                        fp.write(voice_audio)
-                        fp.flush()
-                        result = ai_helper.transcribe_audio(fp.name)
-                        os.unlink(fp.name)
-                    
-                    if result.get("success"):
-                        command = result.get("transcription", "").lower()
-                        st.info(f"🎤 You said: {result.get('transcription')}")
-                        
-                        if any(word in command for word in ["symptom", "check", "health check"]):
-                            st.session_state.quick_nav = "symptom"
-                            st.session_state.show_voice_cmd = False
-                            st.rerun()
-                        elif any(word in command for word in ["chat", "talk", "ai", "assistant"]):
-                            st.session_state.quick_nav = "chat"
-                            st.session_state.show_voice_cmd = False
-                            st.rerun()
-                        elif any(word in command for word in ["appointment", "book", "doctor", "schedule"]):
-                            st.session_state.quick_nav = "appointment"
-                            st.session_state.show_voice_cmd = False
-                            st.rerun()
-                        elif any(word in command for word in ["prescription", "medicine", "medication"]):
-                            st.session_state.quick_nav = "prescription"
-                            st.session_state.show_voice_cmd = False
-                            st.rerun()
-                        elif any(word in command for word in ["record", "history", "report"]):
-                            st.session_state.quick_nav = "records"
-                            st.session_state.show_voice_cmd = False
-                            st.rerun()
-                        elif any(word in command for word in ["reminder", "alarm", "notify"]):
-                            st.session_state.quick_nav = "reminders"
-                            st.session_state.show_voice_cmd = False
-                            st.rerun()
-                        elif any(word in command for word in ["emergency", "sos", "help", "urgent"]):
-                            st.session_state.show_sos = True
-                            st.session_state.show_voice_cmd = False
-                            st.rerun()
-                        else:
-                            st.warning("Command not recognized. Try: 'Check symptoms', 'Chat', 'Book appointment'")
-                    else:
-                        st.error(f"Could not process voice: {result.get('error')}")
-            
-            if st.button("✖️ Close Voice Commands"):
-                st.session_state.show_voice_cmd = False
-                st.rerun()
-        
-        if st.session_state.get('show_sos', False):
-            st.markdown("""
-            <div class="severity-high">
-                <h3>🚨 Emergency Contacts (India)</h3>
-            </div>
-            """, unsafe_allow_html=True)
-            sos_col1, sos_col2, sos_col3 = st.columns(3)
-            with sos_col1:
-                st.markdown("**🚑 Ambulance:** 102")
-                st.markdown("**👮 Police:** 100")
-            with sos_col2:
-                st.markdown("**🔥 Fire:** 101")
-                st.markdown("**📞 Emergency:** 112")
-            with sos_col3:
-                st.markdown("**👩 Women Helpline:** 1091")
-                st.markdown("**👶 Child Helpline:** 1098")
-            if st.button("✖️ Close Emergency Info"):
-                st.session_state.show_sos = False
-                st.rerun()
-        
-        st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
-        
         health_tip = get_health_tip(st.session_state.user_language)
         st.markdown(f"""
         <div class="info-box info">
