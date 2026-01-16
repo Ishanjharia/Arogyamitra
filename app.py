@@ -132,15 +132,48 @@ def inject_custom_css():
     
     st.markdown(f"""
     <style>
+    /* Override Streamlit's CSS variables to ensure our theme wins */
+    :root {{
+        --primary-color: {COLOR_PRIMARY} !important;
+        --background-color: {bg_primary} !important;
+        --secondary-background-color: {bg_secondary} !important;
+        --text-color: {text_primary} !important;
+    }}
+    
+    .stApp {{
+        --primary-color: {COLOR_PRIMARY} !important;
+        --background-color: {bg_primary} !important;
+        --secondary-background-color: {bg_secondary} !important;
+        --text-color: {text_primary} !important;
+    }}
+    
     /* Base font size adjustment */
     html, body, .stApp {{
         font-size: calc(16px * {size_mult}) !important;
     }}
     
-    /* Theme body styles */
-    .stApp {{
+    /* Theme body styles - force our colors on ALL containers */
+    .stApp,
+    .stApp > div,
+    .stApp [data-testid="stAppViewContainer"],
+    .stApp [data-testid="stMain"],
+    .stApp main,
+    .stApp [data-testid="stVerticalBlock"],
+    .stApp .main .block-container {{
         background-color: {bg_primary} !important;
         color: {text_primary} !important;
+    }}
+    
+    /* Force all text to use our theme colors */
+    .stApp .stMarkdown, .stApp p, .stApp span, .stApp label,
+    .stApp [data-testid="stMarkdownContainer"] {{
+        color: {text_primary} !important;
+    }}
+    
+    /* Override Streamlit's header/toolbar area */
+    .stApp header[data-testid="stHeader"],
+    .stApp [data-testid="stToolbar"] {{
+        background-color: {bg_primary} !important;
     }}
     
     /* Sidebar styling - solid color, no gradient */
