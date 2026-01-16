@@ -108,10 +108,28 @@ def inject_custom_css():
         font-size: calc(16px * {size_mult}) !important;
     }}
     
-    /* Dark mode body */
+    /* Dark mode / High contrast body */
     .stApp {{
-        background-color: {bg_primary if dark_mode else 'transparent'};
+        background-color: {bg_primary if (dark_mode or high_contrast) else 'transparent'};
+        color: {text_primary if (dark_mode or high_contrast) else 'inherit'};
     }}
+    
+    /* High contrast specific styles */
+    {'''
+    .stApp [data-testid="stSidebar"], 
+    .stApp section[data-testid="stSidebar"] > div {{
+        background-color: #000000 !important;
+    }}
+    .stApp p, .stApp span, .stApp label, .stApp div {{
+        color: #ffffff !important;
+    }}
+    .stApp h1, .stApp h2, .stApp h3, .stApp h4 {{
+        color: #ffff00 !important;
+    }}
+    .stApp a {{
+        color: #00ffff !important;
+    }}
+    ''' if high_contrast else ''}
     
     /* Main gradient header */
     .main-header {{
@@ -1481,7 +1499,8 @@ def symptom_history_page():
             severities = []
             severity_map = {'Low': 1, 'Medium': 2, 'High': 3, 'Critical': 4}
             
-            for record in symptom_records:
+            sorted_records = sorted(symptom_records, key=lambda x: x.get('date', ''))
+            for record in sorted_records:
                 dates.append(record.get('date', 'Unknown'))
                 report_data = record.get('report_data', {})
                 severity = report_data.get('severity', 'Medium') if isinstance(report_data, dict) else 'Medium'
@@ -1731,14 +1750,17 @@ def home_page():
                             st.session_state.show_voice_cmd = False
                             st.rerun()
                         elif any(word in command for word in ["prescription", "medicine", "medication"]):
-                            st.success("Opening Prescriptions...")
+                            st.session_state.quick_nav = "prescription"
                             st.session_state.show_voice_cmd = False
+                            st.rerun()
                         elif any(word in command for word in ["record", "history", "report"]):
-                            st.success("Opening Health Records...")
+                            st.session_state.quick_nav = "records"
                             st.session_state.show_voice_cmd = False
+                            st.rerun()
                         elif any(word in command for word in ["reminder", "alarm", "notify"]):
-                            st.success("Opening Reminders...")
+                            st.session_state.quick_nav = "reminders"
                             st.session_state.show_voice_cmd = False
+                            st.rerun()
                         elif any(word in command for word in ["emergency", "sos", "help", "urgent"]):
                             st.session_state.show_sos = True
                             st.session_state.show_voice_cmd = False
@@ -1940,6 +1962,15 @@ def main():
                 return
             elif quick_nav == "appointment":
                 appointment_booking_page()
+                return
+            elif quick_nav == "prescription":
+                prescription_page()
+                return
+            elif quick_nav == "records":
+                health_records_page()
+                return
+            elif quick_nav == "reminders":
+                reminders_page()
                 return
         
         if menu == "🏠 Home":

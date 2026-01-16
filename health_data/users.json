@@ -118,5 +118,17 @@
     "phone": "",
     "created_at": "2026-01-16T17:16:33.335759",
     "last_login": "2026-01-16T17:16:55.277586"
+  },
+  {
+    "id": 11,
+    "name": "TestPatient",
+    "email": "testpatient+automation@example.com",
+    "password_hash": "37f4fe55d0401401b2fc84614aa5bb2eac3c5491382dce9f90032352c159eeba",
+    "salt": "f5fba5d0f357edb60e6619269f4066d5",
+    "role": "Patient",
+    "language": "English",
+    "phone": "",
+    "created_at": "2026-01-16T17:31:15.139064",
+    "last_login": "2026-01-16T17:31:41.026106"
   }
 ]

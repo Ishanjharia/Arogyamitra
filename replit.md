@@ -14,7 +14,13 @@ A comprehensive multilingual healthcare platform that enables seamless communica
 - Added Read Aloud functionality for prescriptions and health records (using gTTS)
 - Added PDF Export for prescriptions and health records (using fpdf2)
 - Added Quick Navigation from home page buttons
-- Updated sidebar menu to include Medication Tracker
+- Added WhatsApp Sharing for prescriptions and health records
+- Added Symptom History Graph with visual timeline charts
+- Added Family Accounts to manage health records for family members
+- Added High Contrast Mode for accessibility (black bg, white/yellow text)
+- Added Voice Commands for hands-free navigation
+- Added Recent Activity Dashboard on home page
+- Added Progress Indicators (loading spinners) throughout the app
 
 ## Key Features Implemented
 
@@ -60,6 +66,23 @@ A comprehensive multilingual healthcare platform that enables seamless communica
    - Read Aloud for prescriptions and health records
    - PDF Export/Download for prescriptions and health records
    - Quick action buttons on home page
+   - High Contrast Mode (black bg, white/yellow text)
+   - Voice Commands for hands-free navigation
+   - WhatsApp Sharing for easy sharing with family/doctors
+
+9. **Symptom History**
+   - Visual timeline graph showing symptom severity over time
+   - Detailed history with expandable reports
+   - Sorted by date for accurate visualization
+
+10. **Family Accounts**
+    - Add and manage family members
+    - Switch between family members to view their records
+    - Track health for children, parents, spouse
+
+11. **Recent Activity Dashboard**
+    - Shows last appointments, prescriptions, and health records
+    - Quick overview of health journey on home page
 
 ### Doctor Features
 1. **Patient-Doctor Translation Chat**
