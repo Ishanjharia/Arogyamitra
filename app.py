@@ -68,9 +68,8 @@ def generate_whatsapp_share_url(text):
     return f"https://wa.me/?text={encoded_text}"
 
 def inject_custom_css():
-    dark_mode = st.session_state.get('dark_mode', False)
+    theme_mode = st.session_state.get('theme_mode', 'Light')
     text_size = st.session_state.get('text_size', 'Medium')
-    high_contrast = st.session_state.get('high_contrast', False)
     
     size_multipliers = {
         'Small': '0.9',
@@ -79,27 +78,51 @@ def inject_custom_css():
     }
     size_mult = size_multipliers.get(text_size, '1.0')
     
-    if high_contrast:
-        bg_primary = '#000000'
-        bg_secondary = '#000000'
-        bg_card = '#000000'
-        text_primary = '#ffffff'
-        text_secondary = '#ffff00'
-        border_color = '#ffffff'
-    elif dark_mode:
-        bg_primary = '#1a1a2e'
-        bg_secondary = '#16213e'
-        bg_card = '#1f2937'
-        text_primary = '#f3f4f6'
-        text_secondary = '#d1d5db'
-        border_color = '#374151'
-    else:
-        bg_primary = '#ffffff'
-        bg_secondary = '#f8f9fa'
-        bg_card = '#ffffff'
-        text_primary = '#1f2937'
-        text_secondary = '#6b7280'
-        border_color = '#e5e7eb'
+    theme_palettes = {
+        'Light': {
+            'bg_primary': '#ffffff',
+            'bg_secondary': '#f8f9fa',
+            'bg_card': '#ffffff',
+            'text_primary': '#1f2937',
+            'text_secondary': '#6b7280',
+            'border_color': '#e5e7eb',
+            'sidebar_bg': 'linear-gradient(180deg, #667eea 0%, #764ba2 100%)',
+            'sidebar_text': '#ffffff'
+        },
+        'Dark': {
+            'bg_primary': '#1a1a2e',
+            'bg_secondary': '#16213e',
+            'bg_card': '#1f2937',
+            'text_primary': '#f3f4f6',
+            'text_secondary': '#d1d5db',
+            'border_color': '#374151',
+            'sidebar_bg': 'linear-gradient(180deg, #1a1a2e 0%, #16213e 100%)',
+            'sidebar_text': '#ffffff'
+        },
+        'High Contrast': {
+            'bg_primary': '#000000',
+            'bg_secondary': '#000000',
+            'bg_card': '#000000',
+            'text_primary': '#ffffff',
+            'text_secondary': '#ffff00',
+            'border_color': '#ffffff',
+            'sidebar_bg': '#000000',
+            'sidebar_text': '#ffffff'
+        }
+    }
+    
+    palette = theme_palettes.get(theme_mode, theme_palettes['Light'])
+    bg_primary = palette['bg_primary']
+    bg_secondary = palette['bg_secondary']
+    bg_card = palette['bg_card']
+    text_primary = palette['text_primary']
+    text_secondary = palette['text_secondary']
+    border_color = palette['border_color']
+    sidebar_bg = palette['sidebar_bg']
+    sidebar_text = palette['sidebar_text']
+    
+    is_dark_theme = theme_mode in ['Dark', 'High Contrast']
+    is_high_contrast = theme_mode == 'High Contrast'
     
     st.markdown(f"""
     <style>
@@ -108,18 +131,20 @@ def inject_custom_css():
         font-size: calc(16px * {size_mult}) !important;
     }}
     
-    /* Dark mode / High contrast body */
+    /* Theme body styles */
     .stApp {{
-        background-color: {bg_primary if (dark_mode or high_contrast) else 'transparent'};
-        color: {text_primary if (dark_mode or high_contrast) else 'inherit'};
+        background-color: {bg_primary} !important;
+        color: {text_primary} !important;
     }}
     
-    /* High contrast specific styles */
-    {'''
-    .stApp [data-testid="stSidebar"], 
+    /* Sidebar styling */
+    .stApp [data-testid="stSidebar"],
     .stApp section[data-testid="stSidebar"] > div {{
-        background-color: #000000 !important;
+        background: {sidebar_bg} !important;
     }}
+    
+    /* High contrast specific overrides */
+    {f'''
     .stApp p, .stApp span, .stApp label, .stApp div {{
         color: #ffffff !important;
     }}
@@ -129,7 +154,10 @@ def inject_custom_css():
     .stApp a {{
         color: #00ffff !important;
     }}
-    ''' if high_contrast else ''}
+    .stApp button {{
+        border: 2px solid #ffffff !important;
+    }}
+    ''' if is_high_contrast else ''}
     
     /* Main gradient header */
     .main-header {{
@@ -410,12 +438,10 @@ def initialize_session_state():
         st.session_state.translation_chat = []
     if 'auth_page' not in st.session_state:
         st.session_state.auth_page = "login"
-    if 'dark_mode' not in st.session_state:
-        st.session_state.dark_mode = False
+    if 'theme_mode' not in st.session_state:
+        st.session_state.theme_mode = "Light"
     if 'text_size' not in st.session_state:
         st.session_state.text_size = "Medium"
-    if 'high_contrast' not in st.session_state:
-        st.session_state.high_contrast = False
     if 'family_members' not in st.session_state:
         st.session_state.family_members = []
 
@@ -723,25 +749,20 @@ def sidebar_navigation():
         
         st.markdown("### ⚙️ Display Settings")
         
-        col1, col2, col3 = st.columns(3)
+        col1, col2 = st.columns(2)
         with col1:
-            dark_mode = st.toggle("🌙 Dark", value=st.session_state.dark_mode, key="dark_toggle")
-            if dark_mode != st.session_state.dark_mode:
-                st.session_state.dark_mode = dark_mode
-                st.session_state.high_contrast = False
+            theme_options = ["Light", "Dark", "High Contrast"]
+            current_theme = st.session_state.theme_mode if st.session_state.theme_mode in theme_options else "Light"
+            current_idx = theme_options.index(current_theme)
+            theme_mode = st.selectbox("🎨 Theme", theme_options, index=current_idx, key="theme_select")
+            if theme_mode != st.session_state.theme_mode:
+                st.session_state.theme_mode = theme_mode
                 st.rerun()
         
         with col2:
-            high_contrast = st.toggle("🔲 Hi-Con", value=st.session_state.high_contrast, key="contrast_toggle")
-            if high_contrast != st.session_state.high_contrast:
-                st.session_state.high_contrast = high_contrast
-                st.session_state.dark_mode = False
-                st.rerun()
-        
-        with col3:
             text_sizes = ["Small", "Medium", "Large"]
-            current_idx = text_sizes.index(st.session_state.text_size) if st.session_state.text_size in text_sizes else 1
-            text_size = st.selectbox("📏", text_sizes, index=current_idx, label_visibility="collapsed")
+            current_size_idx = text_sizes.index(st.session_state.text_size) if st.session_state.text_size in text_sizes else 1
+            text_size = st.selectbox("📏 Text Size", text_sizes, index=current_size_idx, key="text_size_select")
             if text_size != st.session_state.text_size:
                 st.session_state.text_size = text_size
                 st.rerun()
