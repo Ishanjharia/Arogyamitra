@@ -1669,7 +1669,7 @@ def home_page():
     
     if st.session_state.user_role == "Patient":
         st.markdown("### ⚡ Quick Actions")
-        qa_col1, qa_col2, qa_col3, qa_col4 = st.columns(4)
+        qa_col1, qa_col2, qa_col3, qa_col4, qa_col5 = st.columns(5)
         
         with qa_col1:
             if st.button("🔍 Check Symptoms", use_container_width=True, type="primary"):
@@ -1686,6 +1686,71 @@ def home_page():
         with qa_col4:
             if st.button("🚨 Emergency SOS", use_container_width=True, type="secondary"):
                 st.session_state.show_sos = True
+        with qa_col5:
+            if st.button("🎤 Voice Command", use_container_width=True):
+                st.session_state.show_voice_cmd = True
+        
+        if st.session_state.get('show_voice_cmd', False):
+            st.markdown("""
+            <div class="info-box info">
+                <strong>🎤 Voice Commands:</strong><br>
+                Say: "Check symptoms", "Chat", "Book appointment", "Prescriptions", "Health records", "Reminders", or "Medications"
+            </div>
+            """, unsafe_allow_html=True)
+            
+            voice_audio = audio_recorder(
+                text="Speak your command",
+                recording_color="#8b5cf6",
+                neutral_color="#6366f1",
+                icon_size="2x",
+                key="voice_cmd_recorder"
+            )
+            
+            if voice_audio:
+                with st.spinner("🔄 Processing voice command..."):
+                    with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as fp:
+                        fp.write(voice_audio)
+                        fp.flush()
+                        result = ai_helper.transcribe_audio(fp.name)
+                        os.unlink(fp.name)
+                    
+                    if result.get("success"):
+                        command = result.get("transcription", "").lower()
+                        st.info(f"🎤 You said: {result.get('transcription')}")
+                        
+                        if any(word in command for word in ["symptom", "check", "health check"]):
+                            st.session_state.quick_nav = "symptom"
+                            st.session_state.show_voice_cmd = False
+                            st.rerun()
+                        elif any(word in command for word in ["chat", "talk", "ai", "assistant"]):
+                            st.session_state.quick_nav = "chat"
+                            st.session_state.show_voice_cmd = False
+                            st.rerun()
+                        elif any(word in command for word in ["appointment", "book", "doctor", "schedule"]):
+                            st.session_state.quick_nav = "appointment"
+                            st.session_state.show_voice_cmd = False
+                            st.rerun()
+                        elif any(word in command for word in ["prescription", "medicine", "medication"]):
+                            st.success("Opening Prescriptions...")
+                            st.session_state.show_voice_cmd = False
+                        elif any(word in command for word in ["record", "history", "report"]):
+                            st.success("Opening Health Records...")
+                            st.session_state.show_voice_cmd = False
+                        elif any(word in command for word in ["reminder", "alarm", "notify"]):
+                            st.success("Opening Reminders...")
+                            st.session_state.show_voice_cmd = False
+                        elif any(word in command for word in ["emergency", "sos", "help", "urgent"]):
+                            st.session_state.show_sos = True
+                            st.session_state.show_voice_cmd = False
+                            st.rerun()
+                        else:
+                            st.warning("Command not recognized. Try: 'Check symptoms', 'Chat', 'Book appointment'")
+                    else:
+                        st.error(f"Could not process voice: {result.get('error')}")
+            
+            if st.button("✖️ Close Voice Commands"):
+                st.session_state.show_voice_cmd = False
+                st.rerun()
         
         if st.session_state.get('show_sos', False):
             st.markdown("""
