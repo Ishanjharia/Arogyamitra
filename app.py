@@ -786,7 +786,30 @@ def sidebar_navigation():
             ]
         
         st.markdown("---")
-        selected_menu = st.radio("Navigation", menu_options, label_visibility="collapsed")
+        
+        if 'selected_menu_index' not in st.session_state:
+            st.session_state.selected_menu_index = 0
+        
+        quick_nav = st.session_state.get('quick_nav')
+        if quick_nav:
+            st.session_state.quick_nav = None
+            nav_mapping = {
+                "symptom": "🔍 Symptom Checker",
+                "chat": "💬 Chat with AI" if st.session_state.user_role == "Patient" else "💬 AI Chat Assistant",
+                "appointment": "📅 Book Appointment" if st.session_state.user_role == "Patient" else "📅 View Appointments",
+                "prescription": "📋 My Prescriptions" if st.session_state.user_role == "Patient" else "📝 Write Prescription",
+                "records": "📁 Health Records",
+                "reminders": "🔔 My Reminders"
+            }
+            target_menu = nav_mapping.get(quick_nav)
+            if target_menu and target_menu in menu_options:
+                st.session_state.selected_menu_index = menu_options.index(target_menu)
+        
+        current_idx = min(st.session_state.selected_menu_index, len(menu_options) - 1)
+        selected_menu = st.radio("Navigation", menu_options, index=current_idx, label_visibility="collapsed", key="nav_radio")
+        
+        if menu_options.index(selected_menu) != st.session_state.selected_menu_index:
+            st.session_state.selected_menu_index = menu_options.index(selected_menu)
         
         st.markdown("---")
         if st.button("🚪 Logout", use_container_width=True):
@@ -1965,28 +1988,6 @@ def main():
         role_selection_page()
     else:
         menu = sidebar_navigation()
-        
-        quick_nav = st.session_state.get('quick_nav')
-        if quick_nav:
-            st.session_state.quick_nav = None
-            if quick_nav == "symptom":
-                symptom_checker_page()
-                return
-            elif quick_nav == "chat":
-                ai_chat_page()
-                return
-            elif quick_nav == "appointment":
-                appointment_booking_page()
-                return
-            elif quick_nav == "prescription":
-                prescription_page()
-                return
-            elif quick_nav == "records":
-                health_records_page()
-                return
-            elif quick_nav == "reminders":
-                reminders_page()
-                return
         
         if menu == "🏠 Home":
             home_page()
