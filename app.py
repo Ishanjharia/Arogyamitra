@@ -727,19 +727,27 @@ def role_selection_page():
 def sidebar_navigation():
     inject_custom_css()
     
+    theme_mode = st.session_state.get('theme_mode', 'Light')
+    is_light_theme = theme_mode == 'Light'
+    
+    title_color = "#1e293b" if is_light_theme else "white"
+    subtitle_color = "#64748b" if is_light_theme else "rgba(255,255,255,0.85)"
+    user_bg = "rgba(79,124,243,0.1)" if is_light_theme else "rgba(255,255,255,0.1)"
+    user_text_color = "#1e293b" if is_light_theme else "white"
+    
     with st.sidebar:
-        st.markdown("""
+        st.markdown(f"""
         <div style="text-align: center; padding: 1rem 0;">
-            <h1 style="color: white; margin: 0;">🏥 Arogya Mitra</h1>
-            <p style="color: rgba(255,255,255,0.9); margin: 0.25rem 0 0 0; font-size: 0.9rem;">आरोग्य मित्र - Your Health Friend</p>
+            <h1 style="color: {title_color}; margin: 0;">🏥 Arogya Mitra</h1>
+            <p style="color: {subtitle_color}; margin: 0.25rem 0 0 0; font-size: 0.9rem;">आरोग्य मित्र - Your Health Friend</p>
         </div>
         """, unsafe_allow_html=True)
         
         if st.session_state.current_user:
             role_color = "#10b981" if st.session_state.user_role == "Patient" else "#3b82f6"
             st.markdown(f"""
-            <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 0.75rem; margin: 0.5rem 0; text-align: center;">
-                <p style="color: white; margin: 0; font-weight: bold;">👤 {st.session_state.current_user['name']}</p>
+            <div style="background: {user_bg}; border-radius: 10px; padding: 0.75rem; margin: 0.5rem 0; text-align: center;">
+                <p style="color: {user_text_color}; margin: 0; font-weight: bold;">👤 {st.session_state.current_user['name']}</p>
                 <span style="background: {role_color}; color: white; padding: 0.2rem 0.6rem; border-radius: 15px; font-size: 0.8rem;">{st.session_state.user_role}</span>
             </div>
             """, unsafe_allow_html=True)
