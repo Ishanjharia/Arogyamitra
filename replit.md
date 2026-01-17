@@ -7,9 +7,10 @@ A comprehensive multilingual healthcare platform that enables seamless communica
 **MVP Complete** - All core features implemented and tested
 **AI Provider:** Switched to Google Gemini (FREE tier with generous limits)
 **Authentication:** Complete user signup/login/logout system implemented
-**Last Updated:** January 16, 2026
+**Last Updated:** January 17, 2026
 
 ## Recent Updates (January 2026)
+- Added Find Hospitals feature to locate nearby hospitals by city and specialty
 - Added Medication Tracker with add/complete/delete capabilities
 - Added Read Aloud functionality for prescriptions and health records (using gTTS)
 - Added PDF Export for prescriptions and health records (using fpdf2)
@@ -83,6 +84,13 @@ A comprehensive multilingual healthcare platform that enables seamless communica
 11. **Recent Activity Dashboard**
     - Shows last appointments, prescriptions, and health records
     - Quick overview of health journey on home page
+
+12. **Find Hospitals**
+    - Search hospitals by city (24+ major Indian cities)
+    - Filter by medical specialty (Cardiology, Pediatrics, etc.)
+    - View hospital details: address, phone, distance, type (Government/Private)
+    - Save favorite hospitals for quick access
+    - Direct call and Google Maps integration
 
 ### Doctor Features
 1. **Patient-Doctor Translation Chat**
