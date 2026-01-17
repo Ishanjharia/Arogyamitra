@@ -1,0 +1,21 @@
+[
+  {
+    "id": 1,
+    "user_id": 17,
+    "hospital_name": "King Edward Memorial (KEM) Hospital",
+    "address": "Acharya Donde Marg, Parel, Mumbai, Maharashtra 400012, India",
+    "phone": "+91-22-2410-7000",
+    "specialties": [
+      "General Medicine",
+      "Surgery",
+      "Pediatrics",
+      "Obstetrics & Gynecology",
+      "Orthopedics",
+      "Cardiology",
+      "Neurology"
+    ],
+    "city": "Mumbai",
+    "distance_km": 8.5,
+    "saved_at": "2026-01-17T11:02:30.667824"
+  }
+]
