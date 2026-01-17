@@ -328,3 +328,51 @@ def get_medications_dataframe(patient_name=None):
     if medications:
         return pd.DataFrame(medications)
     return pd.DataFrame(columns=['patient_name', 'medication_name', 'dosage', 'frequency', 'start_date', 'status'])
+
+SAVED_HOSPITALS_FILE = os.path.join(DATA_DIR, "saved_hospitals.json")
+
+def ensure_saved_hospitals_file():
+    ensure_data_directory()
+    if not os.path.exists(SAVED_HOSPITALS_FILE):
+        with open(SAVED_HOSPITALS_FILE, 'w') as f:
+            json.dump([], f)
+
+def add_saved_hospital(user_id, hospital_name, address, phone, specialties, city, distance_km=None):
+    ensure_saved_hospitals_file()
+    hospitals = load_json_file(SAVED_HOSPITALS_FILE)
+    
+    existing = [h for h in hospitals if h.get('user_id') == user_id and h.get('hospital_name') == hospital_name]
+    if existing:
+        return {"success": False, "error": "Hospital already saved"}
+    
+    hospital = {
+        "id": len(hospitals) + 1,
+        "user_id": user_id,
+        "hospital_name": hospital_name,
+        "address": address,
+        "phone": phone,
+        "specialties": specialties,
+        "city": city,
+        "distance_km": distance_km,
+        "saved_at": datetime.now().isoformat()
+    }
+    
+    hospitals.append(hospital)
+    save_json_file(SAVED_HOSPITALS_FILE, hospitals)
+    return {"success": True, "hospital": hospital}
+
+def get_saved_hospitals(user_id=None):
+    ensure_saved_hospitals_file()
+    hospitals = load_json_file(SAVED_HOSPITALS_FILE)
+    
+    if user_id:
+        hospitals = [h for h in hospitals if h.get('user_id') == user_id]
+    
+    return hospitals
+
+def delete_saved_hospital(hospital_id):
+    ensure_saved_hospitals_file()
+    hospitals = load_json_file(SAVED_HOSPITALS_FILE)
+    hospitals = [h for h in hospitals if h['id'] != hospital_id]
+    save_json_file(SAVED_HOSPITALS_FILE, hospitals)
+    return True

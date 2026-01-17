@@ -237,3 +237,46 @@ def generate_doctor_notes(conversation_text, patient_language, doctor_language):
         return {"success": False, "notes": None, "error": str(e)}
     except Exception as e:
         return {"success": False, "notes": None, "error": f"Note generation failed: {str(e)}"}
+
+def find_nearby_hospitals(city, specialty=None, language="English"):
+    def _find():
+        client = get_gemini_client()
+        specialty_filter = f" specializing in {specialty}" if specialty and specialty != "All Specialties" else ""
+        system_instruction = (
+            f"You are a healthcare location assistant helping find hospitals in India. "
+            f"Find 5-8 hospitals{specialty_filter} near {city}, India. "
+            f"Respond in {language} with valid JSON only. "
+            "Return a JSON array with each hospital having these fields: "
+            "1) 'name': Hospital name "
+            "2) 'address': Full address "
+            "3) 'phone': Phone number (use realistic format like +91-XXXX-XXXXXX) "
+            "4) 'specialties': Array of specialties offered "
+            "5) 'distance_km': Estimated distance from city center (number) "
+            "6) 'type': 'Government' or 'Private' "
+            "7) 'rating': Rating out of 5 (number) "
+            "8) 'emergency': true or false for 24/7 emergency services. "
+            "Include a mix of government and private hospitals. Use realistic Indian hospital names and addresses."
+        )
+        
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=f"Find hospitals near {city}{specialty_filter}",
+            config=types.GenerateContentConfig(
+                system_instruction=system_instruction,
+                response_mime_type="application/json",
+                max_output_tokens=4096
+            )
+        )
+        
+        hospitals = json.loads(response.text)
+        return {"success": True, "hospitals": hospitals, "error": None}
+    
+    try:
+        result = call_gemini_with_retry(_find)
+        if isinstance(result, dict) and not result.get("success"):
+            return result
+        return result
+    except ValueError as e:
+        return {"success": False, "hospitals": [], "error": str(e)}
+    except Exception as e:
+        return {"success": False, "hospitals": [], "error": f"Hospital search failed: {str(e)}"}
