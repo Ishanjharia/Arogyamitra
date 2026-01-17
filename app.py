@@ -781,6 +781,7 @@ def sidebar_navigation():
                 "📅 Book Appointment",
                 "🔔 My Reminders",
                 "💊 Medication Tracker",
+                "🏥 Find Hospitals",
                 "👨‍👩‍👧 Family Accounts"
             ]
         else:
@@ -1738,6 +1739,219 @@ def family_accounts_page():
     else:
         st.warning("Please enter your name in the sidebar")
 
+def find_hospitals_page():
+    inject_custom_css()
+    
+    theme_mode = st.session_state.get('theme_mode', 'Light')
+    is_light_theme = theme_mode == 'Light'
+    
+    st.markdown("""
+    <div class="main-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+        <h1>🏥 Find Nearby Hospitals</h1>
+        <p>Locate hospitals and healthcare facilities near you</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.session_state.patient_name:
+        user_id = st.session_state.current_user.get('id') if st.session_state.current_user else None
+        
+        tab1, tab2 = st.tabs(["🔍 Search Hospitals", "⭐ Saved Hospitals"])
+        
+        with tab1:
+            col1, col2 = st.columns([2, 1])
+            
+            with col1:
+                indian_cities = [
+                    "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Chennai",
+                    "Kolkata", "Pune", "Ahmedabad", "Jaipur", "Lucknow",
+                    "Chandigarh", "Bhopal", "Indore", "Nagpur", "Patna",
+                    "Thiruvananthapuram", "Kochi", "Coimbatore", "Visakhapatnam",
+                    "Guwahati", "Bhubaneswar", "Ranchi", "Dehradun", "Shimla"
+                ]
+                city = st.selectbox("📍 Select City", options=indian_cities, index=0)
+                
+                custom_city = st.text_input("Or enter a different city/area", placeholder="e.g., Varanasi, Noida, Gurugram")
+                if custom_city:
+                    city = custom_city
+            
+            with col2:
+                specialties = [
+                    "All Specialties",
+                    "General Medicine",
+                    "Cardiology",
+                    "Orthopedics",
+                    "Pediatrics",
+                    "Gynecology",
+                    "Neurology",
+                    "Oncology",
+                    "Dermatology",
+                    "ENT",
+                    "Ophthalmology",
+                    "Psychiatry",
+                    "Emergency Care"
+                ]
+                specialty = st.selectbox("🏷️ Specialty Filter", options=specialties)
+            
+            if st.button("🔍 Search Hospitals", type="primary", use_container_width=True):
+                with st.spinner("Finding hospitals near you..."):
+                    result = ai_helper.find_nearby_hospitals(
+                        city=city,
+                        specialty=specialty if specialty != "All Specialties" else None,
+                        language=st.session_state.user_language
+                    )
+                    
+                    if result["success"]:
+                        st.session_state.hospital_results = result["hospitals"]
+                        st.session_state.hospital_search_city = city
+                    else:
+                        st.error(f"❌ {result['error']}")
+            
+            if 'hospital_results' in st.session_state and st.session_state.hospital_results:
+                st.markdown(f"### 🏥 Hospitals near {st.session_state.get('hospital_search_city', city)}")
+                st.markdown(f"Found **{len(st.session_state.hospital_results)}** hospitals")
+                
+                for i, hospital in enumerate(st.session_state.hospital_results):
+                    hospital_type = hospital.get('type', 'Unknown')
+                    type_color = "#10b981" if hospital_type == "Government" else "#6366f1"
+                    emergency_badge = "🚨 24/7 Emergency" if hospital.get('emergency') else ""
+                    rating = hospital.get('rating', 0)
+                    stars = "⭐" * int(rating) + "☆" * (5 - int(rating))
+                    
+                    card_bg = "#ffffff" if is_light_theme else "#1e293b"
+                    card_text = "#1e293b" if is_light_theme else "#ffffff"
+                    card_subtext = "#64748b" if is_light_theme else "#94a3b8"
+                    
+                    st.markdown(f"""
+                    <div style="background: {card_bg}; border-radius: 12px; padding: 1.25rem; margin: 1rem 0; 
+                                border-left: 4px solid {type_color}; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <h3 style="color: {card_text}; margin: 0 0 0.5rem 0;">{hospital.get('name', 'Unknown Hospital')}</h3>
+                                <p style="color: {card_subtext}; margin: 0.25rem 0; font-size: 0.9rem;">
+                                    📍 {hospital.get('address', 'Address not available')}
+                                </p>
+                                <p style="color: {card_subtext}; margin: 0.25rem 0; font-size: 0.9rem;">
+                                    📞 {hospital.get('phone', 'N/A')} | 📏 {hospital.get('distance_km', 'N/A')} km away
+                                </p>
+                            </div>
+                            <div style="text-align: right;">
+                                <span style="background: {type_color}; color: white; padding: 0.25rem 0.75rem; 
+                                            border-radius: 20px; font-size: 0.8rem; font-weight: 600;">
+                                    {hospital_type}
+                                </span>
+                                <p style="color: #f59e0b; margin: 0.5rem 0 0 0; font-size: 0.9rem;">{stars}</p>
+                            </div>
+                        </div>
+                        <div style="margin-top: 0.75rem;">
+                            <p style="color: {card_text}; margin: 0; font-size: 0.85rem;">
+                                <strong>Specialties:</strong> {', '.join(hospital.get('specialties', ['General'])[:4])}
+                            </p>
+                            {f'<span style="background: #ef4444; color: white; padding: 0.2rem 0.5rem; border-radius: 10px; font-size: 0.75rem; margin-top: 0.5rem; display: inline-block;">{emergency_badge}</span>' if emergency_badge else ''}
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        if st.button("⭐ Save", key=f"save_hospital_{i}", use_container_width=True):
+                            if user_id:
+                                result = data_manager.add_saved_hospital(
+                                    user_id=user_id,
+                                    hospital_name=hospital.get('name', 'Unknown'),
+                                    address=hospital.get('address', ''),
+                                    phone=hospital.get('phone', ''),
+                                    specialties=hospital.get('specialties', []),
+                                    city=st.session_state.get('hospital_search_city', city),
+                                    distance_km=hospital.get('distance_km')
+                                )
+                                if result.get("success"):
+                                    st.success("✅ Hospital saved!")
+                                else:
+                                    st.info(result.get("error", "Already saved"))
+                            else:
+                                st.warning("Please log in to save hospitals")
+                    
+                    with col2:
+                        phone = hospital.get('phone', '').replace('-', '').replace(' ', '').replace('+', '')
+                        if phone:
+                            st.markdown(f"""
+                            <a href="tel:{phone}" target="_blank" style="text-decoration: none;">
+                                <button style="width: 100%; background: #10b981; color: white; border: none; 
+                                              padding: 0.5rem; border-radius: 8px; cursor: pointer;">
+                                    📞 Call
+                                </button>
+                            </a>
+                            """, unsafe_allow_html=True)
+                    
+                    with col3:
+                        address_encoded = hospital.get('address', '').replace(' ', '+')
+                        st.markdown(f"""
+                        <a href="https://www.google.com/maps/search/?api=1&query={address_encoded}" target="_blank" style="text-decoration: none;">
+                            <button style="width: 100%; background: #3b82f6; color: white; border: none; 
+                                          padding: 0.5rem; border-radius: 8px; cursor: pointer;">
+                                🗺️ Map
+                            </button>
+                        </a>
+                        """, unsafe_allow_html=True)
+        
+        with tab2:
+            st.markdown("### ⭐ Your Saved Hospitals")
+            
+            if user_id:
+                saved_hospitals = data_manager.get_saved_hospitals(user_id)
+                
+                if saved_hospitals:
+                    for hospital in saved_hospitals:
+                        card_bg = "#ffffff" if is_light_theme else "#1e293b"
+                        card_text = "#1e293b" if is_light_theme else "#ffffff"
+                        card_subtext = "#64748b" if is_light_theme else "#94a3b8"
+                        
+                        st.markdown(f"""
+                        <div style="background: {card_bg}; border-radius: 12px; padding: 1rem; margin: 0.75rem 0;
+                                    border: 1px solid {'#e2e8f0' if is_light_theme else '#334155'};">
+                            <h4 style="color: {card_text}; margin: 0 0 0.5rem 0;">🏥 {hospital.get('hospital_name', 'Unknown')}</h4>
+                            <p style="color: {card_subtext}; margin: 0.25rem 0; font-size: 0.9rem;">
+                                📍 {hospital.get('address', 'N/A')} | 📞 {hospital.get('phone', 'N/A')}
+                            </p>
+                            <p style="color: {card_subtext}; margin: 0.25rem 0; font-size: 0.85rem;">
+                                🏷️ {', '.join(hospital.get('specialties', ['General'])[:3])}
+                            </p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            phone = hospital.get('phone', '').replace('-', '').replace(' ', '').replace('+', '')
+                            if phone:
+                                st.markdown(f"""
+                                <a href="tel:{phone}" style="text-decoration: none;">
+                                    <button style="width: 100%; background: #10b981; color: white; border: none; 
+                                                  padding: 0.4rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+                                        📞 Call
+                                    </button>
+                                </a>
+                                """, unsafe_allow_html=True)
+                        with col2:
+                            if st.button("🗑️ Remove", key=f"remove_saved_{hospital['id']}", use_container_width=True):
+                                data_manager.delete_saved_hospital(hospital['id'])
+                                st.success("Hospital removed")
+                                st.rerun()
+                else:
+                    st.info("No saved hospitals yet. Search for hospitals and save your favorites!")
+            else:
+                st.warning("Please log in to view saved hospitals")
+        
+        st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="info-box info">
+            <strong>💡 Tip:</strong> Save your frequently visited hospitals for quick access. 
+            You can directly call or view the location on maps.
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.warning("Please enter your name in the sidebar")
+
 def patient_records_doctor():
     inject_custom_css()
     
@@ -1977,6 +2191,8 @@ def main():
             medication_tracker_page()
         elif menu == "📊 Symptom History":
             symptom_history_page()
+        elif menu == "🏥 Find Hospitals":
+            find_hospitals_page()
         elif menu == "👨‍👩‍👧 Family Accounts":
             family_accounts_page()
         elif menu == "📊 Patient Records":
