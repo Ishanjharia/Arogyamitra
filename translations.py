@@ -576,6 +576,59 @@ TRANSLATIONS = {
         "enter_name": "कृपया साइडबारमध्ये तुमचे नाव प्रविष्ट करा",
         "login_required": "या वैशिष्ट्यात प्रवेश करण्यासाठी कृपया लॉग इन करा",
         
+        "symptom_checker_header": "AI लक्षण तपासक",
+        "symptom_checker_subheader": "तुमच्या लक्षणांचे वर्णन करा आणि त्वरित AI विश्लेषण मिळवा",
+        "important": "महत्त्वाचे",
+        "medical_disclaimer": "हे वैद्यकीय निदान नाही. योग्य वैद्यकीय सल्ल्यासाठी कृपया पात्र डॉक्टरांचा सल्ला घ्या.",
+        "text_input": "टेक्स्ट इनपुट",
+        "voice_input": "आवाज इनपुट",
+        "tell_us_experiencing": "तुम्हाला काय अनुभव येत आहे ते सांगा",
+        "symptom_placeholder": "उदाहरण: मला गेल्या 3 दिवसांपासून ताप, डोकेदुखी आणि अंगदुखी आहे...",
+        "please_describe_symptoms": "कृपया तुमची लक्षणे सांगा",
+        "saved_success": "यशस्वीपणे सेव्ह केले!",
+        "record_symptoms": "तुमची लक्षणे रेकॉर्ड करा",
+        "click_mic_record": "तुमच्या भाषेत लक्षणे रेकॉर्ड करण्यासाठी माइक्रोफोनवर क्लिक करा",
+        "click_to_record": "रेकॉर्ड करण्यासाठी क्लिक करा",
+        "transcribe_analyze": "ट्रान्सक्राइब आणि विश्लेषण करा",
+        
+        "ai_chat_header": "AI वैद्यकीय चॅट सहाय्यक",
+        "ai_chat_subheader": "आरोग्य प्रश्न विचारा आणि तुमच्या भाषेत त्वरित उत्तरे मिळवा",
+        "chat_help_tip": "मला तुमच्या पसंतीच्या भाषेत आरोग्य-संबंधित प्रश्न विचारा! मी मदतीसाठी येथे आहे.",
+        "type_question": "येथे तुमचा प्रश्न लिहा...",
+        
+        "write_prescription_header": "प्रिस्क्रिप्शन लिहा",
+        "write_prescription_subheader": "स्वयंचलित भाषांतरासह प्रिस्क्रिप्शन तयार करा",
+        "patient_name": "रुग्णाचे नाव",
+        "medication_details": "औषध तपशील",
+        "dosage_frequency": "डोस आणि वारंवारता",
+        "translate_to_patient_lang": "रुग्णाच्या भाषेत अनुवाद करा",
+        
+        "health_records_header": "आरोग्य नोंदी",
+        "health_records_subheader": "तुमचा डिजिटल आरोग्य इतिहास एकाच ठिकाणी",
+        
+        "book_appointment_header": "अपॉइंटमेंट बुक करा",
+        "book_appointment_subheader": "डॉक्टरांशी तुमचा सल्लामसलत शेड्यूल करा",
+        "appointment_date": "अपॉइंटमेंट तारीख",
+        "appointment_time": "अपॉइंटमेंट वेळ",
+        "preferred_language": "सल्लामसलतीसाठी पसंतीची भाषा",
+        "notes_reason": "नोट्स / भेटीचे कारण",
+        "book_appointment_btn": "अपॉइंटमेंट बुक करा",
+        
+        "reminders_header": "माझे रिमाइंडर",
+        "reminders_subheader": "तुमची औषधे किंवा अपॉइंटमेंट कधी चुकवू नका",
+        
+        "medication_tracker_header": "औषध ट्रॅकर",
+        "medication_tracker_subheader": "तुमची औषधे ट्रॅक आणि व्यवस्थापित करा",
+        
+        "symptom_history_header": "लक्षण इतिहास",
+        "symptom_history_subheader": "कालांतराने तुमचा आरोग्य प्रवास पहा",
+        
+        "family_accounts_header": "कुटुंब खाती",
+        "family_accounts_subheader": "तुमच्या कुटुंबातील सदस्यांच्या आरोग्य नोंदी व्यवस्थापित करा",
+        
+        "find_hospitals_header": "जवळची रुग्णालये शोधा",
+        "find_hospitals_subheader": "तुमच्या जवळ रुग्णालये आणि आरोग्य सुविधा शोधा",
+        
         "sign_in": "साइन इन",
         "sign_up": "साइन अप",
         "email": "ईमेल",
@@ -737,6 +790,59 @@ TRANSLATIONS = {
         "disclaimer": "மறுப்பு: இது மருத்துவ நோயறிதல் அல்ல. தகுதிவாய்ந்த சுகாதார நிபுணரை அணுகவும்.",
         "enter_name": "பக்கப்பட்டியில் உங்கள் பெயரை உள்ளிடவும்",
         "login_required": "இந்த அம்சத்தை அணுக உள்நுழையவும்",
+        
+        "symptom_checker_header": "AI அறிகுறி சோதனை",
+        "symptom_checker_subheader": "உங்கள் அறிகுறிகளை விவரிக்கவும் மற்றும் உடனடி AI பகுப்பாய்வு பெறவும்",
+        "important": "முக்கியமானது",
+        "medical_disclaimer": "இது மருத்துவ நோயறிதல் அல்ல. சரியான மருத்துவ ஆலோசனைக்கு தகுதிவாய்ந்த மருத்துவரை அணுகவும்.",
+        "text_input": "உரை உள்ளீடு",
+        "voice_input": "குரல் உள்ளீடு",
+        "tell_us_experiencing": "நீங்கள் என்ன அனுபவிக்கிறீர்கள் என்று சொல்லுங்கள்",
+        "symptom_placeholder": "உதாரணம்: கடந்த 3 நாட்களாக காய்ச்சல், தலைவலி மற்றும் உடல் வலி உள்ளது...",
+        "please_describe_symptoms": "உங்கள் அறிகுறிகளை விவரிக்கவும்",
+        "saved_success": "வெற்றிகரமாக சேமிக்கப்பட்டது!",
+        "record_symptoms": "உங்கள் அறிகுறிகளை பதிவு செய்யவும்",
+        "click_mic_record": "உங்கள் மொழியில் அறிகுறிகளை பதிவு செய்ய மைக்ரோஃபோனை கிளிக் செய்யவும்",
+        "click_to_record": "பதிவு செய்ய கிளிக் செய்யவும்",
+        "transcribe_analyze": "டிரான்ஸ்கிரைப் & பகுப்பாய்வு",
+        
+        "ai_chat_header": "AI மருத்துவ அரட்டை உதவியாளர்",
+        "ai_chat_subheader": "உடல்நல கேள்விகளைக் கேட்டு உங்கள் மொழியில் உடனடி பதில்களைப் பெறவும்",
+        "chat_help_tip": "உங்கள் விருப்பமான மொழியில் உடல்நலம் தொடர்பான கேள்விகளைக் கேளுங்கள்! நான் உதவ இங்கே இருக்கிறேன்.",
+        "type_question": "உங்கள் கேள்வியை இங்கே தட்டச்சு செய்யவும்...",
+        
+        "write_prescription_header": "மருந்து சீட்டு எழுதுங்கள்",
+        "write_prescription_subheader": "தானியங்கி மொழிபெயர்ப்புடன் மருந்து சீட்டுகளை உருவாக்கவும்",
+        "patient_name": "நோயாளியின் பெயர்",
+        "medication_details": "மருந்து விவரங்கள்",
+        "dosage_frequency": "மருந்தளவு & அடிக்கடி",
+        "translate_to_patient_lang": "நோயாளியின் மொழியில் மொழிபெயர்க்கவும்",
+        
+        "health_records_header": "உடல்நல பதிவுகள்",
+        "health_records_subheader": "உங்கள் டிஜிட்டல் உடல்நல வரலாறு ஒரே இடத்தில்",
+        
+        "book_appointment_header": "சந்திப்பு முன்பதிவு செய்யவும்",
+        "book_appointment_subheader": "மருத்துவருடன் உங்கள் ஆலோசனையை திட்டமிடுங்கள்",
+        "appointment_date": "சந்திப்பு தேதி",
+        "appointment_time": "சந்திப்பு நேரம்",
+        "preferred_language": "ஆலோசனைக்கான விருப்பமான மொழி",
+        "notes_reason": "குறிப்புகள் / வருகைக்கான காரணம்",
+        "book_appointment_btn": "சந்திப்பு முன்பதிவு செய்யவும்",
+        
+        "reminders_header": "என் நினைவூட்டல்கள்",
+        "reminders_subheader": "உங்கள் மருந்துகள் அல்லது சந்திப்புகளை ஒருபோதும் தவறவிடாதீர்கள்",
+        
+        "medication_tracker_header": "மருந்து கண்காணிப்பு",
+        "medication_tracker_subheader": "உங்கள் மருந்துகளை கண்காணித்து நிர்வகிக்கவும்",
+        
+        "symptom_history_header": "அறிகுறி வரலாறு",
+        "symptom_history_subheader": "காலப்போக்கில் உங்கள் உடல்நல பயணத்தைக் காணவும்",
+        
+        "family_accounts_header": "குடும்ப கணக்குகள்",
+        "family_accounts_subheader": "உங்கள் குடும்ப உறுப்பினர்களின் உடல்நல பதிவுகளை நிர்வகிக்கவும்",
+        
+        "find_hospitals_header": "அருகிலுள்ள மருத்துவமனைகளைக் கண்டறியவும்",
+        "find_hospitals_subheader": "உங்கள் அருகிலுள்ள மருத்துவமனைகள் மற்றும் சுகாதார வசதிகளைக் கண்டறியவும்",
         
         "sign_in": "உள்நுழை",
         "sign_up": "பதிவு செய்",
@@ -900,6 +1006,59 @@ TRANSLATIONS = {
         "enter_name": "దయచేసి సైడ్‌బార్‌లో మీ పేరు నమోదు చేయండి",
         "login_required": "ఈ ఫీచర్‌ను యాక్సెస్ చేయడానికి దయచేసి లాగిన్ అవ్వండి",
         
+        "symptom_checker_header": "AI లక్షణ పరీక్షకుడు",
+        "symptom_checker_subheader": "మీ లక్షణాలను వివరించండి మరియు తక్షణ AI విశ్లేషణ పొందండి",
+        "important": "ముఖ్యమైన",
+        "medical_disclaimer": "ఇది వైద్య నిర్ధారణ కాదు. సరైన వైద్య సలహా కోసం దయచేసి అర్హత కలిగిన వైద్యుడిని సంప్రదించండి.",
+        "text_input": "టెక్స్ట్ ఇన్‌పుట్",
+        "voice_input": "వాయిస్ ఇన్‌పుట్",
+        "tell_us_experiencing": "మీరు ఏమి అనుభవిస్తున్నారో చెప్పండి",
+        "symptom_placeholder": "ఉదాహరణ: గత 3 రోజులుగా నాకు జ్వరం, తలనొప్పి మరియు శరీర నొప్పి ఉంది...",
+        "please_describe_symptoms": "దయచేసి మీ లక్షణాలను వివరించండి",
+        "saved_success": "విజయవంతంగా సేవ్ చేయబడింది!",
+        "record_symptoms": "మీ లక్షణాలను రికార్డ్ చేయండి",
+        "click_mic_record": "మీ భాషలో లక్షణాలను రికార్డ్ చేయడానికి మైక్రోఫోన్‌పై క్లిక్ చేయండి",
+        "click_to_record": "రికార్డ్ చేయడానికి క్లిక్ చేయండి",
+        "transcribe_analyze": "ట్రాన్స్‌క్రైబ్ & విశ్లేషించండి",
+        
+        "ai_chat_header": "AI వైద్య చాట్ అసిస్టెంట్",
+        "ai_chat_subheader": "ఆరోగ్య ప్రశ్నలు అడగండి మరియు మీ భాషలో తక్షణ సమాధానాలు పొందండి",
+        "chat_help_tip": "మీ ఇష్టమైన భాషలో ఆరోగ్య సంబంధిత ప్రశ్నలు అడగండి! సహాయం చేయడానికి నేను ఇక్కడ ఉన్నాను.",
+        "type_question": "మీ ప్రశ్నను ఇక్కడ టైప్ చేయండి...",
+        
+        "write_prescription_header": "ప్రిస్క్రిప్షన్ రాయండి",
+        "write_prescription_subheader": "ఆటోమేటిక్ అనువాదంతో ప్రిస్క్రిప్షన్‌లు సృష్టించండి",
+        "patient_name": "పేషెంట్ పేరు",
+        "medication_details": "మందుల వివరాలు",
+        "dosage_frequency": "మోతాదు & ఫ్రీక్వెన్సీ",
+        "translate_to_patient_lang": "పేషెంట్ భాషలో అనువదించండి",
+        
+        "health_records_header": "ఆరోగ్య రికార్డులు",
+        "health_records_subheader": "మీ డిజిటల్ ఆరోగ్య చరిత్ర ఒకే చోట",
+        
+        "book_appointment_header": "అపాయింట్‌మెంట్ బుక్ చేయండి",
+        "book_appointment_subheader": "డాక్టర్‌తో మీ సంప్రదింపును షెడ్యూల్ చేయండి",
+        "appointment_date": "అపాయింట్‌మెంట్ తేదీ",
+        "appointment_time": "అపాయింట్‌మెంట్ సమయం",
+        "preferred_language": "సంప్రదింపు కోసం ఇష్టమైన భాష",
+        "notes_reason": "నోట్స్ / సందర్శన కారణం",
+        "book_appointment_btn": "అపాయింట్‌మెంట్ బుక్ చేయండి",
+        
+        "reminders_header": "నా రిమైండర్లు",
+        "reminders_subheader": "మీ మందులు లేదా అపాయింట్‌మెంట్లను ఎప్పుడూ మిస్ అవ్వకండి",
+        
+        "medication_tracker_header": "మందుల ట్రాకర్",
+        "medication_tracker_subheader": "మీ మందులను ట్రాక్ చేసి నిర్వహించండి",
+        
+        "symptom_history_header": "లక్షణ చరిత్ర",
+        "symptom_history_subheader": "కాలక్రమంలో మీ ఆరోగ్య ప్రయాణాన్ని చూడండి",
+        
+        "family_accounts_header": "కుటుంబ ఖాతాలు",
+        "family_accounts_subheader": "మీ కుటుంబ సభ్యుల ఆరోగ్య రికార్డులను నిర్వహించండి",
+        
+        "find_hospitals_header": "సమీపంలోని ఆసుపత్రులను కనుగొనండి",
+        "find_hospitals_subheader": "మీ సమీపంలోని ఆసుపత్రులు మరియు ఆరోగ్య సౌకర్యాలను కనుగొనండి",
+        
         "sign_in": "సైన్ ఇన్",
         "sign_up": "సైన్ అప్",
         "email": "ఈమెయిల్",
@@ -1061,6 +1220,59 @@ TRANSLATIONS = {
         "disclaimer": "দায়মুক্তি: এটি চিকিৎসা রোগ নির্ণয় নয়। দয়া করে যোগ্য স্বাস্থ্য পেশাদারের সাথে পরামর্শ করুন।",
         "enter_name": "দয়া করে সাইডবারে আপনার নাম লিখুন",
         "login_required": "এই বৈশিষ্ট্য অ্যাক্সেস করতে দয়া করে লগ ইন করুন",
+        
+        "symptom_checker_header": "AI উপসর্গ পরীক্ষক",
+        "symptom_checker_subheader": "আপনার উপসর্গ বর্ণনা করুন এবং তাত্ক্ষণিক AI বিশ্লেষণ পান",
+        "important": "গুরুত্বপূর্ণ",
+        "medical_disclaimer": "এটি চিকিৎসা রোগ নির্ণয় নয়। সঠিক চিকিৎসা পরামর্শের জন্য দয়া করে একজন যোগ্য ডাক্তারের সাথে পরামর্শ করুন।",
+        "text_input": "টেক্সট ইনপুট",
+        "voice_input": "ভয়েস ইনপুট",
+        "tell_us_experiencing": "আপনি কী অনুভব করছেন তা বলুন",
+        "symptom_placeholder": "উদাহরণ: গত 3 দিন ধরে আমার জ্বর, মাথাব্যথা এবং শরীরে ব্যথা হচ্ছে...",
+        "please_describe_symptoms": "দয়া করে আপনার উপসর্গ বর্ণনা করুন",
+        "saved_success": "সফলভাবে সংরক্ষিত!",
+        "record_symptoms": "আপনার উপসর্গ রেকর্ড করুন",
+        "click_mic_record": "আপনার ভাষায় উপসর্গ রেকর্ড করতে মাইক্রোফোনে ক্লিক করুন",
+        "click_to_record": "রেকর্ড করতে ক্লিক করুন",
+        "transcribe_analyze": "ট্রান্সক্রাইব ও বিশ্লেষণ করুন",
+        
+        "ai_chat_header": "AI চিকিৎসা চ্যাট সহায়ক",
+        "ai_chat_subheader": "স্বাস্থ্য প্রশ্ন জিজ্ঞাসা করুন এবং আপনার ভাষায় তাত্ক্ষণিক উত্তর পান",
+        "chat_help_tip": "আপনার পছন্দের ভাষায় স্বাস্থ্য সম্পর্কিত প্রশ্ন জিজ্ঞাসা করুন! আমি সাহায্য করতে এখানে আছি।",
+        "type_question": "আপনার প্রশ্ন এখানে লিখুন...",
+        
+        "write_prescription_header": "প্রেসক্রিপশন লিখুন",
+        "write_prescription_subheader": "স্বয়ংক্রিয় অনুবাদ সহ প্রেসক্রিপশন তৈরি করুন",
+        "patient_name": "রোগীর নাম",
+        "medication_details": "ওষুধের বিবরণ",
+        "dosage_frequency": "মাত্রা ও ফ্রিকোয়েন্সি",
+        "translate_to_patient_lang": "রোগীর ভাষায় অনুবাদ করুন",
+        
+        "health_records_header": "স্বাস্থ্য রেকর্ড",
+        "health_records_subheader": "আপনার ডিজিটাল স্বাস্থ্য ইতিহাস এক জায়গায়",
+        
+        "book_appointment_header": "অ্যাপয়েন্টমেন্ট বুক করুন",
+        "book_appointment_subheader": "ডাক্তারের সাথে আপনার পরামর্শ নির্ধারণ করুন",
+        "appointment_date": "অ্যাপয়েন্টমেন্টের তারিখ",
+        "appointment_time": "অ্যাপয়েন্টমেন্টের সময়",
+        "preferred_language": "পরামর্শের জন্য পছন্দের ভাষা",
+        "notes_reason": "নোট / সাক্ষাতের কারণ",
+        "book_appointment_btn": "অ্যাপয়েন্টমেন্ট বুক করুন",
+        
+        "reminders_header": "আমার রিমাইন্ডার",
+        "reminders_subheader": "আপনার ওষুধ বা অ্যাপয়েন্টমেন্ট কখনও মিস করবেন না",
+        
+        "medication_tracker_header": "ওষুধ ট্র্যাকার",
+        "medication_tracker_subheader": "আপনার ওষুধ ট্র্যাক করুন এবং পরিচালনা করুন",
+        
+        "symptom_history_header": "উপসর্গ ইতিহাস",
+        "symptom_history_subheader": "সময়ের সাথে আপনার স্বাস্থ্য যাত্রা দেখুন",
+        
+        "family_accounts_header": "পরিবার অ্যাকাউন্ট",
+        "family_accounts_subheader": "আপনার পরিবারের সদস্যদের স্বাস্থ্য রেকর্ড পরিচালনা করুন",
+        
+        "find_hospitals_header": "কাছাকাছি হাসপাতাল খুঁজুন",
+        "find_hospitals_subheader": "আপনার কাছাকাছি হাসপাতাল এবং স্বাস্থ্য সুবিধা খুঁজুন",
         
         "sign_in": "সাইন ইন",
         "sign_up": "সাইন আপ",
@@ -1224,6 +1436,59 @@ TRANSLATIONS = {
         "enter_name": "કૃપા કરીને સાઇડબારમાં તમારું નામ દાખલ કરો",
         "login_required": "આ સુવિધા ઍક્સેસ કરવા કૃપા કરીને લોગ ઇન કરો",
         
+        "symptom_checker_header": "AI લક્ષણ તપાસક",
+        "symptom_checker_subheader": "તમારા લક્ષણોનું વર્ણન કરો અને ત્વરિત AI વિશ્લેષણ મેળવો",
+        "important": "મહત્વપૂર્ણ",
+        "medical_disclaimer": "આ તબીબી નિદાન નથી. યોગ્ય તબીબી સલાહ માટે કૃપા કરીને લાયક ડૉક્ટરનો સંપર્ક કરો.",
+        "text_input": "ટેક્સ્ટ ઇનપુટ",
+        "voice_input": "વૉઇસ ઇનપુટ",
+        "tell_us_experiencing": "તમે શું અનુભવી રહ્યા છો તે અમને કહો",
+        "symptom_placeholder": "ઉદાહરણ: મને છેલ્લા 3 દિવસથી તાવ, માથાનો દુખાવો અને શરીરમાં દુખાવો છે...",
+        "please_describe_symptoms": "કૃપા કરીને તમારા લક્ષણો જણાવો",
+        "saved_success": "સફળતાપૂર્વક સેવ થયું!",
+        "record_symptoms": "તમારા લક્ષણો રેકોર્ડ કરો",
+        "click_mic_record": "તમારી ભાષામાં લક્ષણો રેકોર્ડ કરવા માઇક્રોફોન પર ક્લિક કરો",
+        "click_to_record": "રેકોર્ડ કરવા ક્લિક કરો",
+        "transcribe_analyze": "ટ્રાન્સક્રાઇબ અને વિશ્લેષણ કરો",
+        
+        "ai_chat_header": "AI તબીબી ચેટ સહાયક",
+        "ai_chat_subheader": "આરોગ્ય પ્રશ્નો પૂછો અને તમારી ભાષામાં ત્વરિત જવાબો મેળવો",
+        "chat_help_tip": "મને તમારી પસંદની ભાષામાં આરોગ્ય-સંબંધિત પ્રશ્નો પૂછો! હું મદદ કરવા અહીં છું.",
+        "type_question": "અહીં તમારો પ્રશ્ન લખો...",
+        
+        "write_prescription_header": "પ્રિસ્ક્રિપ્શન લખો",
+        "write_prescription_subheader": "સ્વચાલિત અનુવાદ સાથે પ્રિસ્ક્રિપ્શન બનાવો",
+        "patient_name": "દર્દીનું નામ",
+        "medication_details": "દવાની વિગતો",
+        "dosage_frequency": "ડોઝ અને આવર્તન",
+        "translate_to_patient_lang": "દર્દીની ભાષામાં અનુવાદ કરો",
+        
+        "health_records_header": "આરોગ્ય રેકોર્ડ",
+        "health_records_subheader": "તમારો ડિજિટલ આરોગ્ય ઇતિહાસ એક જગ્યાએ",
+        
+        "book_appointment_header": "એપોઇન્ટમેન્ટ બુક કરો",
+        "book_appointment_subheader": "ડૉક્ટર સાથે તમારી સલાહ શેડ્યૂલ કરો",
+        "appointment_date": "એપોઇન્ટમેન્ટ તારીખ",
+        "appointment_time": "એપોઇન્ટમેન્ટ સમય",
+        "preferred_language": "સલાહ માટે પસંદગીની ભાષા",
+        "notes_reason": "નોંધ / મુલાકાતનું કારણ",
+        "book_appointment_btn": "એપોઇન્ટમેન્ટ બુક કરો",
+        
+        "reminders_header": "મારા રિમાઇન્ડર",
+        "reminders_subheader": "તમારી દવાઓ અથવા એપોઇન્ટમેન્ટ ક્યારેય ચૂકશો નહીં",
+        
+        "medication_tracker_header": "દવા ટ્રેકર",
+        "medication_tracker_subheader": "તમારી દવાઓ ટ્રેક અને મેનેજ કરો",
+        
+        "symptom_history_header": "લક્ષણ ઇતિહાસ",
+        "symptom_history_subheader": "સમય સાથે તમારી આરોગ્ય યાત્રા જુઓ",
+        
+        "family_accounts_header": "કુટુંબ એકાઉન્ટ",
+        "family_accounts_subheader": "તમારા કુટુંબના સભ્યોના આરોગ્ય રેકોર્ડ મેનેજ કરો",
+        
+        "find_hospitals_header": "નજીકની હોસ્પિટલ શોધો",
+        "find_hospitals_subheader": "તમારી નજીક હોસ્પિટલ અને આરોગ્ય સુવિધાઓ શોધો",
+        
         "sign_in": "સાઇન ઇન",
         "sign_up": "સાઇન અપ",
         "email": "ઇમેઇલ",
@@ -1385,6 +1650,59 @@ TRANSLATIONS = {
         "disclaimer": "ನಿರಾಕರಣೆ: ಇದು ವೈದ್ಯಕೀಯ ರೋಗನಿರ್ಣಯವಲ್ಲ. ದಯವಿಟ್ಟು ಅರ್ಹ ಆರೋಗ್ಯ ವೃತ್ತಿಪರರನ್ನು ಸಂಪರ್ಕಿಸಿ.",
         "enter_name": "ದಯವಿಟ್ಟು ಸೈಡ್‌ಬಾರ್‌ನಲ್ಲಿ ನಿಮ್ಮ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
         "login_required": "ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಪ್ರವೇಶಿಸಲು ದಯವಿಟ್ಟು ಲಾಗಿನ್ ಆಗಿ",
+        
+        "symptom_checker_header": "AI ಲಕ್ಷಣ ಪರೀಕ್ಷಕ",
+        "symptom_checker_subheader": "ನಿಮ್ಮ ಲಕ್ಷಣಗಳನ್ನು ವಿವರಿಸಿ ಮತ್ತು ತಕ್ಷಣ AI ವಿಶ್ಲೇಷಣೆ ಪಡೆಯಿರಿ",
+        "important": "ಮುಖ್ಯ",
+        "medical_disclaimer": "ಇದು ವೈದ್ಯಕೀಯ ರೋಗನಿರ್ಣಯವಲ್ಲ. ಸರಿಯಾದ ವೈದ್ಯಕೀಯ ಸಲಹೆಗಾಗಿ ದಯವಿಟ್ಟು ಅರ್ಹ ವೈದ್ಯರನ್ನು ಸಂಪರ್ಕಿಸಿ.",
+        "text_input": "ಪಠ್ಯ ಇನ್‌ಪುಟ್",
+        "voice_input": "ಧ್ವನಿ ಇನ್‌ಪುಟ್",
+        "tell_us_experiencing": "ನೀವು ಏನು ಅನುಭವಿಸುತ್ತಿದ್ದೀರಿ ಎಂದು ಹೇಳಿ",
+        "symptom_placeholder": "ಉದಾಹರಣೆ: ಕಳೆದ 3 ದಿನಗಳಿಂದ ನನಗೆ ಜ್ವರ, ತಲೆನೋವು ಮತ್ತು ಮೈ ನೋವು ಇದೆ...",
+        "please_describe_symptoms": "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಲಕ್ಷಣಗಳನ್ನು ವಿವರಿಸಿ",
+        "saved_success": "ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ!",
+        "record_symptoms": "ನಿಮ್ಮ ಲಕ್ಷಣಗಳನ್ನು ರೆಕಾರ್ಡ್ ಮಾಡಿ",
+        "click_mic_record": "ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ಲಕ್ಷಣಗಳನ್ನು ರೆಕಾರ್ಡ್ ಮಾಡಲು ಮೈಕ್ರೋಫೋನ್ ಕ್ಲಿಕ್ ಮಾಡಿ",
+        "click_to_record": "ರೆಕಾರ್ಡ್ ಮಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ",
+        "transcribe_analyze": "ಟ್ರಾನ್ಸ್‌ಕ್ರೈಬ್ ಮತ್ತು ವಿಶ್ಲೇಷಣೆ",
+        
+        "ai_chat_header": "AI ವೈದ್ಯಕೀಯ ಚಾಟ್ ಸಹಾಯಕ",
+        "ai_chat_subheader": "ಆರೋಗ್ಯ ಪ್ರಶ್ನೆಗಳನ್ನು ಕೇಳಿ ಮತ್ತು ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ತಕ್ಷಣ ಉತ್ತರಗಳನ್ನು ಪಡೆಯಿರಿ",
+        "chat_help_tip": "ನಿಮ್ಮ ಆದ್ಯತೆಯ ಭಾಷೆಯಲ್ಲಿ ಆರೋಗ್ಯ ಸಂಬಂಧಿತ ಪ್ರಶ್ನೆಗಳನ್ನು ಕೇಳಿ! ಸಹಾಯ ಮಾಡಲು ನಾನು ಇಲ್ಲಿದ್ದೇನೆ.",
+        "type_question": "ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಇಲ್ಲಿ ಟೈಪ್ ಮಾಡಿ...",
+        
+        "write_prescription_header": "ಪ್ರಿಸ್ಕ್ರಿಪ್ಷನ್ ಬರೆಯಿರಿ",
+        "write_prescription_subheader": "ಸ್ವಯಂಚಾಲಿತ ಅನುವಾದದೊಂದಿಗೆ ಪ್ರಿಸ್ಕ್ರಿಪ್ಷನ್‌ಗಳನ್ನು ರಚಿಸಿ",
+        "patient_name": "ರೋಗಿಯ ಹೆಸರು",
+        "medication_details": "ಔಷಧ ವಿವರಗಳು",
+        "dosage_frequency": "ಡೋಸ್ ಮತ್ತು ಆವರ್ತನ",
+        "translate_to_patient_lang": "ರೋಗಿಯ ಭಾಷೆಗೆ ಅನುವಾದಿಸಿ",
+        
+        "health_records_header": "ಆರೋಗ್ಯ ದಾಖಲೆಗಳು",
+        "health_records_subheader": "ನಿಮ್ಮ ಡಿಜಿಟಲ್ ಆರೋಗ್ಯ ಇತಿಹಾಸ ಒಂದೇ ಸ್ಥಳದಲ್ಲಿ",
+        
+        "book_appointment_header": "ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ",
+        "book_appointment_subheader": "ವೈದ್ಯರೊಂದಿಗೆ ನಿಮ್ಮ ಸಮಾಲೋಚನೆಯನ್ನು ಶೆಡ್ಯೂಲ್ ಮಾಡಿ",
+        "appointment_date": "ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ದಿನಾಂಕ",
+        "appointment_time": "ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಸಮಯ",
+        "preferred_language": "ಸಮಾಲೋಚನೆಗೆ ಆದ್ಯತೆಯ ಭಾಷೆ",
+        "notes_reason": "ಟಿಪ್ಪಣಿಗಳು / ಭೇಟಿಯ ಕಾರಣ",
+        "book_appointment_btn": "ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ",
+        
+        "reminders_header": "ನನ್ನ ರಿಮೈಂಡರ್‌ಗಳು",
+        "reminders_subheader": "ನಿಮ್ಮ ಔಷಧಗಳು ಅಥವಾ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್‌ಗಳನ್ನು ಎಂದಿಗೂ ತಪ್ಪಿಸಬೇಡಿ",
+        
+        "medication_tracker_header": "ಔಷಧ ಟ್ರ್ಯಾಕರ್",
+        "medication_tracker_subheader": "ನಿಮ್ಮ ಔಷಧಗಳನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ ಮತ್ತು ನಿರ್ವಹಿಸಿ",
+        
+        "symptom_history_header": "ಲಕ್ಷಣ ಇತಿಹಾಸ",
+        "symptom_history_subheader": "ಕಾಲಾನಂತರದಲ್ಲಿ ನಿಮ್ಮ ಆರೋಗ್ಯ ಪಯಣವನ್ನು ನೋಡಿ",
+        
+        "family_accounts_header": "ಕುಟುಂಬ ಖಾತೆಗಳು",
+        "family_accounts_subheader": "ನಿಮ್ಮ ಕುಟುಂಬ ಸದಸ್ಯರ ಆರೋಗ್ಯ ದಾಖಲೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ",
+        
+        "find_hospitals_header": "ಹತ್ತಿರದ ಆಸ್ಪತ್ರೆಗಳು ಹುಡುಕಿ",
+        "find_hospitals_subheader": "ನಿಮ್ಮ ಹತ್ತಿರ ಆಸ್ಪತ್ರೆಗಳು ಮತ್ತು ಆರೋಗ್ಯ ಸೌಲಭ್ಯಗಳನ್ನು ಹುಡುಕಿ",
         
         "sign_in": "ಸೈನ್ ಇನ್",
         "sign_up": "ಸೈನ್ ಅಪ್",
@@ -1548,6 +1866,59 @@ TRANSLATIONS = {
         "enter_name": "സൈഡ്ബാറിൽ നിങ്ങളുടെ പേര് നൽകുക",
         "login_required": "ഈ ഫീച്ചർ ആക്സസ് ചെയ്യാൻ ലോഗിൻ ചെയ്യുക",
         
+        "symptom_checker_header": "AI ലക്ഷണ പരിശോധന",
+        "symptom_checker_subheader": "നിങ്ങളുടെ ലക്ഷണങ്ങൾ വിവരിക്കുകയും തൽക്ഷണ AI വിശകലനം നേടുകയും ചെയ്യുക",
+        "important": "പ്രധാനം",
+        "medical_disclaimer": "ഇത് മെഡിക്കൽ രോഗനിർണയമല്ല. ശരിയായ മെഡിക്കൽ ഉപദേശത്തിന് യോഗ്യതയുള്ള ഡോക്ടറെ സമീപിക്കുക.",
+        "text_input": "ടെക്സ്റ്റ് ഇൻപുട്ട്",
+        "voice_input": "വോയ്സ് ഇൻപുട്ട്",
+        "tell_us_experiencing": "നിങ്ങൾ എന്താണ് അനുഭവിക്കുന്നതെന്ന് ഞങ്ങളോട് പറയൂ",
+        "symptom_placeholder": "ഉദാഹരണം: കഴിഞ്ഞ 3 ദിവസമായി എനിക്ക് പനി, തലവേദന, ശരീരവേദന എന്നിവയുണ്ട്...",
+        "please_describe_symptoms": "ദയവായി നിങ്ങളുടെ ലക്ഷണങ്ങൾ വിവരിക്കുക",
+        "saved_success": "വിജയകരമായി സേവ് ചെയ്തു!",
+        "record_symptoms": "നിങ്ങളുടെ ലക്ഷണങ്ങൾ റെക്കോർഡ് ചെയ്യുക",
+        "click_mic_record": "നിങ്ങളുടെ ഭാഷയിൽ ലക്ഷണങ്ങൾ റെക്കോർഡ് ചെയ്യാൻ മൈക്രോഫോണിൽ ക്ലിക്ക് ചെയ്യുക",
+        "click_to_record": "റെക്കോർഡ് ചെയ്യാൻ ക്ലിക്ക് ചെയ്യുക",
+        "transcribe_analyze": "ട്രാൻസ്ക്രൈബ് & വിശകലനം",
+        
+        "ai_chat_header": "AI മെഡിക്കൽ ചാറ്റ് അസിസ്റ്റന്റ്",
+        "ai_chat_subheader": "ആരോഗ്യ ചോദ്യങ്ങൾ ചോദിക്കുകയും നിങ്ങളുടെ ഭാഷയിൽ തൽക്ഷണ മറുപടികൾ നേടുകയും ചെയ്യുക",
+        "chat_help_tip": "നിങ്ങൾ ഇഷ്ടപ്പെടുന്ന ഭാഷയിൽ ആരോഗ്യ സംബന്ധിയായ ചോദ്യങ്ങൾ ചോദിക്കൂ! സഹായിക്കാൻ ഞാൻ ഇവിടെയുണ്ട്.",
+        "type_question": "നിങ്ങളുടെ ചോദ്യം ഇവിടെ ടൈപ്പ് ചെയ്യുക...",
+        
+        "write_prescription_header": "പ്രിസ്ക്രിപ്ഷൻ എഴുതുക",
+        "write_prescription_subheader": "ഓട്ടോമാറ്റിക് വിവർത്തനത്തോടെ പ്രിസ്ക്രിപ്ഷനുകൾ സൃഷ്ടിക്കുക",
+        "patient_name": "രോഗിയുടെ പേര്",
+        "medication_details": "മരുന്നിന്റെ വിശദാംശങ്ങൾ",
+        "dosage_frequency": "ഡോസ് & ആവൃത്തി",
+        "translate_to_patient_lang": "രോഗിയുടെ ഭാഷയിലേക്ക് വിവർത്തനം ചെയ്യുക",
+        
+        "health_records_header": "ആരോഗ്യ രേഖകൾ",
+        "health_records_subheader": "നിങ്ങളുടെ ഡിജിറ്റൽ ആരോഗ്യ ചരിത്രം ഒരു സ്ഥലത്ത്",
+        
+        "book_appointment_header": "അപ്പോയിന്റ്മെന്റ് ബുക്ക് ചെയ്യുക",
+        "book_appointment_subheader": "ഡോക്ടറുമായുള്ള നിങ്ങളുടെ കൂടിയാലോചന ഷെഡ്യൂൾ ചെയ്യുക",
+        "appointment_date": "അപ്പോയിന്റ്മെന്റ് തീയതി",
+        "appointment_time": "അപ്പോയിന്റ്മെന്റ് സമയം",
+        "preferred_language": "കൂടിയാലോചനയ്ക്കുള്ള ഇഷ്ട ഭാഷ",
+        "notes_reason": "കുറിപ്പുകൾ / സന്ദർശന കാരണം",
+        "book_appointment_btn": "അപ്പോയിന്റ്മെന്റ് ബുക്ക് ചെയ്യുക",
+        
+        "reminders_header": "എന്റെ റിമൈൻഡറുകൾ",
+        "reminders_subheader": "നിങ്ങളുടെ മരുന്നുകളോ അപ്പോയിന്റ്മെന്റുകളോ ഒരിക്കലും നഷ്ടപ്പെടുത്തരുത്",
+        
+        "medication_tracker_header": "മരുന്ന് ട്രാക്കർ",
+        "medication_tracker_subheader": "നിങ്ങളുടെ മരുന്നുകൾ ട്രാക്ക് ചെയ്യുകയും നിയന്ത്രിക്കുകയും ചെയ്യുക",
+        
+        "symptom_history_header": "ലക്ഷണ ചരിത്രം",
+        "symptom_history_subheader": "കാലക്രമത്തിൽ നിങ്ങളുടെ ആരോഗ്യ യാത്ര കാണുക",
+        
+        "family_accounts_header": "കുടുംബ അക്കൗണ്ടുകൾ",
+        "family_accounts_subheader": "നിങ്ങളുടെ കുടുംബാംഗങ്ങളുടെ ആരോഗ്യ രേഖകൾ നിയന്ത്രിക്കുക",
+        
+        "find_hospitals_header": "സമീപത്തുള്ള ആശുപത്രികൾ കണ്ടെത്തുക",
+        "find_hospitals_subheader": "നിങ്ങളുടെ സമീപത്തുള്ള ആശുപത്രികളും ആരോഗ്യ സൗകര്യങ്ങളും കണ്ടെത്തുക",
+        
         "sign_in": "സൈൻ ഇൻ",
         "sign_up": "സൈൻ അപ്പ്",
         "email": "ഇമെയിൽ",
@@ -1709,6 +2080,59 @@ TRANSLATIONS = {
         "disclaimer": "ਇਨਕਾਰ: ਇਹ ਡਾਕਟਰੀ ਤਸ਼ਖ਼ੀਸ ਨਹੀਂ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਯੋਗ ਸਿਹਤ ਪੇਸ਼ੇਵਰ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।",
         "enter_name": "ਕਿਰਪਾ ਕਰਕੇ ਸਾਈਡਬਾਰ ਵਿੱਚ ਆਪਣਾ ਨਾਮ ਦਰਜ ਕਰੋ",
         "login_required": "ਇਸ ਫੀਚਰ ਤੱਕ ਪਹੁੰਚਣ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਲੌਗਿਨ ਕਰੋ",
+        
+        "symptom_checker_header": "AI ਲੱਛਣ ਜਾਂਚਕਰਤਾ",
+        "symptom_checker_subheader": "ਆਪਣੇ ਲੱਛਣਾਂ ਦਾ ਵਰਣਨ ਕਰੋ ਅਤੇ ਤੁਰੰਤ AI ਵਿਸ਼ਲੇਸ਼ਣ ਪ੍ਰਾਪਤ ਕਰੋ",
+        "important": "ਮਹੱਤਵਪੂਰਨ",
+        "medical_disclaimer": "ਇਹ ਡਾਕਟਰੀ ਤਸ਼ਖ਼ੀਸ ਨਹੀਂ ਹੈ। ਸਹੀ ਡਾਕਟਰੀ ਸਲਾਹ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਯੋਗ ਡਾਕਟਰ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।",
+        "text_input": "ਟੈਕਸਟ ਇਨਪੁੱਟ",
+        "voice_input": "ਵੌਇਸ ਇਨਪੁੱਟ",
+        "tell_us_experiencing": "ਸਾਨੂੰ ਦੱਸੋ ਤੁਸੀਂ ਕੀ ਅਨੁਭਵ ਕਰ ਰਹੇ ਹੋ",
+        "symptom_placeholder": "ਉਦਾਹਰਨ: ਪਿਛਲੇ 3 ਦਿਨਾਂ ਤੋਂ ਮੈਨੂੰ ਬੁਖਾਰ, ਸਿਰਦਰਦ ਅਤੇ ਸਰੀਰ ਦਰਦ ਹੈ...",
+        "please_describe_symptoms": "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੇ ਲੱਛਣ ਦੱਸੋ",
+        "saved_success": "ਸਫਲਤਾਪੂਰਵਕ ਸੇਵ ਹੋਇਆ!",
+        "record_symptoms": "ਆਪਣੇ ਲੱਛਣ ਰਿਕਾਰਡ ਕਰੋ",
+        "click_mic_record": "ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ ਲੱਛਣ ਰਿਕਾਰਡ ਕਰਨ ਲਈ ਮਾਈਕ੍ਰੋਫੋਨ ਤੇ ਕਲਿੱਕ ਕਰੋ",
+        "click_to_record": "ਰਿਕਾਰਡ ਕਰਨ ਲਈ ਕਲਿੱਕ ਕਰੋ",
+        "transcribe_analyze": "ਟ੍ਰਾਂਸਕ੍ਰਾਈਬ ਅਤੇ ਵਿਸ਼ਲੇਸ਼ਣ ਕਰੋ",
+        
+        "ai_chat_header": "AI ਡਾਕਟਰੀ ਚੈਟ ਸਹਾਇਕ",
+        "ai_chat_subheader": "ਸਿਹਤ ਸਵਾਲ ਪੁੱਛੋ ਅਤੇ ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ ਤੁਰੰਤ ਜਵਾਬ ਪ੍ਰਾਪਤ ਕਰੋ",
+        "chat_help_tip": "ਮੈਨੂੰ ਆਪਣੀ ਪਸੰਦ ਦੀ ਭਾਸ਼ਾ ਵਿੱਚ ਸਿਹਤ ਸੰਬੰਧੀ ਸਵਾਲ ਪੁੱਛੋ! ਮੈਂ ਮਦਦ ਕਰਨ ਲਈ ਇੱਥੇ ਹਾਂ।",
+        "type_question": "ਇੱਥੇ ਆਪਣਾ ਸਵਾਲ ਲਿਖੋ...",
+        
+        "write_prescription_header": "ਪਰਚਾ ਲਿਖੋ",
+        "write_prescription_subheader": "ਆਟੋਮੈਟਿਕ ਅਨੁਵਾਦ ਨਾਲ ਪਰਚੇ ਬਣਾਓ",
+        "patient_name": "ਮਰੀਜ਼ ਦਾ ਨਾਮ",
+        "medication_details": "ਦਵਾਈ ਵੇਰਵੇ",
+        "dosage_frequency": "ਖ਼ੁਰਾਕ ਅਤੇ ਬਾਰੰਬਾਰਤਾ",
+        "translate_to_patient_lang": "ਮਰੀਜ਼ ਦੀ ਭਾਸ਼ਾ ਵਿੱਚ ਅਨੁਵਾਦ ਕਰੋ",
+        
+        "health_records_header": "ਸਿਹਤ ਰਿਕਾਰਡ",
+        "health_records_subheader": "ਤੁਹਾਡਾ ਡਿਜੀਟਲ ਸਿਹਤ ਇਤਿਹਾਸ ਇੱਕ ਥਾਂ ਤੇ",
+        
+        "book_appointment_header": "ਅਪੁਆਇੰਟਮੈਂਟ ਬੁੱਕ ਕਰੋ",
+        "book_appointment_subheader": "ਡਾਕਟਰ ਨਾਲ ਆਪਣੀ ਸਲਾਹ ਸ਼ਡਿਊਲ ਕਰੋ",
+        "appointment_date": "ਅਪੁਆਇੰਟਮੈਂਟ ਤਾਰੀਖ਼",
+        "appointment_time": "ਅਪੁਆਇੰਟਮੈਂਟ ਸਮਾਂ",
+        "preferred_language": "ਸਲਾਹ ਲਈ ਪਸੰਦੀਦਾ ਭਾਸ਼ਾ",
+        "notes_reason": "ਨੋਟਸ / ਮਿਲਣ ਦਾ ਕਾਰਨ",
+        "book_appointment_btn": "ਅਪੁਆਇੰਟਮੈਂਟ ਬੁੱਕ ਕਰੋ",
+        
+        "reminders_header": "ਮੇਰੇ ਰਿਮਾਇੰਡਰ",
+        "reminders_subheader": "ਆਪਣੀਆਂ ਦਵਾਈਆਂ ਜਾਂ ਅਪੁਆਇੰਟਮੈਂਟਾਂ ਕਦੇ ਨਾ ਭੁੱਲੋ",
+        
+        "medication_tracker_header": "ਦਵਾਈ ਟ੍ਰੈਕਰ",
+        "medication_tracker_subheader": "ਆਪਣੀਆਂ ਦਵਾਈਆਂ ਟ੍ਰੈਕ ਅਤੇ ਪ੍ਰਬੰਧਿਤ ਕਰੋ",
+        
+        "symptom_history_header": "ਲੱਛਣ ਇਤਿਹਾਸ",
+        "symptom_history_subheader": "ਸਮੇਂ ਦੇ ਨਾਲ ਆਪਣੀ ਸਿਹਤ ਯਾਤਰਾ ਦੇਖੋ",
+        
+        "family_accounts_header": "ਪਰਿਵਾਰ ਖਾਤੇ",
+        "family_accounts_subheader": "ਆਪਣੇ ਪਰਿਵਾਰ ਦੇ ਮੈਂਬਰਾਂ ਦੇ ਸਿਹਤ ਰਿਕਾਰਡ ਪ੍ਰਬੰਧਿਤ ਕਰੋ",
+        
+        "find_hospitals_header": "ਨੇੜੇ ਦੇ ਹਸਪਤਾਲ ਲੱਭੋ",
+        "find_hospitals_subheader": "ਆਪਣੇ ਨੇੜੇ ਹਸਪਤਾਲ ਅਤੇ ਸਿਹਤ ਸਹੂਲਤਾਂ ਲੱਭੋ",
         
         "sign_in": "ਸਾਈਨ ਇਨ",
         "sign_up": "ਸਾਈਨ ਅੱਪ",
