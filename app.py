@@ -794,11 +794,12 @@ def sidebar_navigation():
 
 def symptom_checker_page():
     inject_custom_css()
+    lang = st.session_state.user_language
     
-    st.markdown("""
+    st.markdown(f"""
     <div class="main-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-        <h1>🔍 AI Symptom Checker</h1>
-        <p>Describe your symptoms and get instant AI-powered analysis</p>
+        <h1>🔍 {get_text('symptom_checker_header', lang)}</h1>
+        <p>{get_text('symptom_checker_subheader', lang)}</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -808,23 +809,23 @@ def symptom_checker_page():
     </div>
     """, unsafe_allow_html=True)
     
-    st.markdown("""
+    st.markdown(f"""
     <div class="info-box warning">
-        ⚠️ <strong>Important:</strong> This is not a medical diagnosis. Please consult a qualified doctor for proper medical advice.
+        ⚠️ <strong>{get_text('important', lang)}:</strong> {get_text('medical_disclaimer', lang)}
     </div>
     """, unsafe_allow_html=True)
     
-    tab1, tab2 = st.tabs(["💬 Text Input", "🎤 Voice Input"])
+    tab1, tab2 = st.tabs([f"💬 {get_text('text_input', lang)}", f"🎤 {get_text('voice_input', lang)}"])
     
     with tab1:
-        st.markdown("### Describe Your Symptoms")
+        st.markdown(f"### {get_text('describe_symptoms', lang)}")
         symptoms_text = st.text_area(
-            "Tell us what you're experiencing",
-            placeholder=f"Example: I have a fever, headache, and body pain for the last 3 days...",
+            get_text('tell_us_experiencing', lang),
+            placeholder=get_text('symptom_placeholder', lang),
             height=150
         )
         
-        if st.button("🔍 Analyze Symptoms", type="primary"):
+        if st.button(f"🔍 {get_text('analyze_symptoms', lang)}", type="primary"):
             if symptoms_text:
                 with st.spinner("Analyzing your symptoms..."):
                     analysis = ai_helper.analyze_symptoms(symptoms_text, st.session_state.user_language)
@@ -923,7 +924,7 @@ def symptom_checker_page():
                             """, unsafe_allow_html=True)
                         
                         if st.session_state.patient_name:
-                            if st.button("💾 Save to Health Records", type="primary"):
+                            if st.button(f"💾 {get_text('save_to_records', lang)}", type="primary"):
                                 data_manager.add_health_record(
                                     patient_name=st.session_state.patient_name,
                                     record_type="Symptom Analysis",
@@ -931,18 +932,18 @@ def symptom_checker_page():
                                     language=st.session_state.user_language,
                                     report_data=analysis
                                 )
-                                st.success("✅ Saved to your health records!")
+                                st.success(f"✅ {get_text('saved_success', lang)}")
                     else:
                         st.error(f"Error: {analysis.get('error', 'Unknown error')}")
             else:
-                st.warning("Please describe your symptoms")
+                st.warning(get_text('please_describe_symptoms', lang))
     
     with tab2:
-        st.markdown("### 🎤 Record Your Symptoms")
-        st.write("Click the microphone to record your symptoms in your language")
+        st.markdown(f"### 🎤 {get_text('record_symptoms', lang)}")
+        st.write(get_text('click_mic_record', lang))
         
         audio_bytes = audio_recorder(
-            text="Click to record",
+            text=get_text('click_to_record', lang),
             recording_color="#e74c3c",
             neutral_color="#3498db",
             icon_size="2x"
@@ -951,7 +952,7 @@ def symptom_checker_page():
         if audio_bytes:
             st.audio(audio_bytes, format="audio/wav")
             
-            if st.button("🔄 Transcribe & Analyze", type="primary"):
+            if st.button(f"🔄 {get_text('transcribe_analyze', lang)}", type="primary"):
                 with st.spinner("Processing audio..."):
                     with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as fp:
                         fp.write(audio_bytes)
@@ -1026,11 +1027,12 @@ def symptom_checker_page():
 
 def ai_chat_page():
     inject_custom_css()
+    lang = st.session_state.user_language
     
-    st.markdown("""
+    st.markdown(f"""
     <div class="main-header" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
-        <h1>💬 AI Medical Chat Assistant</h1>
-        <p>Ask health questions and get instant responses in your language</p>
+        <h1>💬 {get_text('ai_chat_header', lang)}</h1>
+        <p>{get_text('ai_chat_subheader', lang)}</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -1040,9 +1042,9 @@ def ai_chat_page():
     </div>
     """, unsafe_allow_html=True)
     
-    st.markdown("""
+    st.markdown(f"""
     <div class="info-box info">
-        💡 Ask me health-related questions in your preferred language! I'm here to help.
+        💡 {get_text('chat_help_tip', lang)}
     </div>
     """, unsafe_allow_html=True)
     
@@ -1050,7 +1052,7 @@ def ai_chat_page():
         with st.chat_message(message["role"]):
             st.write(message["content"])
     
-    user_input = st.chat_input("Type your question here...")
+    user_input = st.chat_input(get_text('type_question', lang))
     
     if user_input:
         st.session_state.chat_history.append({"role": "user", "content": user_input})
@@ -1161,27 +1163,28 @@ def translation_chat_page():
 
 def prescription_page():
     inject_custom_css()
+    lang = st.session_state.user_language
     
     if st.session_state.user_role == "Doctor":
-        st.markdown("""
+        st.markdown(f"""
         <div class="main-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-            <h1>📝 Write Prescription</h1>
-            <p>Create prescriptions with automatic translation</p>
+            <h1>📝 {get_text('write_prescription_header', lang)}</h1>
+            <p>{get_text('write_prescription_subheader', lang)}</p>
         </div>
         """, unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         
         with col1:
-            patient_name = st.text_input("Patient Name")
-            doctor_name = st.text_input("Doctor Name")
-            medication = st.text_area("Medication Details", height=100)
+            patient_name = st.text_input(get_text('patient_name', lang))
+            doctor_name = st.text_input(get_text('doctor_name', lang))
+            medication = st.text_area(get_text('medication_details', lang), height=100)
         
         with col2:
-            dosage = st.text_input("Dosage & Frequency")
-            instructions = st.text_area("Instructions", height=100)
+            dosage = st.text_input(get_text('dosage_frequency', lang))
+            instructions = st.text_area(get_text('instructions', lang), height=100)
             patient_language = st.selectbox(
-                "Translate to Patient's Language",
+                get_text('translate_to_patient_lang', lang),
                 options=list(ai_helper.SUPPORTED_LANGUAGES.keys())
             )
         
@@ -1284,11 +1287,12 @@ Instructions: {instructions}
 
 def health_records_page():
     inject_custom_css()
+    lang = st.session_state.user_language
     
-    st.markdown("""
+    st.markdown(f"""
     <div class="main-header" style="background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);">
-        <h1>📁 Health Records</h1>
-        <p>Your digital health history in one place</p>
+        <h1>📁 {get_text('health_records_header', lang)}</h1>
+        <p>{get_text('health_records_subheader', lang)}</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -1338,31 +1342,32 @@ def health_records_page():
 
 def appointment_booking_page():
     inject_custom_css()
+    lang = st.session_state.user_language
     
-    st.markdown("""
+    st.markdown(f"""
     <div class="main-header" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
-        <h1>📅 Book Appointment</h1>
-        <p>Schedule your consultation with a doctor</p>
+        <h1>📅 {get_text('book_appointment_header', lang)}</h1>
+        <p>{get_text('book_appointment_subheader', lang)}</p>
     </div>
     """, unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     
     with col1:
-        patient_name = st.text_input("Patient Name", value=st.session_state.patient_name)
-        doctor_name = st.text_input("Doctor Name")
-        appointment_date = st.date_input("Appointment Date", min_value=datetime.now().date())
+        patient_name = st.text_input(get_text('patient_name', lang), value=st.session_state.patient_name)
+        doctor_name = st.text_input(get_text('doctor_name', lang))
+        appointment_date = st.date_input(get_text('appointment_date', lang), min_value=datetime.now().date())
     
     with col2:
-        appointment_time = st.time_input("Appointment Time")
+        appointment_time = st.time_input(get_text('appointment_time', lang))
         language = st.selectbox(
-            "Preferred Language for Consultation",
+            get_text('preferred_language', lang),
             options=list(ai_helper.SUPPORTED_LANGUAGES.keys()),
             index=list(ai_helper.SUPPORTED_LANGUAGES.keys()).index(st.session_state.user_language)
         )
-        notes = st.text_area("Notes / Reason for Visit")
+        notes = st.text_area(get_text('notes_reason', lang))
     
-    if st.button("📅 Book Appointment", type="primary"):
+    if st.button(f"📅 {get_text('book_appointment_btn', lang)}", type="primary"):
         if patient_name and doctor_name:
             appointment = data_manager.add_appointment(
                 patient_name=patient_name,
@@ -1430,11 +1435,12 @@ def view_appointments_doctor():
 
 def reminders_page():
     inject_custom_css()
+    lang = st.session_state.user_language
     
-    st.markdown("""
+    st.markdown(f"""
     <div class="main-header" style="background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);">
-        <h1>🔔 My Reminders</h1>
-        <p>Never miss your medications or appointments</p>
+        <h1>🔔 {get_text('reminders_header', lang)}</h1>
+        <p>{get_text('reminders_subheader', lang)}</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -1481,11 +1487,12 @@ def reminders_page():
 
 def medication_tracker_page():
     inject_custom_css()
+    lang = st.session_state.user_language
     
-    st.markdown("""
+    st.markdown(f"""
     <div class="main-header" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);">
-        <h1>💊 Medication Tracker</h1>
-        <p>Track and manage your medications</p>
+        <h1>💊 {get_text('medication_tracker_header', lang)}</h1>
+        <p>{get_text('medication_tracker_subheader', lang)}</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -1576,11 +1583,12 @@ def medication_tracker_page():
 
 def symptom_history_page():
     inject_custom_css()
+    lang = st.session_state.user_language
     
-    st.markdown("""
+    st.markdown(f"""
     <div class="main-header" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
-        <h1>📊 Symptom History</h1>
-        <p>Visualize your health journey over time</p>
+        <h1>📊 {get_text('symptom_history_header', lang)}</h1>
+        <p>{get_text('symptom_history_subheader', lang)}</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -1639,11 +1647,12 @@ def symptom_history_page():
 
 def family_accounts_page():
     inject_custom_css()
+    lang = st.session_state.user_language
     
-    st.markdown("""
+    st.markdown(f"""
     <div class="main-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-        <h1>👨‍👩‍👧 Family Accounts</h1>
-        <p>Manage health records for your family members</p>
+        <h1>👨‍👩‍👧 {get_text('family_accounts_header', lang)}</h1>
+        <p>{get_text('family_accounts_subheader', lang)}</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -1722,14 +1731,15 @@ def family_accounts_page():
 
 def find_hospitals_page():
     inject_custom_css()
+    lang = st.session_state.user_language
     
     theme_mode = st.session_state.get('theme_mode', 'Light')
     is_light_theme = theme_mode == 'Light'
     
-    st.markdown("""
+    st.markdown(f"""
     <div class="main-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
-        <h1>🏥 Find Nearby Hospitals</h1>
-        <p>Locate hospitals and healthcare facilities near you</p>
+        <h1>🏥 {get_text('find_hospitals_header', lang)}</h1>
+        <p>{get_text('find_hospitals_subheader', lang)}</p>
     </div>
     """, unsafe_allow_html=True)
     

@@ -146,6 +146,59 @@ TRANSLATIONS = {
         "enter_name": "Please enter your name in the sidebar",
         "login_required": "Please log in to access this feature",
         
+        "symptom_checker_header": "AI Symptom Checker",
+        "symptom_checker_subheader": "Describe your symptoms and get instant AI-powered analysis",
+        "important": "Important",
+        "medical_disclaimer": "This is not a medical diagnosis. Please consult a qualified doctor for proper medical advice.",
+        "text_input": "Text Input",
+        "voice_input": "Voice Input",
+        "tell_us_experiencing": "Tell us what you're experiencing",
+        "symptom_placeholder": "Example: I have a fever, headache, and body pain for the last 3 days...",
+        "please_describe_symptoms": "Please describe your symptoms",
+        "saved_success": "Saved successfully!",
+        "record_symptoms": "Record Your Symptoms",
+        "click_mic_record": "Click the microphone to record your symptoms in your language",
+        "click_to_record": "Click to record",
+        "transcribe_analyze": "Transcribe & Analyze",
+        
+        "ai_chat_header": "AI Medical Chat Assistant",
+        "ai_chat_subheader": "Ask health questions and get instant responses in your language",
+        "chat_help_tip": "Ask me health-related questions in your preferred language! I'm here to help.",
+        "type_question": "Type your question here...",
+        
+        "write_prescription_header": "Write Prescription",
+        "write_prescription_subheader": "Create prescriptions with automatic translation",
+        "patient_name": "Patient Name",
+        "medication_details": "Medication Details",
+        "dosage_frequency": "Dosage & Frequency",
+        "translate_to_patient_lang": "Translate to Patient's Language",
+        
+        "health_records_header": "Health Records",
+        "health_records_subheader": "Your digital health history in one place",
+        
+        "book_appointment_header": "Book Appointment",
+        "book_appointment_subheader": "Schedule your consultation with a doctor",
+        "appointment_date": "Appointment Date",
+        "appointment_time": "Appointment Time",
+        "preferred_language": "Preferred Language for Consultation",
+        "notes_reason": "Notes / Reason for Visit",
+        "book_appointment_btn": "Book Appointment",
+        
+        "reminders_header": "My Reminders",
+        "reminders_subheader": "Never miss your medications or appointments",
+        
+        "medication_tracker_header": "Medication Tracker",
+        "medication_tracker_subheader": "Track and manage your medications",
+        
+        "symptom_history_header": "Symptom History",
+        "symptom_history_subheader": "Visualize your health journey over time",
+        
+        "family_accounts_header": "Family Accounts",
+        "family_accounts_subheader": "Manage health records for your family members",
+        
+        "find_hospitals_header": "Find Nearby Hospitals",
+        "find_hospitals_subheader": "Locate hospitals and healthcare facilities near you",
+        
         "sign_in": "Sign In",
         "sign_up": "Sign Up",
         "email": "Email",
@@ -307,6 +360,59 @@ TRANSLATIONS = {
         "disclaimer": "अस्वीकरण: यह चिकित्सा निदान नहीं है। कृपया किसी योग्य स्वास्थ्य पेशेवर से परामर्श करें।",
         "enter_name": "कृपया साइडबार में अपना नाम दर्ज करें",
         "login_required": "इस सुविधा तक पहुंचने के लिए कृपया लॉग इन करें",
+        
+        "symptom_checker_header": "AI लक्षण जांचकर्ता",
+        "symptom_checker_subheader": "अपने लक्षणों का वर्णन करें और तुरंत AI विश्लेषण प्राप्त करें",
+        "important": "महत्वपूर्ण",
+        "medical_disclaimer": "यह चिकित्सा निदान नहीं है। उचित चिकित्सा सलाह के लिए कृपया एक योग्य डॉक्टर से परामर्श करें।",
+        "text_input": "टेक्स्ट इनपुट",
+        "voice_input": "आवाज इनपुट",
+        "tell_us_experiencing": "हमें बताएं आप क्या अनुभव कर रहे हैं",
+        "symptom_placeholder": "उदाहरण: मुझे पिछले 3 दिनों से बुखार, सिरदर्द और शरीर में दर्द है...",
+        "please_describe_symptoms": "कृपया अपने लक्षण बताएं",
+        "saved_success": "सफलतापूर्वक सहेजा गया!",
+        "record_symptoms": "अपने लक्षण रिकॉर्ड करें",
+        "click_mic_record": "अपनी भाषा में लक्षण रिकॉर्ड करने के लिए माइक्रोफोन पर क्लिक करें",
+        "click_to_record": "रिकॉर्ड करने के लिए क्लिक करें",
+        "transcribe_analyze": "ट्रांसक्राइब और विश्लेषण करें",
+        
+        "ai_chat_header": "AI चिकित्सा चैट सहायक",
+        "ai_chat_subheader": "स्वास्थ्य प्रश्न पूछें और अपनी भाषा में तुरंत जवाब पाएं",
+        "chat_help_tip": "मुझसे अपनी पसंदीदा भाषा में स्वास्थ्य संबंधी प्रश्न पूछें! मैं मदद के लिए यहां हूं।",
+        "type_question": "यहां अपना प्रश्न लिखें...",
+        
+        "write_prescription_header": "प्रिस्क्रिप्शन लिखें",
+        "write_prescription_subheader": "स्वचालित अनुवाद के साथ प्रिस्क्रिप्शन बनाएं",
+        "patient_name": "मरीज का नाम",
+        "medication_details": "दवाई विवरण",
+        "dosage_frequency": "खुराक और आवृत्ति",
+        "translate_to_patient_lang": "मरीज की भाषा में अनुवाद करें",
+        
+        "health_records_header": "स्वास्थ्य रिकॉर्ड",
+        "health_records_subheader": "आपका डिजिटल स्वास्थ्य इतिहास एक जगह",
+        
+        "book_appointment_header": "अपॉइंटमेंट बुक करें",
+        "book_appointment_subheader": "डॉक्टर से अपना परामर्श शेड्यूल करें",
+        "appointment_date": "अपॉइंटमेंट तारीख",
+        "appointment_time": "अपॉइंटमेंट समय",
+        "preferred_language": "परामर्श के लिए पसंदीदा भाषा",
+        "notes_reason": "नोट्स / मिलने का कारण",
+        "book_appointment_btn": "अपॉइंटमेंट बुक करें",
+        
+        "reminders_header": "मेरे रिमाइंडर",
+        "reminders_subheader": "अपनी दवाइयां या अपॉइंटमेंट कभी न भूलें",
+        
+        "medication_tracker_header": "दवाई ट्रैकर",
+        "medication_tracker_subheader": "अपनी दवाइयां ट्रैक और प्रबंधित करें",
+        
+        "symptom_history_header": "लक्षण इतिहास",
+        "symptom_history_subheader": "समय के साथ अपनी स्वास्थ्य यात्रा देखें",
+        
+        "family_accounts_header": "परिवार खाते",
+        "family_accounts_subheader": "अपने परिवार के सदस्यों के स्वास्थ्य रिकॉर्ड प्रबंधित करें",
+        
+        "find_hospitals_header": "नजदीकी अस्पताल खोजें",
+        "find_hospitals_subheader": "अपने पास अस्पताल और स्वास्थ्य सुविधाएं खोजें",
         
         "sign_in": "साइन इन",
         "sign_up": "साइन अप",
