@@ -2091,6 +2091,25 @@ def support_page():
         
         st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
         
+        st.markdown("### 📧 Email Support")
+        
+        support_email = "ishanjharia63527@gmail.com"
+        st.markdown(f"""
+        <div style="text-align: center; padding: 1rem;">
+            <p style="font-size: 1rem; margin-bottom: 1rem;">
+                Send us an email for detailed queries
+            </p>
+            <a href="mailto:{support_email}?subject=Arogya%20Mitra%20Support%20Request" style="text-decoration: none;">
+                <button style="background: #6366f1; color: white; border: none; padding: 1rem 2rem; 
+                              border-radius: 12px; cursor: pointer; font-size: 1.1rem; font-weight: 600;">
+                    📧 {support_email}
+                </button>
+            </a>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+        
         st.markdown("""
         <div class="info-box warning">
             <strong>⏰ Support Hours:</strong> Monday to Saturday, 9 AM - 6 PM IST<br>
