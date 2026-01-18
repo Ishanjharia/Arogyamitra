@@ -2073,7 +2073,7 @@ def support_page():
         </div>
         """, unsafe_allow_html=True)
         
-        whatsapp_number = "919876543210"
+        whatsapp_number = "919131132558"
         user_lang_code = lang.split()[0] if lang else "English"
         whatsapp_message = f"Hello! I need help with Arogya Mitra. My preferred language is {user_lang_code}."
         whatsapp_url = f"https://wa.me/{whatsapp_number}?text={whatsapp_message.replace(' ', '%20')}"
