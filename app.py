@@ -12,6 +12,7 @@ from streamlit_theme import st_theme
 import ai_helper
 import data_manager
 import auth_manager
+from translations import get_text, get_greeting, get_nav_items, TRANSLATIONS
 
 def sync_theme_with_streamlit():
     """Sync our custom theme with Streamlit's active theme"""
@@ -754,9 +755,10 @@ def sidebar_navigation():
         
         st.markdown("---")
         
-        st.markdown("### 🌐 Language Preference")
+        lang = st.session_state.user_language
+        st.markdown(f"### 🌐 {get_text('language_preference', lang)}")
         selected_language = st.selectbox(
-            "Select your language",
+            get_text("select_language", lang),
             options=list(ai_helper.SUPPORTED_LANGUAGES.keys()),
             index=list(ai_helper.SUPPORTED_LANGUAGES.keys()).index(st.session_state.user_language)
         )
@@ -766,40 +768,19 @@ def sidebar_navigation():
                 auth_manager.update_user(st.session_state.current_user['id'], language=selected_language)
                 st.session_state.current_user['language'] = selected_language
                 st.toast(f"Language saved: {selected_language}")
+            st.rerun()
         st.session_state.user_language = selected_language
         
         st.markdown("---")
         
-        if st.session_state.user_role == "Patient":
-            menu_options = [
-                "🏠 Home",
-                "🔍 Symptom Checker",
-                "📊 Symptom History",
-                "💬 Chat with AI",
-                "📋 My Prescriptions",
-                "📁 Health Records",
-                "📅 Book Appointment",
-                "🔔 My Reminders",
-                "💊 Medication Tracker",
-                "🏥 Find Hospitals",
-                "👨‍👩‍👧 Family Accounts"
-            ]
-        else:
-            menu_options = [
-                "🏠 Home",
-                "💬 AI Chat Assistant",
-                "🌐 Patient-Doctor Translation",
-                "📝 Write Prescription",
-                "📅 View Appointments",
-                "📊 Patient Records"
-            ]
+        menu_options = get_nav_items(st.session_state.user_role, lang)
         
         st.markdown("---")
         
         selected_menu = st.radio("Navigation", menu_options, label_visibility="collapsed", key="nav_radio")
         
         st.markdown("---")
-        if st.button("🚪 Logout", use_container_width=True):
+        if st.button(f"🚪 {get_text('logout', lang)}", use_container_width=True):
             st.session_state.authenticated = False
             st.session_state.current_user = None
             st.session_state.user_role = None
@@ -1995,13 +1976,15 @@ def patient_records_doctor():
 
 def home_page():
     inject_custom_css()
+    lang = st.session_state.user_language
     
     user_name = st.session_state.current_user['name'] if st.session_state.current_user else st.session_state.user_role
+    greeting = get_greeting(lang)
     
     st.markdown(f"""
     <div class="welcome-banner">
-        <h2>🙏 Namaste, {user_name}!</h2>
-        <p style="color: #9d174d; margin-top: 0.5rem;">Welcome to Arogya Mitra - Your Health Friend</p>
+        <h2>🙏 {greeting}, {user_name}!</h2>
+        <p style="color: #9d174d; margin-top: 0.5rem;">{get_text('welcome_message', lang)}</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -2016,14 +1999,14 @@ def home_page():
         health_tip = get_health_tip(st.session_state.user_language)
         st.markdown(f"""
         <div class="info-box info">
-            <strong>💡 Health Tip of the Day:</strong><br>
+            <strong>💡 {get_text('health_tip', lang)}:</strong><br>
             {health_tip}
         </div>
         """, unsafe_allow_html=True)
         
         st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
         
-        st.markdown("### 📊 Recent Activity")
+        st.markdown(f"### 📊 {get_text('recent_activity', lang)}")
         activities = get_recent_activity(st.session_state.patient_name)
         
         if activities:
@@ -2035,60 +2018,60 @@ def home_page():
                 </div>
                 """, unsafe_allow_html=True)
         else:
-            st.info("No recent activity yet. Start by checking your symptoms or booking an appointment!")
+            st.info(get_text('no_recent_activity', lang))
         
         st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
         
-        st.markdown("### 🎯 Features")
+        st.markdown(f"### 🎯 {get_text('features', lang)}")
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            st.markdown("""
+            st.markdown(f"""
             <div class="feature-card green">
-                <h3>🔍 Symptom Checker</h3>
-                <p>AI-powered health analysis in your language</p>
+                <h3>🔍 {get_text('symptom_checker_title', lang)}</h3>
+                <p>{get_text('symptom_checker_desc', lang)}</p>
             </div>
             """, unsafe_allow_html=True)
             
         with col2:
-            st.markdown("""
+            st.markdown(f"""
             <div class="feature-card blue">
-                <h3>💬 AI Health Chat</h3>
-                <p>Get instant health answers</p>
+                <h3>💬 {get_text('chat_title', lang)}</h3>
+                <p>{get_text('chat_desc', lang)}</p>
             </div>
             """, unsafe_allow_html=True)
         
         with col3:
-            st.markdown("""
+            st.markdown(f"""
             <div class="feature-card purple">
-                <h3>📅 Appointments</h3>
-                <p>Easy doctor booking</p>
+                <h3>📅 {get_text('appointments_title', lang)}</h3>
+                <p>{get_text('appointments_desc', lang)}</p>
             </div>
             """, unsafe_allow_html=True)
         
         col4, col5, col6 = st.columns(3)
         
         with col4:
-            st.markdown("""
+            st.markdown(f"""
             <div class="feature-card orange">
-                <h3>📋 Prescriptions</h3>
-                <p>Translated medications</p>
+                <h3>📋 {get_text('prescriptions_title', lang)}</h3>
+                <p>{get_text('prescriptions_desc', lang)}</p>
             </div>
             """, unsafe_allow_html=True)
         
         with col5:
-            st.markdown("""
+            st.markdown(f"""
             <div class="feature-card pink">
-                <h3>📁 Health Records</h3>
-                <p>Digital health history</p>
+                <h3>📁 {get_text('health_records_title', lang)}</h3>
+                <p>{get_text('health_records_desc', lang)}</p>
             </div>
             """, unsafe_allow_html=True)
         
         with col6:
-            st.markdown("""
+            st.markdown(f"""
             <div class="feature-card teal">
-                <h3>🔔 Reminders</h3>
-                <p>Never miss medications</p>
+                <h3>🔔 {get_text('reminders_title', lang)}</h3>
+                <p>{get_text('reminders_desc', lang)}</p>
             </div>
             """, unsafe_allow_html=True)
         
@@ -2168,35 +2151,45 @@ def main():
         role_selection_page()
     else:
         menu = sidebar_navigation()
+        lang = st.session_state.user_language
+        menu_options = get_nav_items(st.session_state.user_role, lang)
         
-        if menu == "🏠 Home":
-            home_page()
-        elif menu == "🔍 Symptom Checker":
-            symptom_checker_page()
-        elif menu == "💬 Chat with AI" or menu == "💬 AI Chat Assistant":
-            ai_chat_page()
-        elif menu == "🌐 Patient-Doctor Translation":
-            translation_chat_page()
-        elif menu == "📝 Write Prescription" or menu == "📋 My Prescriptions":
-            prescription_page()
-        elif menu == "📁 Health Records":
-            health_records_page()
-        elif menu == "📅 Book Appointment":
-            appointment_booking_page()
-        elif menu == "📅 View Appointments":
-            view_appointments_doctor()
-        elif menu == "🔔 My Reminders":
-            reminders_page()
-        elif menu == "💊 Medication Tracker":
-            medication_tracker_page()
-        elif menu == "📊 Symptom History":
-            symptom_history_page()
-        elif menu == "🏥 Find Hospitals":
-            find_hospitals_page()
-        elif menu == "👨‍👩‍👧 Family Accounts":
-            family_accounts_page()
-        elif menu == "📊 Patient Records":
-            patient_records_doctor()
+        try:
+            menu_index = menu_options.index(menu)
+        except ValueError:
+            menu_index = 0
+        
+        if st.session_state.user_role == "Patient":
+            patient_pages = [
+                home_page,
+                symptom_checker_page,
+                symptom_history_page,
+                ai_chat_page,
+                prescription_page,
+                health_records_page,
+                appointment_booking_page,
+                reminders_page,
+                medication_tracker_page,
+                find_hospitals_page,
+                family_accounts_page
+            ]
+            if menu_index < len(patient_pages):
+                patient_pages[menu_index]()
+            else:
+                home_page()
+        else:
+            doctor_pages = [
+                home_page,
+                ai_chat_page,
+                translation_chat_page,
+                prescription_page,
+                view_appointments_doctor,
+                patient_records_doctor
+            ]
+            if menu_index < len(doctor_pages):
+                doctor_pages[menu_index]()
+            else:
+                home_page()
 
 if __name__ == "__main__":
     main()
