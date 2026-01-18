@@ -11,6 +11,11 @@ A comprehensive multilingual healthcare platform that enables seamless communica
 **Last Updated:** January 18, 2026
 
 ## Recent Updates (January 2026)
+- **User Support Feature** - Complete support system for users
+  - FAQ section with common questions and answers (localized for all 10 languages)
+  - Contact Support form to submit support tickets
+  - WhatsApp support integration for instant help
+  - Support ticket tracking with status updates
 - **Full UI Localization** - Complete interface translation for all 10 supported languages
   - Navigation menus, page headers, buttons, labels all translate dynamically
   - translations.py module with 50+ translation keys per language
