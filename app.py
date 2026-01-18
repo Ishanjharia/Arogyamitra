@@ -1943,6 +1943,161 @@ def find_hospitals_page():
     else:
         st.warning("Please enter your name in the sidebar")
 
+def support_page():
+    inject_custom_css()
+    lang = st.session_state.user_language
+    
+    theme_mode = st.session_state.get('theme_mode', 'Light')
+    is_light_theme = theme_mode == 'Light'
+    
+    st.markdown(f"""
+    <div class="main-header" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+        <h1>❓ {get_text('support_header', lang)}</h1>
+        <p>{get_text('support_subheader', lang)}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    tab1, tab2, tab3 = st.tabs([
+        f"📚 {get_text('faq_title', lang)}", 
+        f"📝 {get_text('contact_support', lang)}", 
+        f"💬 {get_text('whatsapp_support', lang)}"
+    ])
+    
+    with tab1:
+        st.markdown(f"### 📚 {get_text('faq_title', lang)}")
+        
+        faq_items = [
+            ("faq_q1", "faq_a1"),
+            ("faq_q2", "faq_a2"),
+            ("faq_q3", "faq_a3"),
+            ("faq_q4", "faq_a4"),
+            ("faq_q5", "faq_a5"),
+        ]
+        
+        for q_key, a_key in faq_items:
+            question = get_text(q_key, lang)
+            answer = get_text(a_key, lang)
+            with st.expander(f"❓ {question}"):
+                st.markdown(f"**{answer}**")
+        
+        st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="info-box info">
+            <strong>💡 Tip:</strong> If you can't find your answer in the FAQ, 
+            use the Contact Support tab to submit a ticket or chat with us on WhatsApp.
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with tab2:
+        st.markdown(f"### 📝 {get_text('contact_support', lang)}")
+        
+        user_id = st.session_state.current_user.get('id') if st.session_state.current_user else None
+        user_name = st.session_state.current_user.get('name', '') if st.session_state.current_user else ''
+        user_email = st.session_state.current_user.get('email', '') if st.session_state.current_user else ''
+        
+        category_options = [
+            get_text('category_technical', lang),
+            get_text('category_account', lang),
+            get_text('category_appointment', lang),
+            get_text('category_prescription', lang),
+            get_text('category_other', lang)
+        ]
+        
+        category = st.selectbox(f"🏷️ {get_text('issue_category', lang)}", category_options)
+        
+        description = st.text_area(
+            f"📝 {get_text('describe_issue', lang)}", 
+            height=150,
+            placeholder="Please describe your issue in detail..."
+        )
+        
+        if st.button(f"📤 {get_text('submit_ticket', lang)}", type="primary", use_container_width=True):
+            if description:
+                result = data_manager.add_support_ticket(
+                    user_id=user_id,
+                    user_name=user_name,
+                    user_email=user_email,
+                    category=category,
+                    description=description,
+                    language=lang
+                )
+                
+                if result["success"]:
+                    st.success(f"✅ {get_text('ticket_submitted', lang)}")
+                    st.balloons()
+                else:
+                    st.error("❌ Failed to submit ticket. Please try again.")
+            else:
+                st.warning("Please describe your issue before submitting.")
+        
+        if user_id:
+            my_tickets = data_manager.get_support_tickets(user_id)
+            if my_tickets:
+                st.markdown("---")
+                st.markdown("### 📋 Your Previous Tickets")
+                
+                for ticket in sorted(my_tickets, key=lambda x: x['created_at'], reverse=True):
+                    card_bg = "#ffffff" if is_light_theme else "#1e293b"
+                    card_text = "#1e293b" if is_light_theme else "#ffffff"
+                    card_subtext = "#64748b" if is_light_theme else "#94a3b8"
+                    status_color = "#10b981" if ticket['status'] == "Resolved" else "#f59e0b" if ticket['status'] == "In Progress" else "#6366f1"
+                    
+                    st.markdown(f"""
+                    <div style="background: {card_bg}; border-radius: 12px; padding: 1rem; margin: 0.75rem 0;
+                                border-left: 4px solid {status_color};">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: {card_text}; font-weight: 600;">Ticket #{ticket['id']}</span>
+                            <span style="color: {status_color}; font-weight: 500;">{ticket['status']}</span>
+                        </div>
+                        <p style="color: {card_subtext}; margin: 0.5rem 0; font-size: 0.9rem;">
+                            🏷️ {ticket['category']}
+                        </p>
+                        <p style="color: {card_text}; margin: 0.5rem 0; font-size: 0.85rem;">
+                            {ticket['description'][:100]}{'...' if len(ticket['description']) > 100 else ''}
+                        </p>
+                        <p style="color: {card_subtext}; font-size: 0.8rem; margin-top: 0.5rem;">
+                            📅 {ticket['created_at'][:10]}
+                        </p>
+                    </div>
+                    """, unsafe_allow_html=True)
+    
+    with tab3:
+        st.markdown(f"### 💬 {get_text('whatsapp_support', lang)}")
+        
+        st.markdown("""
+        <div style="text-align: center; padding: 2rem;">
+            <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
+                Get instant help from our support team on WhatsApp
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        whatsapp_number = "919876543210"
+        user_lang_code = lang.split()[0] if lang else "English"
+        whatsapp_message = f"Hello! I need help with Arogya Mitra. My preferred language is {user_lang_code}."
+        whatsapp_url = f"https://wa.me/{whatsapp_number}?text={whatsapp_message.replace(' ', '%20')}"
+        
+        st.markdown(f"""
+        <div style="text-align: center;">
+            <a href="{whatsapp_url}" target="_blank" style="text-decoration: none;">
+                <button style="background: #25D366; color: white; border: none; padding: 1rem 2rem; 
+                              border-radius: 12px; cursor: pointer; font-size: 1.1rem; font-weight: 600;">
+                    💬 Chat on WhatsApp
+                </button>
+            </a>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="info-box warning">
+            <strong>⏰ Support Hours:</strong> Monday to Saturday, 9 AM - 6 PM IST<br>
+            We typically respond within 2-4 hours during business hours.
+        </div>
+        """, unsafe_allow_html=True)
+
 def patient_records_doctor():
     inject_custom_css()
     
@@ -2181,7 +2336,8 @@ def main():
                 reminders_page,
                 medication_tracker_page,
                 find_hospitals_page,
-                family_accounts_page
+                family_accounts_page,
+                support_page
             ]
             if menu_index < len(patient_pages):
                 patient_pages[menu_index]()
@@ -2194,7 +2350,8 @@ def main():
                 translation_chat_page,
                 prescription_page,
                 view_appointments_doctor,
-                patient_records_doctor
+                patient_records_doctor,
+                support_page
             ]
             if menu_index < len(doctor_pages):
                 doctor_pages[menu_index]()

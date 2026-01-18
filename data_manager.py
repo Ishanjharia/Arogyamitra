@@ -376,3 +376,40 @@ def delete_saved_hospital(hospital_id):
     hospitals = [h for h in hospitals if h['id'] != hospital_id]
     save_json_file(SAVED_HOSPITALS_FILE, hospitals)
     return True
+
+SUPPORT_TICKETS_FILE = os.path.join(DATA_DIR, "support_tickets.json")
+
+def ensure_support_tickets_file():
+    ensure_data_directory()
+    if not os.path.exists(SUPPORT_TICKETS_FILE):
+        with open(SUPPORT_TICKETS_FILE, 'w') as f:
+            json.dump([], f)
+
+def add_support_ticket(user_id, user_name, user_email, category, description, language):
+    ensure_support_tickets_file()
+    tickets = load_json_file(SUPPORT_TICKETS_FILE)
+    
+    ticket = {
+        "id": len(tickets) + 1,
+        "user_id": user_id,
+        "user_name": user_name,
+        "user_email": user_email,
+        "category": category,
+        "description": description,
+        "language": language,
+        "status": "Open",
+        "created_at": datetime.now().isoformat()
+    }
+    
+    tickets.append(ticket)
+    save_json_file(SUPPORT_TICKETS_FILE, tickets)
+    return {"success": True, "ticket": ticket}
+
+def get_support_tickets(user_id=None):
+    ensure_support_tickets_file()
+    tickets = load_json_file(SUPPORT_TICKETS_FILE)
+    
+    if user_id:
+        tickets = [t for t in tickets if t.get('user_id') == user_id]
+    
+    return tickets
