@@ -11,6 +11,11 @@ A comprehensive multilingual healthcare platform that enables seamless communica
 **Last Updated:** January 18, 2026
 
 ## Recent Updates (January 2026)
+- **CSS Injection Optimization** - Performance improvement for faster page loads
+  - CSS generation cached using @st.cache_data decorator
+  - Session state tracks current theme/size settings
+  - CSS only regenerates when theme or text size changes
+  - Cleaner rendering with reduced redundant style injection
 - **Context-Aware AI Responses** - Smart response adaptation based on user context
   - Patient responses: Short, simple, safe advice in everyday language
   - Doctor responses: Detailed clinical information with ICD codes, differential diagnoses

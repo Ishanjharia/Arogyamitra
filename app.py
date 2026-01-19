@@ -84,10 +84,9 @@ def generate_whatsapp_share_url(text):
     encoded_text = urllib.parse.quote(text)
     return f"https://wa.me/?text={encoded_text}"
 
-def inject_custom_css():
-    theme_mode = st.session_state.get('theme_mode', 'Light')
-    text_size = st.session_state.get('text_size', 'Medium')
-    
+@st.cache_data
+def generate_css(theme_mode: str, text_size: str) -> str:
+    """Generate cached CSS based on theme and text size settings."""
     size_multipliers = {
         'Small': '0.9',
         'Medium': '1.0',
@@ -147,7 +146,7 @@ def inject_custom_css():
     is_dark_theme = theme_mode in ['Dark', 'High Contrast']
     is_high_contrast = theme_mode == 'High Contrast'
     
-    st.markdown(f"""
+    return f"""
     <style>
     /* Base font size adjustment */
     html, body, .stApp {{
@@ -435,7 +434,22 @@ def inject_custom_css():
         margin: 1.5rem 0;
     }}
     </style>
-    """, unsafe_allow_html=True)
+    """
+
+def inject_custom_css():
+    """Inject CSS with caching - only regenerates when theme/size changes."""
+    theme_mode = st.session_state.get('theme_mode', 'Light')
+    text_size = st.session_state.get('text_size', 'Medium')
+    
+    cache_key = f"{theme_mode}_{text_size}"
+    
+    if st.session_state.get('_css_cache_key') != cache_key:
+        css = generate_css(theme_mode, text_size)
+        st.markdown(css, unsafe_allow_html=True)
+        st.session_state._css_cache_key = cache_key
+        st.session_state._cached_css = css
+    else:
+        st.markdown(st.session_state.get('_cached_css', ''), unsafe_allow_html=True)
 
 def initialize_session_state():
     if 'authenticated' not in st.session_state:
