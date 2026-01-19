@@ -1,0 +1,19 @@
+{
+  "feature_clicks": {
+    "Home": 2,
+    "Analytics Dashboard": 2,
+    "Why Arogya Mitra": 2
+  },
+  "language_usage": {
+    "English": 2
+  },
+  "symptom_keywords": {},
+  "role_sessions": {
+    "Patient": 2,
+    "Doctor": 0
+  },
+  "daily_visits": {
+    "2026-01-19": 2
+  },
+  "total_sessions": 2
+}
