@@ -1017,7 +1017,7 @@ def symptom_checker_page():
                 with st.spinner("Analyzing your symptoms..."):
                     user_id = st.session_state.current_user.get('id') if st.session_state.current_user else None
                     health_context = data_manager.get_health_context_for_ai(user_id) if user_id else None
-                    analysis = ai_helper.analyze_symptoms(symptoms_text, st.session_state.user_language, health_context)
+                    analysis = ai_helper.analyze_symptoms(symptoms_text, st.session_state.user_language, health_context, st.session_state.user_role)
                     
                     if analysis.get("success"):
                         st.markdown("""
@@ -1159,7 +1159,7 @@ def symptom_checker_page():
                         with st.spinner("Analyzing symptoms..."):
                             user_id = st.session_state.current_user.get('id') if st.session_state.current_user else None
                             health_context = data_manager.get_health_context_for_ai(user_id) if user_id else None
-                            analysis = ai_helper.analyze_symptoms(transcription, st.session_state.user_language, health_context)
+                            analysis = ai_helper.analyze_symptoms(transcription, st.session_state.user_language, health_context, st.session_state.user_role)
                             
                             if analysis.get("success"):
                                 st.markdown("""

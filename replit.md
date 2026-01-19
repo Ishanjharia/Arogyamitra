@@ -11,6 +11,11 @@ A comprehensive multilingual healthcare platform that enables seamless communica
 **Last Updated:** January 18, 2026
 
 ## Recent Updates (January 2026)
+- **Context-Aware AI Responses** - Smart response adaptation based on user context
+  - Patient responses: Short, simple, safe advice in everyday language
+  - Doctor responses: Detailed clinical information with ICD codes, differential diagnoses
+  - Severity-aware: High severity prompts emphasize urgency, medium suggests scheduling
+  - Language-aware: All responses in user's preferred language
 - **Personal Health Profile Feature** - Comprehensive health profile for personalized AI
   - 4 tabs: Basic Info, Medical Info, Emergency Info, Lifestyle Info
   - Stores blood type, height, weight, DOB, gender

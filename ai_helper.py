@@ -75,7 +75,7 @@ def translate_text(text, source_language, target_language):
     except Exception as e:
         return {"success": False, "translation": None, "error": f"Translation failed: {str(e)}"}
 
-def analyze_symptoms(symptoms_text, language, health_context=None):
+def analyze_symptoms(symptoms_text, language, health_context=None, user_role="Patient"):
     try:
         client = get_gemini_client()
         
@@ -83,21 +83,42 @@ def analyze_symptoms(symptoms_text, language, health_context=None):
         if health_context:
             health_info = f"\n\nIMPORTANT PATIENT INFORMATION:\n{health_context}\n\nConsider this health profile when analyzing symptoms. Pay special attention to:\n- Any allergies when suggesting treatments\n- Existing chronic conditions that might be related\n- Current medications that might interact or cause side effects\n- Lifestyle factors that could be relevant\n\n"
         
-        system_instruction = (
-            f"You are an AI medical assistant analyzing patient symptoms. The patient is describing symptoms in {language}. "
-            f"{health_info}"
-            "Generate a structured medical report with the following sections in JSON format: "
-            "1) 'symptoms_summary': Brief summary of reported symptoms "
-            "2) 'possible_conditions': List of possible conditions (not a diagnosis) "
-            "3) 'severity_level': Low, Medium, or High "
-            "4) 'recommendations': General health recommendations "
-            "5) 'urgent_care_needed': true or false "
-            "6) 'follow_up_questions': Questions a doctor should ask "
-            "7) 'allergy_warnings': Any warnings based on patient allergies (empty list if none) "
-            "8) 'condition_considerations': How existing conditions might affect this (empty string if none). "
-            "Include a disclaimer that this is not a medical diagnosis. "
-            "Respond with valid JSON only."
-        )
+        if user_role == "Patient":
+            system_instruction = (
+                f"You are an AI medical assistant analyzing patient symptoms. The patient is describing symptoms in {language}. "
+                f"{health_info}"
+                "Generate a structured medical report with the following sections in JSON format: "
+                "1) 'symptoms_summary': Brief, easy-to-understand summary (2-3 sentences max) "
+                "2) 'possible_conditions': List of 2-4 possible conditions using simple terms (not a diagnosis) "
+                "3) 'severity_level': Low, Medium, or High "
+                "4) 'recommendations': 3-5 simple, actionable health tips the patient can follow at home "
+                "5) 'urgent_care_needed': true or false "
+                "6) 'when_to_see_doctor': Clear guidance on when to seek medical help "
+                "7) 'allergy_warnings': Any warnings based on patient allergies (empty list if none) "
+                "8) 'condition_considerations': How existing conditions might affect this (empty string if none) "
+                "9) 'disclaimer': 'This is not a medical diagnosis. Please consult a doctor for proper evaluation.' "
+                "Use simple, everyday language. Avoid medical jargon. Be reassuring but honest about severity. "
+                "Respond with valid JSON only."
+            )
+        else:
+            system_instruction = (
+                f"You are an AI clinical decision support system. Analyzing symptoms described in {language}. "
+                f"{health_info}"
+                "Generate a comprehensive clinical assessment in JSON format: "
+                "1) 'symptoms_summary': Detailed symptom characterization with onset, duration, quality, severity "
+                "2) 'possible_conditions': Comprehensive differential diagnosis list with ICD-10 codes where applicable "
+                "3) 'severity_level': Low, Medium, High, or Critical with clinical reasoning "
+                "4) 'recommendations': Evidence-based treatment protocols and clinical pathways "
+                "5) 'urgent_care_needed': true or false with clinical justification "
+                "6) 'follow_up_questions': Targeted clinical history questions for differential narrowing "
+                "7) 'suggested_diagnostics': Recommended laboratory tests, imaging, or procedures "
+                "8) 'red_flags': Critical symptoms requiring immediate attention "
+                "9) 'allergy_warnings': Drug allergy considerations for treatment planning "
+                "10) 'condition_considerations': Comorbidity interactions and management considerations "
+                "11) 'references': Relevant clinical guidelines or literature "
+                "Use proper medical terminology. Be thorough and precise. "
+                "Respond with valid JSON only."
+            )
         
         response = client.models.generate_content(
             model="gemini-2.5-pro",
@@ -164,7 +185,7 @@ def generate_prescription_translation(prescription_text, doctor_language, patien
     except Exception as e:
         return {"success": False, "translation": None, "error": f"Translation failed: {str(e)}"}
 
-def medical_chat_response(message, language, user_role, health_context=None):
+def medical_chat_response(message, language, user_role, health_context=None, severity_level=None):
     def _chat():
         client = get_gemini_client()
         
@@ -172,18 +193,52 @@ def medical_chat_response(message, language, user_role, health_context=None):
         if health_context and user_role == "Patient":
             health_info = f"\n\nPatient Health Profile:\n{health_context}\n\nUse this information to provide personalized responses. Consider their allergies, existing conditions, and current medications when giving advice.\n\n"
         
+        severity_guidance = ""
+        if severity_level:
+            if severity_level in ["High", "Critical"]:
+                severity_guidance = "IMPORTANT: This appears to be a high-severity situation. Strongly emphasize seeking immediate medical attention. Be direct about urgency while remaining calm. "
+            elif severity_level == "Medium":
+                severity_guidance = "This is a moderate concern. Recommend scheduling a doctor visit soon. Provide helpful interim guidance. "
+        
         system_instruction = ""
         if user_role == "Patient":
-            system_instruction = f"You are a compassionate AI health assistant helping patients in {language}. {health_info}Provide clear, simple medical information. Always recommend consulting a doctor for serious concerns. Be empathetic and supportive. If the patient has allergies or conditions on file, remind them of relevant precautions."
+            system_instruction = (
+                f"You are a compassionate AI health assistant helping patients in {language}. "
+                f"{health_info}"
+                f"{severity_guidance}"
+                "RESPONSE GUIDELINES FOR PATIENTS:\n"
+                "- Keep responses SHORT and SIMPLE (2-4 paragraphs max)\n"
+                "- Use everyday language, avoid medical jargon\n"
+                "- Focus on practical, actionable advice\n"
+                "- Include safety warnings prominently\n"
+                "- ALWAYS recommend consulting a doctor for serious concerns\n"
+                "- Be empathetic, warm, and reassuring\n"
+                "- If allergies/conditions are on file, warn about relevant precautions\n"
+                "- End with a clear next step the patient can take\n"
+                "- Include disclaimer: 'This is not medical advice. Please consult a doctor.'"
+            )
         else:
-            system_instruction = f"You are an AI assistant helping doctors with medical information in {language}. Provide evidence-based medical insights, differential diagnoses support, and clinical decision support. Cite medical knowledge when appropriate."
+            system_instruction = (
+                f"You are an AI clinical assistant helping doctors in {language}. "
+                "RESPONSE GUIDELINES FOR DOCTORS:\n"
+                "- Provide DETAILED, comprehensive medical information\n"
+                "- Use proper medical terminology and classifications (ICD codes if relevant)\n"
+                "- Include differential diagnoses with reasoning\n"
+                "- Cite evidence-based guidelines and research when applicable\n"
+                "- Discuss mechanism of action, pharmacokinetics where relevant\n"
+                "- Include contraindications, drug interactions, dosing considerations\n"
+                "- Provide clinical decision support with risk stratification\n"
+                "- Suggest relevant diagnostic tests and their interpretation\n"
+                "- Reference treatment protocols and clinical pathways\n"
+                "- Be thorough and precise - doctors need complete information"
+            )
         
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             contents=message,
             config=types.GenerateContentConfig(
                 system_instruction=system_instruction,
-                max_output_tokens=2048
+                max_output_tokens=2048 if user_role == "Doctor" else 1024
             )
         )
         return {"success": True, "response": response.text, "error": None}
