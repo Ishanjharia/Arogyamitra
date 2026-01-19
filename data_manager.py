@@ -498,3 +498,118 @@ def get_health_context_for_ai(user_id):
     if context_parts:
         return "PATIENT HEALTH PROFILE:\n" + "\n".join(context_parts)
     return None
+
+ANALYTICS_FILE = os.path.join(DATA_DIR, "analytics.json")
+
+def ensure_analytics_file():
+    ensure_data_directory()
+    if not os.path.exists(ANALYTICS_FILE):
+        initial_data = {
+            "feature_clicks": {},
+            "language_usage": {},
+            "symptom_keywords": {},
+            "role_sessions": {"Patient": 0, "Doctor": 0},
+            "daily_visits": {},
+            "total_sessions": 0
+        }
+        with open(ANALYTICS_FILE, 'w') as f:
+            json.dump(initial_data, f, indent=2)
+
+def load_analytics():
+    ensure_analytics_file()
+    try:
+        with open(ANALYTICS_FILE, 'r') as f:
+            return json.load(f)
+    except:
+        return {
+            "feature_clicks": {},
+            "language_usage": {},
+            "symptom_keywords": {},
+            "role_sessions": {"Patient": 0, "Doctor": 0},
+            "daily_visits": {},
+            "total_sessions": 0
+        }
+
+def save_analytics(data):
+    ensure_analytics_file()
+    with open(ANALYTICS_FILE, 'w') as f:
+        json.dump(data, f, indent=2)
+
+def track_feature_click(feature_name):
+    """Track when a feature/page is accessed"""
+    analytics = load_analytics()
+    if feature_name not in analytics["feature_clicks"]:
+        analytics["feature_clicks"][feature_name] = 0
+    analytics["feature_clicks"][feature_name] += 1
+    save_analytics(analytics)
+
+def track_language_usage(language):
+    """Track language preference usage"""
+    analytics = load_analytics()
+    if language not in analytics["language_usage"]:
+        analytics["language_usage"][language] = 0
+    analytics["language_usage"][language] += 1
+    save_analytics(analytics)
+
+def track_symptom_keyword(symptom_text):
+    """Extract and track common symptom keywords (anonymized)"""
+    common_symptoms = [
+        "headache", "fever", "cough", "cold", "pain", "fatigue", "nausea",
+        "dizziness", "chest", "breathing", "stomach", "back", "joint",
+        "throat", "skin", "allergy", "infection", "weakness", "anxiety",
+        "सिरदर्द", "बुखार", "खांसी", "दर्द", "थकान", "चक्कर"
+    ]
+    
+    analytics = load_analytics()
+    symptom_lower = symptom_text.lower()
+    
+    for keyword in common_symptoms:
+        if keyword in symptom_lower:
+            if keyword not in analytics["symptom_keywords"]:
+                analytics["symptom_keywords"][keyword] = 0
+            analytics["symptom_keywords"][keyword] += 1
+    
+    save_analytics(analytics)
+
+def track_role_session(role):
+    """Track session by user role"""
+    analytics = load_analytics()
+    if role in analytics["role_sessions"]:
+        analytics["role_sessions"][role] += 1
+    save_analytics(analytics)
+
+def track_daily_visit():
+    """Track daily unique visits"""
+    analytics = load_analytics()
+    today = datetime.now().strftime("%Y-%m-%d")
+    if today not in analytics["daily_visits"]:
+        analytics["daily_visits"][today] = 0
+    analytics["daily_visits"][today] += 1
+    analytics["total_sessions"] += 1
+    save_analytics(analytics)
+
+def get_analytics_summary():
+    """Get analytics summary for dashboard"""
+    analytics = load_analytics()
+    
+    feature_clicks = analytics.get("feature_clicks", {})
+    top_features = sorted(feature_clicks.items(), key=lambda x: x[1], reverse=True)[:10]
+    
+    language_usage = analytics.get("language_usage", {})
+    symptom_keywords = analytics.get("symptom_keywords", {})
+    top_symptoms = sorted(symptom_keywords.items(), key=lambda x: x[1], reverse=True)[:10]
+    
+    daily_visits = analytics.get("daily_visits", {})
+    last_7_days = {}
+    for i in range(7):
+        date = (datetime.now() - timedelta(days=i)).strftime("%Y-%m-%d")
+        last_7_days[date] = daily_visits.get(date, 0)
+    
+    return {
+        "top_features": top_features,
+        "language_usage": language_usage,
+        "top_symptoms": top_symptoms,
+        "role_sessions": analytics.get("role_sessions", {}),
+        "total_sessions": analytics.get("total_sessions", 0),
+        "last_7_days": last_7_days
+    }

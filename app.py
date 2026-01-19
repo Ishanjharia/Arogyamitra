@@ -644,6 +644,9 @@ def login_page():
                     st.session_state.user_role = result["user"]["role"]
                     st.session_state.patient_name = result["user"]["name"]
                     st.session_state.user_language = result["user"].get("language", "English")
+                    data_manager.track_daily_visit()
+                    data_manager.track_role_session(result["user"]["role"])
+                    data_manager.track_language_usage(result["user"].get("language", "English"))
                     st.balloons()
                     st.success(f"🎉 Welcome back, {result['user']['name']}!")
                     st.rerun()
@@ -1008,6 +1011,7 @@ def health_profile_page():
 def symptom_checker_page():
     inject_custom_css()
     lang = st.session_state.user_language
+    data_manager.track_feature_click("Symptom Checker")
     
     st.markdown(f"""
     <div class="main-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
@@ -1043,6 +1047,7 @@ def symptom_checker_page():
                 with st.spinner("Analyzing your symptoms..."):
                     user_id = st.session_state.current_user.get('id') if st.session_state.current_user else None
                     health_context = data_manager.get_health_context_for_ai(user_id) if user_id else None
+                    data_manager.track_symptom_keyword(symptoms_text)
                     analysis = ai_helper.analyze_symptoms(symptoms_text, st.session_state.user_language, health_context, st.session_state.user_role)
                     
                     if analysis.get("success"):
@@ -1245,6 +1250,7 @@ def symptom_checker_page():
 def ai_chat_page():
     inject_custom_css()
     lang = st.session_state.user_language
+    data_manager.track_feature_click("AI Chat")
     
     st.markdown(f"""
     <div class="main-header" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
@@ -1563,6 +1569,7 @@ def health_records_page():
 def appointment_booking_page():
     inject_custom_css()
     lang = st.session_state.user_language
+    data_manager.track_feature_click("Book Appointment")
     
     st.markdown(f"""
     <div class="main-header" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
@@ -2163,9 +2170,203 @@ def find_hospitals_page():
     else:
         st.warning("Please enter your name in the sidebar")
 
+def why_arogya_mitra_page():
+    inject_custom_css()
+    lang = st.session_state.user_language
+    data_manager.track_feature_click("Why Arogya Mitra")
+    
+    st.markdown(f"""
+    <div class="main-header" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+        <h1>💚 {get_text('why_am_header', lang)}</h1>
+        <p>{get_text('why_am_subheader', lang)}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown(f"### 🔴 {get_text('the_problem', lang)}")
+    st.markdown(f"""
+    <div class="feature-card pink">
+        <p>📍 {get_text('problem_text_1', lang)}</p>
+        <p>📍 {get_text('problem_text_2', lang)}</p>
+        <p>📍 {get_text('problem_text_3', lang)}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+    
+    st.markdown(f"### 💡 {get_text('our_solution', lang)}")
+    st.markdown(f"""
+    <div class="feature-card green">
+        <p>✅ {get_text('solution_text_1', lang)}</p>
+        <p>✅ {get_text('solution_text_2', lang)}</p>
+        <p>✅ {get_text('solution_text_3', lang)}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+    
+    st.markdown(f"### 👥 {get_text('target_users', lang)}")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown(f"""
+        <div class="feature-card blue">
+            <p>🏥 {get_text('users_patients', lang)}</p>
+            <p>🌾 {get_text('users_rural', lang)}</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.markdown(f"""
+        <div class="feature-card purple">
+            <p>👴 {get_text('users_elderly', lang)}</p>
+            <p>👨‍⚕️ {get_text('users_doctors', lang)}</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+    
+    st.markdown(f"### ⚠️ {get_text('limitations', lang)}")
+    st.markdown(f"""
+    <div class="info-box warning">
+        <p>1️⃣ {get_text('limitation_1', lang)}</p>
+        <p>2️⃣ {get_text('limitation_2', lang)}</p>
+        <p>3️⃣ {get_text('limitation_3', lang)}</p>
+        <p>4️⃣ {get_text('limitation_4', lang)}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+    
+    st.markdown(f"### 🚀 {get_text('future_scope', lang)}")
+    st.markdown(f"""
+    <div class="feature-card teal">
+        <p>📞 {get_text('future_1', lang)}</p>
+        <p>🎥 {get_text('future_2', lang)}</p>
+        <p>🔬 {get_text('future_3', lang)}</p>
+        <p>📴 {get_text('future_4', lang)}</p>
+        <p>🎧 {get_text('future_5', lang)}</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+def analytics_page():
+    inject_custom_css()
+    lang = st.session_state.user_language
+    data_manager.track_feature_click("Analytics Dashboard")
+    
+    st.markdown(f"""
+    <div class="main-header" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
+        <h1>📊 {get_text('analytics_header', lang)}</h1>
+        <p>{get_text('analytics_subheader', lang)}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    analytics = data_manager.get_analytics_summary()
+    
+    if analytics.get('total_sessions', 0) == 0:
+        st.info(get_text('no_data_yet', lang))
+        return
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown(f"""
+        <div class="stat-card blue">
+            <h2 style="margin: 0; font-size: 2rem; color: #4F7CF3;">{analytics.get('total_sessions', 0)}</h2>
+            <p style="margin: 0.5rem 0 0 0;">{get_text('total_sessions', lang)}</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        role_sessions = analytics.get('role_sessions', {})
+        patient_count = role_sessions.get('Patient', 0)
+        st.markdown(f"""
+        <div class="stat-card green">
+            <h2 style="margin: 0; font-size: 2rem; color: #10b981;">{patient_count}</h2>
+            <p style="margin: 0.5rem 0 0 0;">Patient Sessions</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        doctor_count = role_sessions.get('Doctor', 0)
+        st.markdown(f"""
+        <div class="stat-card purple">
+            <h2 style="margin: 0; font-size: 2rem; color: #8b5cf6;">{doctor_count}</h2>
+            <p style="margin: 0.5rem 0 0 0;">Doctor Sessions</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown(f"### 📈 {get_text('top_features', lang)}")
+        top_features = analytics.get('top_features', [])
+        if top_features:
+            for feature, count in top_features:
+                st.markdown(f"""
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem; 
+                            background: #f8fafc; border-radius: 8px; margin: 0.25rem 0;">
+                    <span>{feature}</span>
+                    <span style="background: #4F7CF3; color: white; padding: 0.2rem 0.5rem; 
+                                border-radius: 12px; font-size: 0.85rem;">{count}</span>
+                </div>
+                """, unsafe_allow_html=True)
+        else:
+            st.write("No feature data yet")
+    
+    with col2:
+        st.markdown(f"### 🌐 {get_text('language_distribution', lang)}")
+        language_usage = analytics.get('language_usage', {})
+        if language_usage:
+            for language, count in sorted(language_usage.items(), key=lambda x: x[1], reverse=True):
+                st.markdown(f"""
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem; 
+                            background: #f8fafc; border-radius: 8px; margin: 0.25rem 0;">
+                    <span>🌐 {language}</span>
+                    <span style="background: #10b981; color: white; padding: 0.2rem 0.5rem; 
+                                border-radius: 12px; font-size: 0.85rem;">{count}</span>
+                </div>
+                """, unsafe_allow_html=True)
+        else:
+            st.write("No language data yet")
+    
+    st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+    
+    st.markdown(f"### 🩺 {get_text('common_symptoms', lang)}")
+    top_symptoms = analytics.get('top_symptoms', [])
+    if top_symptoms:
+        symptom_cols = st.columns(min(len(top_symptoms), 5))
+        for i, (symptom, count) in enumerate(top_symptoms[:5]):
+            with symptom_cols[i]:
+                st.markdown(f"""
+                <div style="text-align: center; padding: 1rem; background: #fef3c7; 
+                            border-radius: 10px; border: 2px solid #f59e0b;">
+                    <h3 style="margin: 0; color: #d97706;">{count}</h3>
+                    <p style="margin: 0.25rem 0 0 0; font-size: 0.85rem;">{symptom}</p>
+                </div>
+                """, unsafe_allow_html=True)
+    else:
+        st.info("No symptom data collected yet. Symptom keywords are anonymized and aggregated.")
+    
+    st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+    
+    st.markdown(f"### 📅 {get_text('daily_visits', lang)}")
+    last_7_days = analytics.get('last_7_days', {})
+    if last_7_days:
+        import pandas as pd
+        df = pd.DataFrame(list(last_7_days.items()), columns=['Date', 'Visits'])
+        df = df.sort_values('Date')
+        st.bar_chart(df.set_index('Date'))
+    
+    st.markdown("""
+    <div class="info-box info">
+        <strong>📊 Note:</strong> All analytics data is collected locally and anonymized. 
+        No personal health information is tracked. This data helps improve the platform.
+    </div>
+    """, unsafe_allow_html=True)
+
 def support_page():
     inject_custom_css()
     lang = st.session_state.user_language
+    data_manager.track_feature_click("Support")
     
     theme_mode = st.session_state.get('theme_mode', 'Light')
     is_light_theme = theme_mode == 'Light'
@@ -2381,6 +2582,7 @@ def patient_records_doctor():
 def home_page():
     inject_custom_css()
     lang = st.session_state.user_language
+    data_manager.track_feature_click("Home")
     
     user_name = st.session_state.current_user['name'] if st.session_state.current_user else st.session_state.user_role
     greeting = get_greeting(lang)
@@ -2577,7 +2779,9 @@ def main():
                 medication_tracker_page,
                 find_hospitals_page,
                 family_accounts_page,
-                support_page
+                support_page,
+                why_arogya_mitra_page,
+                analytics_page
             ]
             if menu_index < len(patient_pages):
                 patient_pages[menu_index]()
@@ -2591,7 +2795,9 @@ def main():
                 prescription_page,
                 view_appointments_doctor,
                 patient_records_doctor,
-                support_page
+                support_page,
+                why_arogya_mitra_page,
+                analytics_page
             ]
             if menu_index < len(doctor_pages):
                 doctor_pages[menu_index]()

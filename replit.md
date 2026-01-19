@@ -11,6 +11,19 @@ A comprehensive multilingual healthcare platform that enables seamless communica
 **Last Updated:** January 18, 2026
 
 ## Recent Updates (January 2026)
+- **"Why Arogya Mitra?" Page** - Evaluation booster explaining project purpose
+  - Problem section: Healthcare access barriers in India (language, digital literacy, rural access)
+  - Solution section: Multilingual AI-powered health assistance
+  - Target users: Patients, rural communities, elderly, doctors
+  - Limitations: Honest disclosure of current MVP limitations
+  - Future scope: IVR, telemedicine, lab integration plans
+- **Feature Usage Analytics (Local)** - Data-driven insights dashboard
+  - Tracks feature clicks (which pages are most used)
+  - Language usage distribution across all 10 supported languages
+  - Common symptom keywords (anonymized and aggregated)
+  - User role sessions (Patient vs Doctor)
+  - Daily visits chart (last 7 days)
+  - All data stored locally in health_data/analytics.json
 - **CSS Injection Optimization** - Performance improvement for faster page loads
   - CSS generation cached using @st.cache_data decorator
   - Session state tracks current theme/size settings
