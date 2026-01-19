@@ -244,6 +244,11 @@ TRANSLATIONS = {
         "future_4": "Offline mode for areas with poor connectivity",
         "future_5": "Multi-language voice-based health education content",
         
+        "our_impact": "Our Impact",
+        "patients_helped": "Patients Helped",
+        "symptoms_analyzed": "Symptoms Analyzed",
+        "languages_supported": "Languages Supported",
+        
         "analytics_header": "Usage Analytics",
         "analytics_subheader": "Data-driven insights into platform usage",
         "total_sessions": "Total Sessions",

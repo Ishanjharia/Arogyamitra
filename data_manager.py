@@ -613,3 +613,29 @@ def get_analytics_summary():
         "total_sessions": analytics.get("total_sessions", 0),
         "last_7_days": last_7_days
     }
+
+def get_public_stats():
+    """Get safe public statistics for landing page (no PII)"""
+    analytics = load_analytics()
+    
+    language_usage = analytics.get("language_usage", {})
+    total_languages = len([l for l, c in language_usage.items() if c > 0])
+    
+    role_sessions = analytics.get("role_sessions", {})
+    total_patients = role_sessions.get("Patient", 0)
+    total_doctors = role_sessions.get("Doctor", 0)
+    
+    daily_visits = analytics.get("daily_visits", {})
+    total_visits = sum(daily_visits.values())
+    
+    top_symptoms = analytics.get("symptom_keywords", {})
+    symptoms_analyzed = sum(top_symptoms.values())
+    
+    return {
+        "total_users": analytics.get("total_sessions", 0),
+        "languages_used": total_languages,
+        "patients_helped": total_patients,
+        "doctors_assisted": total_doctors,
+        "symptoms_analyzed": symptoms_analyzed,
+        "total_visits": total_visits
+    }

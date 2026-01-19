@@ -459,7 +459,7 @@ def cleanup_session_state():
         '_css_cache_key', '_cached_css', 'auth_page',
         'quick_nav_symptom', 'quick_nav_appointment', 'quick_nav_chat',
         'quick_nav_prescription', 'quick_nav_records', 'quick_nav_hospitals',
-        'selected_family_member', 'voice_command_active'
+        'selected_family_member', 'voice_command_active', 'show_auth'
     ]
     
     for key in keys_to_clear:
@@ -468,6 +468,7 @@ def cleanup_session_state():
     
     st.session_state.authenticated = False
     st.session_state.auth_page = "login"
+    st.session_state.show_auth = False
 
 def initialize_session_state():
     if 'authenticated' not in st.session_state:
@@ -492,6 +493,10 @@ def initialize_session_state():
         st.session_state.text_size = "Medium"
     if 'family_members' not in st.session_state:
         st.session_state.family_members = []
+    if 'show_auth' not in st.session_state:
+        st.session_state.show_auth = False
+    if 'landing_language' not in st.session_state:
+        st.session_state.landing_language = "English"
 
 def get_health_tip(language):
     tips = HEALTH_TIPS.get(language, HEALTH_TIPS.get("English", []))
@@ -667,6 +672,11 @@ def login_page():
         💡 <strong>Supported Languages:</strong> Hindi, Marathi, Tamil, Telugu, Bengali, Gujarati, Kannada, Malayalam, Punjabi & English
     </div>
     """, unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    if st.button("⬅️ Back to Introduction", use_container_width=True):
+        st.session_state.show_auth = False
+        st.rerun()
 
 def signup_page():
     inject_custom_css()
@@ -753,6 +763,144 @@ def signup_page():
         if st.button("⬅️ Back to Sign In", use_container_width=True):
             st.session_state.auth_page = "login"
             st.rerun()
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    if st.button("🏠 Back to Introduction", use_container_width=True):
+        st.session_state.show_auth = False
+        st.rerun()
+
+def landing_page():
+    """Public landing page with Why Arogya Mitra content and stats"""
+    inject_custom_css()
+    lang = st.session_state.get('landing_language', 'English')
+    
+    st.markdown("""
+    <div class="main-header" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+        <h1>🏥 Arogya Mitra</h1>
+        <p>आरोग्य मित्र - Your Multilingual Health Companion</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        selected_lang = st.selectbox(
+            "🌐 Choose Language / भाषा चुनें",
+            options=list(ai_helper.SUPPORTED_LANGUAGES.keys()),
+            index=0
+        )
+        if selected_lang != lang:
+            st.session_state.landing_language = selected_lang
+            st.rerun()
+    
+    lang = st.session_state.get('landing_language', 'English')
+    
+    stats = data_manager.get_public_stats()
+    
+    st.markdown(f"### 📊 {get_text('our_impact', lang) if get_text('our_impact', lang) != 'our_impact' else 'Our Impact'}")
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.markdown(f"""
+        <div class="stat-card green" style="text-align: center; padding: 1rem;">
+            <h2 style="margin: 0; font-size: 1.8rem; color: #10b981;">{stats.get('total_users', 0)}</h2>
+            <p style="margin: 0.3rem 0 0 0; font-size: 0.9rem;">{get_text('total_sessions', lang)}</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.markdown(f"""
+        <div class="stat-card blue" style="text-align: center; padding: 1rem;">
+            <h2 style="margin: 0; font-size: 1.8rem; color: #3b82f6;">{stats.get('patients_helped', 0)}</h2>
+            <p style="margin: 0.3rem 0 0 0; font-size: 0.9rem;">{get_text('patients_helped', lang) if get_text('patients_helped', lang) != 'patients_helped' else 'Patients Helped'}</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with col3:
+        st.markdown(f"""
+        <div class="stat-card purple" style="text-align: center; padding: 1rem;">
+            <h2 style="margin: 0; font-size: 1.8rem; color: #8b5cf6;">{stats.get('symptoms_analyzed', 0)}</h2>
+            <p style="margin: 0.3rem 0 0 0; font-size: 0.9rem;">{get_text('symptoms_analyzed', lang) if get_text('symptoms_analyzed', lang) != 'symptoms_analyzed' else 'Symptoms Analyzed'}</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with col4:
+        st.markdown(f"""
+        <div class="stat-card teal" style="text-align: center; padding: 1rem;">
+            <h2 style="margin: 0; font-size: 1.8rem; color: #14b8a6;">10</h2>
+            <p style="margin: 0.3rem 0 0 0; font-size: 0.9rem;">{get_text('languages_supported', lang) if get_text('languages_supported', lang) != 'languages_supported' else 'Languages Supported'}</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+    
+    st.markdown(f"### 🔴 {get_text('the_problem', lang)}")
+    st.markdown(f"""
+    <div class="feature-card pink">
+        <p>📍 {get_text('problem_text_1', lang)}</p>
+        <p>📍 {get_text('problem_text_2', lang)}</p>
+        <p>📍 {get_text('problem_text_3', lang)}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+    
+    st.markdown(f"### 💡 {get_text('our_solution', lang)}")
+    st.markdown(f"""
+    <div class="feature-card green">
+        <p>✅ {get_text('solution_text_1', lang)}</p>
+        <p>✅ {get_text('solution_text_2', lang)}</p>
+        <p>✅ {get_text('solution_text_3', lang)}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+    
+    st.markdown(f"### 👥 {get_text('target_users', lang)}")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown(f"""
+        <div class="feature-card blue">
+            <p>🏥 {get_text('users_patients', lang)}</p>
+            <p>🌾 {get_text('users_rural', lang)}</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.markdown(f"""
+        <div class="feature-card purple">
+            <p>👴 {get_text('users_elderly', lang)}</p>
+            <p>👨‍⚕️ {get_text('users_doctors', lang)}</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+    
+    st.markdown(f"### 🚀 {get_text('future_scope', lang)}")
+    st.markdown(f"""
+    <div class="feature-card teal">
+        <p>📞 {get_text('future_1', lang)}</p>
+        <p>🎥 {get_text('future_2', lang)}</p>
+        <p>🔬 {get_text('future_3', lang)}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 15px; text-align: center; margin: 1rem 0;">
+            <h2 style="color: white; margin: 0 0 1rem 0;">Ready to Get Started?</h2>
+            <p style="color: rgba(255,255,255,0.9); margin: 0;">Join thousands of users getting multilingual health support</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        col_a, col_b = st.columns(2)
+        with col_a:
+            if st.button("🔐 Sign In", type="primary", use_container_width=True):
+                st.session_state.show_auth = True
+                st.session_state.auth_page = "login"
+                st.rerun()
+        with col_b:
+            if st.button("✨ Create Account", use_container_width=True):
+                st.session_state.show_auth = True
+                st.session_state.auth_page = "signup"
+                st.rerun()
 
 def role_selection_page():
     if st.session_state.auth_page == "signup":
@@ -2754,7 +2902,10 @@ def main():
     sync_theme_with_streamlit()
     
     if not st.session_state.authenticated:
-        role_selection_page()
+        if st.session_state.show_auth:
+            role_selection_page()
+        else:
+            landing_page()
     else:
         menu = sidebar_navigation()
         lang = st.session_state.user_language
