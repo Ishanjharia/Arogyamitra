@@ -11,10 +11,19 @@ A comprehensive multilingual healthcare platform that enables seamless communica
 **Last Updated:** January 18, 2026
 
 ## Recent Updates (January 2026)
+- **Personal Health Profile Feature** - Comprehensive health profile for personalized AI
+  - 4 tabs: Basic Info, Medical Info, Emergency Info, Lifestyle Info
+  - Stores blood type, height, weight, DOB, gender
+  - Tracks allergies, chronic conditions, current medications
+  - Emergency contacts and primary doctor information
+  - Lifestyle factors: smoking, alcohol, exercise frequency
+  - Profile data integrated with AI - Symptom Checker and AI Chat now consider patient's health context
+  - Allergy warnings included in symptom analysis
 - **User Support Feature** - Complete support system for users
   - FAQ section with common questions and answers (localized for all 10 languages)
   - Contact Support form to submit support tickets
-  - WhatsApp support integration for instant help
+  - WhatsApp support integration for instant help (9131132558)
+  - Email support: ishanjharia63527@gmail.com
   - Support ticket tracking with status updates
 - **Full UI Localization** - Complete interface translation for all 10 supported languages
   - Navigation menus, page headers, buttons, labels all translate dynamically

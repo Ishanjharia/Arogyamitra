@@ -238,5 +238,17 @@
     "phone": "",
     "created_at": "2026-01-18T11:03:33.845960",
     "last_login": "2026-01-18T11:03:48.683772"
+  },
+  {
+    "id": 21,
+    "name": "Test User wgHdXf",
+    "email": "testuserwghdxf@test.com",
+    "password_hash": "8960f8e2bca37b980e098ec3bebe315caf2feb5d72a6b4850f131764a6387da8",
+    "salt": "ba5ac5d7e39ad3ce75fbf3ab68b5c7fd",
+    "role": "Patient",
+    "language": "English",
+    "phone": "",
+    "created_at": "2026-01-19T20:04:56.424172",
+    "last_login": "2026-01-19T20:05:10.469828"
   }
 ]
