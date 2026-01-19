@@ -1292,15 +1292,14 @@ def symptom_checker_page():
                             """, unsafe_allow_html=True)
                         
                         if st.session_state.patient_name:
-                            if st.button(f"💾 {get_text('save_to_records', lang)}", type="primary"):
-                                data_manager.add_health_record(
-                                    patient_name=st.session_state.patient_name,
-                                    record_type="Symptom Analysis",
-                                    description=symptoms_text,
-                                    language=st.session_state.user_language,
-                                    report_data=analysis
-                                )
-                                st.success(f"✅ {get_text('saved_success', lang)}")
+                            data_manager.add_health_record(
+                                patient_name=st.session_state.patient_name,
+                                record_type="Symptom Analysis",
+                                description=symptoms_text,
+                                language=st.session_state.user_language,
+                                report_data=analysis
+                            )
+                            st.success(f"✅ {get_text('saved_success', lang)}")
                     else:
                         st.error(f"Error: {analysis.get('error', 'Unknown error')}")
             else:
@@ -1381,15 +1380,14 @@ def symptom_checker_page():
                                     """, unsafe_allow_html=True)
                                 
                                 if st.session_state.patient_name:
-                                    if st.button("💾 Save Analysis", type="primary"):
-                                        data_manager.add_health_record(
-                                            patient_name=st.session_state.patient_name,
-                                            record_type="Voice Symptom Analysis",
-                                            description=transcription,
-                                            language=st.session_state.user_language,
-                                            report_data=analysis
-                                        )
-                                        st.success("✅ Saved!")
+                                    data_manager.add_health_record(
+                                        patient_name=st.session_state.patient_name,
+                                        record_type="Voice Symptom Analysis",
+                                        description=transcription,
+                                        language=st.session_state.user_language,
+                                        report_data=analysis
+                                    )
+                                    st.success("✅ Saved to your symptom history!")
                             else:
                                 st.error(f"Analysis error: {analysis.get('error')}")
                     else:
