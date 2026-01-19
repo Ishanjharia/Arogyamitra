@@ -451,6 +451,24 @@ def inject_custom_css():
     else:
         st.markdown(st.session_state.get('_cached_css', ''), unsafe_allow_html=True)
 
+def cleanup_session_state():
+    """Clear session state on logout for clean user experience."""
+    keys_to_clear = [
+        'authenticated', 'current_user', 'user_role', 'patient_name',
+        'chat_history', 'translation_chat', 'family_members',
+        '_css_cache_key', '_cached_css', 'auth_page',
+        'quick_nav_symptom', 'quick_nav_appointment', 'quick_nav_chat',
+        'quick_nav_prescription', 'quick_nav_records', 'quick_nav_hospitals',
+        'selected_family_member', 'voice_command_active'
+    ]
+    
+    for key in keys_to_clear:
+        if key in st.session_state:
+            del st.session_state[key]
+    
+    st.session_state.authenticated = False
+    st.session_state.auth_page = "login"
+
 def initialize_session_state():
     if 'authenticated' not in st.session_state:
         st.session_state.authenticated = False
@@ -795,13 +813,7 @@ def sidebar_navigation():
         
         st.markdown("---")
         if st.button(f"🚪 {get_text('logout', lang)}", use_container_width=True):
-            st.session_state.authenticated = False
-            st.session_state.current_user = None
-            st.session_state.user_role = None
-            st.session_state.patient_name = ""
-            st.session_state.chat_history = []
-            st.session_state.translation_chat = []
-            st.session_state.auth_page = "login"
+            cleanup_session_state()
             st.rerun()
         
         return selected_menu
