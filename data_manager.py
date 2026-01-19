@@ -413,3 +413,88 @@ def get_support_tickets(user_id=None):
         tickets = [t for t in tickets if t.get('user_id') == user_id]
     
     return tickets
+
+HEALTH_PROFILES_FILE = os.path.join(DATA_DIR, "health_profiles.json")
+
+def ensure_health_profiles_file():
+    ensure_data_directory()
+    if not os.path.exists(HEALTH_PROFILES_FILE):
+        with open(HEALTH_PROFILES_FILE, 'w') as f:
+            json.dump([], f)
+
+def save_health_profile(user_id, profile_data):
+    ensure_health_profiles_file()
+    profiles = load_json_file(HEALTH_PROFILES_FILE)
+    
+    existing_index = None
+    for i, p in enumerate(profiles):
+        if p.get('user_id') == user_id:
+            existing_index = i
+            break
+    
+    profile = {
+        "id": len(profiles) + 1 if existing_index is None else profiles[existing_index]['id'],
+        "user_id": user_id,
+        "blood_type": profile_data.get('blood_type', ''),
+        "height": profile_data.get('height', 0),
+        "weight": profile_data.get('weight', 0),
+        "date_of_birth": profile_data.get('date_of_birth', ''),
+        "gender": profile_data.get('gender', ''),
+        "allergies": profile_data.get('allergies', ''),
+        "chronic_conditions": profile_data.get('chronic_conditions', ''),
+        "current_medications": profile_data.get('current_medications', ''),
+        "emergency_contact_name": profile_data.get('emergency_contact_name', ''),
+        "emergency_contact_phone": profile_data.get('emergency_contact_phone', ''),
+        "primary_doctor": profile_data.get('primary_doctor', ''),
+        "smoking_status": profile_data.get('smoking_status', ''),
+        "alcohol_status": profile_data.get('alcohol_status', ''),
+        "exercise_frequency": profile_data.get('exercise_frequency', ''),
+        "updated_at": datetime.now().isoformat()
+    }
+    
+    if existing_index is not None:
+        profiles[existing_index] = profile
+    else:
+        profiles.append(profile)
+    
+    save_json_file(HEALTH_PROFILES_FILE, profiles)
+    return {"success": True, "profile": profile}
+
+def get_health_profile(user_id):
+    ensure_health_profiles_file()
+    profiles = load_json_file(HEALTH_PROFILES_FILE)
+    
+    for profile in profiles:
+        if profile.get('user_id') == user_id:
+            return profile
+    
+    return None
+
+def get_health_context_for_ai(user_id):
+    """Get health profile formatted for AI context"""
+    profile = get_health_profile(user_id)
+    if not profile:
+        return None
+    
+    context_parts = []
+    
+    if profile.get('blood_type'):
+        context_parts.append(f"Blood Type: {profile['blood_type']}")
+    if profile.get('gender'):
+        context_parts.append(f"Gender: {profile['gender']}")
+    if profile.get('height') and profile.get('weight'):
+        context_parts.append(f"Height: {profile['height']}cm, Weight: {profile['weight']}kg")
+    if profile.get('allergies'):
+        context_parts.append(f"ALLERGIES: {profile['allergies']}")
+    if profile.get('chronic_conditions'):
+        context_parts.append(f"CHRONIC CONDITIONS: {profile['chronic_conditions']}")
+    if profile.get('current_medications'):
+        context_parts.append(f"CURRENT MEDICATIONS: {profile['current_medications']}")
+    if profile.get('smoking_status'):
+        context_parts.append(f"Smoking: {profile['smoking_status']}")
+    if profile.get('alcohol_status'):
+        context_parts.append(f"Alcohol: {profile['alcohol_status']}")
+    
+    if context_parts:
+        return "PATIENT HEALTH PROFILE:\n" + "\n".join(context_parts)
+    return None

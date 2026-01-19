@@ -75,18 +75,26 @@ def translate_text(text, source_language, target_language):
     except Exception as e:
         return {"success": False, "translation": None, "error": f"Translation failed: {str(e)}"}
 
-def analyze_symptoms(symptoms_text, language):
+def analyze_symptoms(symptoms_text, language, health_context=None):
     try:
         client = get_gemini_client()
+        
+        health_info = ""
+        if health_context:
+            health_info = f"\n\nIMPORTANT PATIENT INFORMATION:\n{health_context}\n\nConsider this health profile when analyzing symptoms. Pay special attention to:\n- Any allergies when suggesting treatments\n- Existing chronic conditions that might be related\n- Current medications that might interact or cause side effects\n- Lifestyle factors that could be relevant\n\n"
+        
         system_instruction = (
             f"You are an AI medical assistant analyzing patient symptoms. The patient is describing symptoms in {language}. "
+            f"{health_info}"
             "Generate a structured medical report with the following sections in JSON format: "
             "1) 'symptoms_summary': Brief summary of reported symptoms "
             "2) 'possible_conditions': List of possible conditions (not a diagnosis) "
             "3) 'severity_level': Low, Medium, or High "
             "4) 'recommendations': General health recommendations "
             "5) 'urgent_care_needed': true or false "
-            "6) 'follow_up_questions': Questions a doctor should ask. "
+            "6) 'follow_up_questions': Questions a doctor should ask "
+            "7) 'allergy_warnings': Any warnings based on patient allergies (empty list if none) "
+            "8) 'condition_considerations': How existing conditions might affect this (empty string if none). "
             "Include a disclaimer that this is not a medical diagnosis. "
             "Respond with valid JSON only."
         )
@@ -156,12 +164,17 @@ def generate_prescription_translation(prescription_text, doctor_language, patien
     except Exception as e:
         return {"success": False, "translation": None, "error": f"Translation failed: {str(e)}"}
 
-def medical_chat_response(message, language, user_role):
+def medical_chat_response(message, language, user_role, health_context=None):
     def _chat():
         client = get_gemini_client()
+        
+        health_info = ""
+        if health_context and user_role == "Patient":
+            health_info = f"\n\nPatient Health Profile:\n{health_context}\n\nUse this information to provide personalized responses. Consider their allergies, existing conditions, and current medications when giving advice.\n\n"
+        
         system_instruction = ""
         if user_role == "Patient":
-            system_instruction = f"You are a compassionate AI health assistant helping patients in {language}. Provide clear, simple medical information. Always recommend consulting a doctor for serious concerns. Be empathetic and supportive."
+            system_instruction = f"You are a compassionate AI health assistant helping patients in {language}. {health_info}Provide clear, simple medical information. Always recommend consulting a doctor for serious concerns. Be empathetic and supportive. If the patient has allergies or conditions on file, remind them of relevant precautions."
         else:
             system_instruction = f"You are an AI assistant helping doctors with medical information in {language}. Provide evidence-based medical insights, differential diagnoses support, and clinical decision support. Cite medical knowledge when appropriate."
         

@@ -792,6 +792,193 @@ def sidebar_navigation():
         
         return selected_menu
 
+def health_profile_page():
+    inject_custom_css()
+    lang = st.session_state.user_language
+    
+    theme_mode = st.session_state.get('theme_mode', 'Light')
+    is_light_theme = theme_mode == 'Light'
+    
+    st.markdown(f"""
+    <div class="main-header" style="background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);">
+        <h1>👤 {get_text('health_profile_header', lang)}</h1>
+        <p>{get_text('health_profile_subheader', lang)}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    user_id = st.session_state.current_user.get('id') if st.session_state.current_user else None
+    
+    if not user_id:
+        st.warning("Please log in to manage your health profile")
+        return
+    
+    existing_profile = data_manager.get_health_profile(user_id)
+    
+    st.markdown(f"""
+    <div class="info-box info">
+        💡 {get_text('health_context_note', lang)}
+    </div>
+    """, unsafe_allow_html=True)
+    
+    tab1, tab2, tab3, tab4 = st.tabs([
+        f"📋 {get_text('basic_info', lang)}",
+        f"🏥 {get_text('medical_info', lang)}",
+        f"🚨 {get_text('emergency_info', lang)}",
+        f"🏃 {get_text('lifestyle_info', lang)}"
+    ])
+    
+    with tab1:
+        st.markdown(f"### 📋 {get_text('basic_info', lang)}")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            blood_types = ["", "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
+            current_blood = existing_profile.get('blood_type', '') if existing_profile else ''
+            blood_index = blood_types.index(current_blood) if current_blood in blood_types else 0
+            blood_type = st.selectbox(f"🩸 {get_text('blood_type', lang)}", blood_types, index=blood_index)
+            
+            height = st.number_input(
+                f"📏 {get_text('height', lang)}", 
+                min_value=0, max_value=300, 
+                value=existing_profile.get('height', 0) if existing_profile else 0
+            )
+        
+        with col2:
+            genders = ["", get_text('male', lang), get_text('female', lang), get_text('other', lang)]
+            current_gender = existing_profile.get('gender', '') if existing_profile else ''
+            gender_index = 0
+            for i, g in enumerate(genders):
+                if g == current_gender:
+                    gender_index = i
+                    break
+            gender = st.selectbox(f"👤 {get_text('gender', lang)}", genders, index=gender_index)
+            
+            weight = st.number_input(
+                f"⚖️ {get_text('weight', lang)}", 
+                min_value=0, max_value=500, 
+                value=existing_profile.get('weight', 0) if existing_profile else 0
+            )
+        
+        dob = st.text_input(
+            f"📅 {get_text('date_of_birth', lang)} (YYYY-MM-DD)",
+            value=existing_profile.get('date_of_birth', '') if existing_profile else ''
+        )
+    
+    with tab2:
+        st.markdown(f"### 🏥 {get_text('medical_info', lang)}")
+        
+        allergies = st.text_area(
+            f"⚠️ {get_text('allergies', lang)}",
+            value=existing_profile.get('allergies', '') if existing_profile else '',
+            placeholder=get_text('allergies_placeholder', lang),
+            height=100
+        )
+        
+        chronic_conditions = st.text_area(
+            f"🩺 {get_text('chronic_conditions', lang)}",
+            value=existing_profile.get('chronic_conditions', '') if existing_profile else '',
+            placeholder=get_text('chronic_conditions_placeholder', lang),
+            height=100
+        )
+        
+        current_medications = st.text_area(
+            f"💊 {get_text('current_medications', lang)}",
+            value=existing_profile.get('current_medications', '') if existing_profile else '',
+            placeholder=get_text('current_medications_placeholder', lang),
+            height=100
+        )
+        
+        if allergies:
+            st.markdown(f"""
+            <div class="info-box warning">
+                ⚠️ <strong>{get_text('allergy_warning', lang)}:</strong> Your allergies will be considered when the AI provides recommendations.
+            </div>
+            """, unsafe_allow_html=True)
+    
+    with tab3:
+        st.markdown(f"### 🚨 {get_text('emergency_info', lang)}")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            emergency_name = st.text_input(
+                f"👤 {get_text('emergency_contact_name', lang)}",
+                value=existing_profile.get('emergency_contact_name', '') if existing_profile else ''
+            )
+        
+        with col2:
+            emergency_phone = st.text_input(
+                f"📞 {get_text('emergency_contact_phone', lang)}",
+                value=existing_profile.get('emergency_contact_phone', '') if existing_profile else '',
+                placeholder="+91..."
+            )
+        
+        primary_doctor = st.text_input(
+            f"👨‍⚕️ {get_text('primary_doctor', lang)}",
+            value=existing_profile.get('primary_doctor', '') if existing_profile else ''
+        )
+    
+    with tab4:
+        st.markdown(f"### 🏃 {get_text('lifestyle_info', lang)}")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            smoking_options = [
+                get_text('never', lang),
+                get_text('former', lang),
+                get_text('current', lang)
+            ]
+            current_smoking = existing_profile.get('smoking_status', smoking_options[0]) if existing_profile else smoking_options[0]
+            smoking_index = smoking_options.index(current_smoking) if current_smoking in smoking_options else 0
+            smoking_status = st.selectbox(f"🚬 {get_text('smoking_status', lang)}", smoking_options, index=smoking_index)
+            
+            exercise_options = [
+                get_text('sedentary', lang),
+                get_text('light', lang),
+                get_text('moderate', lang),
+                get_text('active', lang)
+            ]
+            current_exercise = existing_profile.get('exercise_frequency', exercise_options[0]) if existing_profile else exercise_options[0]
+            exercise_index = exercise_options.index(current_exercise) if current_exercise in exercise_options else 0
+            exercise_frequency = st.selectbox(f"🏃 {get_text('exercise_frequency', lang)}", exercise_options, index=exercise_index)
+        
+        with col2:
+            alcohol_options = [
+                get_text('none', lang),
+                get_text('occasional', lang),
+                get_text('regular', lang)
+            ]
+            current_alcohol = existing_profile.get('alcohol_status', alcohol_options[0]) if existing_profile else alcohol_options[0]
+            alcohol_index = alcohol_options.index(current_alcohol) if current_alcohol in alcohol_options else 0
+            alcohol_status = st.selectbox(f"🍷 {get_text('alcohol_status', lang)}", alcohol_options, index=alcohol_index)
+    
+    st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+    
+    if st.button(f"💾 {get_text('save_profile', lang)}", type="primary", use_container_width=True):
+        profile_data = {
+            'blood_type': blood_type,
+            'height': height,
+            'weight': weight,
+            'date_of_birth': dob,
+            'gender': gender,
+            'allergies': allergies,
+            'chronic_conditions': chronic_conditions,
+            'current_medications': current_medications,
+            'emergency_contact_name': emergency_name,
+            'emergency_contact_phone': emergency_phone,
+            'primary_doctor': primary_doctor,
+            'smoking_status': smoking_status,
+            'alcohol_status': alcohol_status,
+            'exercise_frequency': exercise_frequency
+        }
+        
+        result = data_manager.save_health_profile(user_id, profile_data)
+        
+        if result.get('success'):
+            st.success(f"✅ {get_text('profile_saved', lang)}")
+            st.balloons()
+        else:
+            st.error("❌ Failed to save profile. Please try again.")
+
 def symptom_checker_page():
     inject_custom_css()
     lang = st.session_state.user_language
@@ -828,7 +1015,9 @@ def symptom_checker_page():
         if st.button(f"🔍 {get_text('analyze_symptoms', lang)}", type="primary"):
             if symptoms_text:
                 with st.spinner("Analyzing your symptoms..."):
-                    analysis = ai_helper.analyze_symptoms(symptoms_text, st.session_state.user_language)
+                    user_id = st.session_state.current_user.get('id') if st.session_state.current_user else None
+                    health_context = data_manager.get_health_context_for_ai(user_id) if user_id else None
+                    analysis = ai_helper.analyze_symptoms(symptoms_text, st.session_state.user_language, health_context)
                     
                     if analysis.get("success"):
                         st.markdown("""
@@ -968,7 +1157,9 @@ def symptom_checker_page():
                         st.info(transcription)
                         
                         with st.spinner("Analyzing symptoms..."):
-                            analysis = ai_helper.analyze_symptoms(transcription, st.session_state.user_language)
+                            user_id = st.session_state.current_user.get('id') if st.session_state.current_user else None
+                            health_context = data_manager.get_health_context_for_ai(user_id) if user_id else None
+                            analysis = ai_helper.analyze_symptoms(transcription, st.session_state.user_language, health_context)
                             
                             if analysis.get("success"):
                                 st.markdown("""
@@ -1062,10 +1253,13 @@ def ai_chat_page():
         
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
+                user_id = st.session_state.current_user.get('id') if st.session_state.current_user else None
+                health_context = data_manager.get_health_context_for_ai(user_id) if user_id else None
                 result = ai_helper.medical_chat_response(
                     user_input,
                     st.session_state.user_language,
-                    st.session_state.user_role
+                    st.session_state.user_role,
+                    health_context
                 )
                 if result.get("success"):
                     response = result.get("response")
@@ -2346,6 +2540,7 @@ def main():
         if st.session_state.user_role == "Patient":
             patient_pages = [
                 home_page,
+                health_profile_page,
                 symptom_checker_page,
                 symptom_history_page,
                 ai_chat_page,
