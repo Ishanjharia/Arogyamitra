@@ -262,5 +262,17 @@
     "phone": "",
     "created_at": "2026-01-19T21:09:47.814622",
     "last_login": "2026-01-19T21:10:00.055781"
+  },
+  {
+    "id": 23,
+    "name": "Test Patient y0AP",
+    "email": "testpatient_u3wf5m@test.com",
+    "password_hash": "ef259370cf23b1c4699669c191ee87bba87739d81189a3dbd31bd8e0594dabe7",
+    "salt": "8bfcbe83bc6f1754c611c434850e586e",
+    "role": "Patient",
+    "language": "English",
+    "phone": "",
+    "created_at": "2026-01-19T21:51:33.099147",
+    "last_login": "2026-01-19T21:51:41.864516"
   }
 ]
