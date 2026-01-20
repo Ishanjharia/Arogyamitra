@@ -1,0 +1,40 @@
+[
+  {
+    "id": 1,
+    "user_id": 21,
+    "blood_type": "B+",
+    "height": 175,
+    "weight": 70,
+    "date_of_birth": "",
+    "gender": "",
+    "allergies": "Penicillin, Peanuts",
+    "chronic_conditions": "Asthma",
+    "current_medications": "Salbutamol inhaler",
+    "emergency_contact_name": "",
+    "emergency_contact_phone": "",
+    "primary_doctor": "",
+    "smoking_status": "Never",
+    "alcohol_status": "None",
+    "exercise_frequency": "Sedentary",
+    "updated_at": "2026-01-19T20:06:09.911340"
+  },
+  {
+    "id": 2,
+    "user_id": 2,
+    "blood_type": "A+",
+    "height": 170,
+    "weight": 76,
+    "date_of_birth": "22-05-2005",
+    "gender": "Male",
+    "allergies": "Dust",
+    "chronic_conditions": "NO",
+    "current_medications": "NO",
+    "emergency_contact_name": "Bharat Bhushan",
+    "emergency_contact_phone": "9926884370",
+    "primary_doctor": "Dr S K Singh",
+    "smoking_status": "Never",
+    "alcohol_status": "None",
+    "exercise_frequency": "Sedentary",
+    "updated_at": "2026-01-19T21:45:34.992612"
+  }
+]

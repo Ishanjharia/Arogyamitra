@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "user_id": 20,
+    "user_name": "Automated Support Tester",
+    "user_email": "support_testnao-hs@test.com",
+    "category": "Technical Issue",
+    "description": "Test support ticket from automated testing",
+    "language": "English",
+    "status": "Open",
+    "created_at": "2026-01-18T11:04:43.764886"
+  }
+]

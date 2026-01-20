@@ -1,0 +1,31 @@
+{
+  "feature_clicks": {
+    "Home": 10,
+    "Analytics Dashboard": 5,
+    "Why Arogya Mitra": 5,
+    "Symptom Checker": 23,
+    "AI Chat": 8,
+    "Book Appointment": 1,
+    "Support": 2
+  },
+  "language_usage": {
+    "English": 8
+  },
+  "symptom_keywords": {
+    "fever": 5,
+    "headache": 2,
+    "cough": 1,
+    "throat": 1,
+    "pain": 1,
+    "back": 1
+  },
+  "role_sessions": {
+    "Patient": 8,
+    "Doctor": 0
+  },
+  "daily_visits": {
+    "2026-01-19": 5,
+    "2026-01-20": 3
+  },
+  "total_sessions": 8
+}
