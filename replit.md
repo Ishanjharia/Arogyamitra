@@ -1,11 +1,71 @@
-# AI Health Assistant
+# Arogya Mitra (आरोग्य मित्र) - Your Health Friend
 
 ## Project Overview
 A comprehensive multilingual healthcare platform that enables seamless communication between patients and doctors in their preferred languages (Hindi, Marathi, Tamil, Telugu, Bengali, Gujarati, Kannada, Malayalam, Punjabi, and English).
 
 ## Current Status
 **MVP Complete** - All core features implemented and tested
-**Last Updated:** November 10, 2025
+**AI Provider:** Switched to Google Gemini (FREE tier with generous limits)
+**Authentication:** Complete user signup/login/logout system implemented
+**UI Localization:** Complete - All UI elements support 10 Indian languages
+**Last Updated:** January 18, 2026
+
+## Recent Updates (January 2026)
+- **Public Landing Page** - First thing visitors see before login
+  - "Why Arogya Mitra?" content as introduction (problem, solution, target users, future scope)
+  - Public impact stats (total sessions, patients helped, symptoms analyzed, 10 languages)
+  - Language selector for viewing landing page in preferred language
+  - Clear "Sign In" and "Create Account" call-to-action buttons
+  - Back button on auth pages to return to landing page
+- **Feature Usage Analytics (Local)** - Data-driven insights dashboard
+  - Tracks feature clicks (which pages are most used)
+  - Language usage distribution across all 10 supported languages
+  - Common symptom keywords (anonymized and aggregated)
+  - User role sessions (Patient vs Doctor)
+  - Daily visits chart (last 7 days)
+  - All data stored locally in health_data/analytics.json
+  - Public stats API (get_public_stats) for safe aggregate metrics on landing page
+- **CSS Injection Optimization** - Performance improvement for faster page loads
+  - CSS generation cached using @st.cache_data decorator
+  - Session state tracks current theme/size settings
+  - CSS only regenerates when theme or text size changes
+  - Cleaner rendering with reduced redundant style injection
+- **Context-Aware AI Responses** - Smart response adaptation based on user context
+  - Patient responses: Short, simple, safe advice in everyday language
+  - Doctor responses: Detailed clinical information with ICD codes, differential diagnoses
+  - Severity-aware: High severity prompts emphasize urgency, medium suggests scheduling
+  - Language-aware: All responses in user's preferred language
+- **Personal Health Profile Feature** - Comprehensive health profile for personalized AI
+  - 4 tabs: Basic Info, Medical Info, Emergency Info, Lifestyle Info
+  - Stores blood type, height, weight, DOB, gender
+  - Tracks allergies, chronic conditions, current medications
+  - Emergency contacts and primary doctor information
+  - Lifestyle factors: smoking, alcohol, exercise frequency
+  - Profile data integrated with AI - Symptom Checker and AI Chat now consider patient's health context
+  - Allergy warnings included in symptom analysis
+- **User Support Feature** - Complete support system for users
+  - FAQ section with common questions and answers (localized for all 10 languages)
+  - Contact Support form to submit support tickets
+  - WhatsApp support integration for instant help (9131132558)
+  - Email support: ishanjharia63527@gmail.com
+  - Support ticket tracking with status updates
+- **Full UI Localization** - Complete interface translation for all 10 supported languages
+  - Navigation menus, page headers, buttons, labels all translate dynamically
+  - translations.py module with 50+ translation keys per language
+  - Index-based routing system to support translated menu items
+  - Language changes take effect immediately via st.rerun()
+- Added Find Hospitals feature to locate nearby hospitals by city and specialty
+- Added Medication Tracker with add/complete/delete capabilities
+- Added Read Aloud functionality for prescriptions and health records (using gTTS)
+- Added PDF Export for prescriptions and health records (using fpdf2)
+- Added Quick Navigation from home page buttons
+- Added WhatsApp Sharing for prescriptions and health records
+- Added Symptom History Graph with visual timeline charts
+- Added Family Accounts to manage health records for family members
+- Added High Contrast Mode for accessibility (black bg, white/yellow text)
+- Added Voice Commands for hands-free navigation
+- Added Recent Activity Dashboard on home page
+- Added Progress Indicators (loading spinners) throughout the app
 
 ## Key Features Implemented
 
@@ -41,6 +101,41 @@ A comprehensive multilingual healthcare platform that enables seamless communica
    - Appointment notifications
    - SMS integration (mock for MVP)
 
+7. **Medication Tracker**
+   - Add/track active medications
+   - Mark medications as completed
+   - Daily schedule view
+   - Dosage and frequency tracking
+
+8. **Accessibility Features**
+   - Read Aloud for prescriptions and health records
+   - PDF Export/Download for prescriptions and health records
+   - Quick action buttons on home page
+   - High Contrast Mode (black bg, white/yellow text)
+   - Voice Commands for hands-free navigation
+   - WhatsApp Sharing for easy sharing with family/doctors
+
+9. **Symptom History**
+   - Visual timeline graph showing symptom severity over time
+   - Detailed history with expandable reports
+   - Sorted by date for accurate visualization
+
+10. **Family Accounts**
+    - Add and manage family members
+    - Switch between family members to view their records
+    - Track health for children, parents, spouse
+
+11. **Recent Activity Dashboard**
+    - Shows last appointments, prescriptions, and health records
+    - Quick overview of health journey on home page
+
+12. **Find Hospitals**
+    - Search hospitals by city (24+ major Indian cities)
+    - Filter by medical specialty (Cardiology, Pediatrics, etc.)
+    - View hospital details: address, phone, distance, type (Government/Private)
+    - Save favorite hospitals for quick access
+    - Direct call and Google Maps integration
+
 ### Doctor Features
 1. **Patient-Doctor Translation Chat**
    - Real-time conversation translation
@@ -65,27 +160,30 @@ A comprehensive multilingual healthcare platform that enables seamless communica
 ## Technical Architecture
 
 ### Core Modules
-- **app.py** - Main Streamlit application with role-based UI
-- **ai_helper.py** - OpenAI integration for translation, analysis, and chat
+- **app.py** - Main Streamlit application with role-based UI and authentication
+- **ai_helper.py** - Gemini API integration for translation, analysis, and chat
 - **data_manager.py** - JSON-based data persistence with full CRUD operations
+- **auth_manager.py** - User authentication with password hashing and session management
+- **translations.py** - UI localization dictionary with 50+ keys for all 10 supported languages
 
 ### Supported Languages
 English, Hindi (हिंदी), Marathi (मराठी), Tamil (தமிழ்), Telugu (తెలుగు), Bengali (বাংলা), Gujarati (ગુજરાતી), Kannada (ಕನ್ನಡ), Malayalam (മലയാളം), Punjabi (ਪੰਜਾਬੀ)
 
 ### Dependencies
 - **Streamlit** - Web UI framework
-- **OpenAI API** - AI-powered features (GPT-5, Whisper)
+- **Google Gemini API** - AI-powered features (gemini-2.5-flash, gemini-2.5-pro)
 - **SpeechRecognition** - Audio input processing
 - **gTTS** - Text-to-speech output
 - **audio-recorder-streamlit** - Voice recording component
 - **Pandas** - Data management
 
 ### Environment Variables
-- **OPENAI_API_KEY** - Required for all AI features
+- **GEMINI_API_KEY** - Required for all AI features (FREE tier available)
 - **SESSION_SECRET** - Session management
 
 ## Data Storage
 Location: `health_data/` directory
+- `users.json` - User accounts (with hashed passwords)
 - `appointments.json` - Appointment records
 - `prescriptions.json` - Prescription data
 - `health_records.json` - Patient health records
@@ -101,10 +199,15 @@ All AI helper functions return structured responses:
 }
 ```
 
-The UI checks `success` before processing responses and displays user-friendly error messages when API calls fail or when OPENAI_API_KEY is not configured.
+The UI checks `success` before processing responses and displays user-friendly error messages when API calls fail or when GEMINI_API_KEY is not configured.
+
+**Retry Logic:** Automatic retry with exponential backoff for API overload errors (503 UNAVAILABLE), with user-friendly message after max retries.
 
 ## Security Features
-- API key validation before OpenAI calls
+- **User Authentication** - Complete signup/login/logout system
+- **Password Hashing** - SHA-256 with unique salt per user
+- **Session Management** - Secure session state for authenticated users
+- API key validation before Gemini calls
 - No exposed secrets in code
 - Structured error handling prevents crashes
 - Environment-based configuration
@@ -151,7 +254,9 @@ The UI checks `success` before processing responses and displays user-friendly e
 - Real Twilio SMS integration
 
 ## Development Notes
-- All OpenAI calls use GPT-5 model (released August 7, 2025)
+- All AI calls use Google Gemini models (gemini-2.5-flash for speed, gemini-2.5-pro for complex reasoning)
+- Gemini FREE tier: 60 requests/minute, no credit card required
+- Automatic retry logic for API overload (503) errors with exponential backoff
 - Error handling prevents crashes when API key is missing
 - CRUD operations available for all data entities
 - UI optimized for low digital literacy users
@@ -161,8 +266,10 @@ The UI checks `success` before processing responses and displays user-friendly e
 - ✅ App successfully runs on port 5000
 - ✅ Role selection works
 - ✅ Language switching functional
-- ✅ Error handling tested (missing API key)
-- ⏳ End-to-end testing with valid API key pending
+- ✅ Gemini API integration working
+- ✅ Multilingual chat tested (Hindi)
+- ✅ Error handling tested (API key validation and retry logic)
+- ✅ End-to-end testing completed
 
 ## Known Limitations (MVP)
 - SMS reminders are mocked (not actually sent)

@@ -5,11 +5,16 @@ description = "Add your description here"
 requires-python = ">=3.11"
 dependencies = [
     "audio-recorder-streamlit>=0.0.10",
+    "fpdf>=1.7.2",
+    "fpdf2>=2.8.5",
+    "google-genai>=1.49.0",
     "gtts>=2.5.4",
     "openai>=2.7.1",
     "pandas>=2.3.3",
     "pydub>=0.25.1",
     "python-dateutil>=2.9.0.post0",
+    "sift-stack-py>=0.9.6",
     "speechrecognition>=3.14.3",
+    "st-theme>=1.2.3",
     "streamlit>=1.51.0",
 ]

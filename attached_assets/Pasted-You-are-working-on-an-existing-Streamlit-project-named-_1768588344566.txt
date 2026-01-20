@@ -1,0 +1,101 @@
+You are working on an existing Streamlit project named
+“Arogya Mitra – AI Healthcare Assistant”.
+
+DO NOT refactor business logic.
+DO NOT change page flow, authentication, AI logic, or data managers.
+ONLY improve the color system and accessibility inside inject_custom_css().
+
+IMPORTANT CONTEXT:
+- The project uses Streamlit with custom CSS injection via inject_custom_css()
+- Themes are controlled via st.session_state['theme_mode']
+- Existing themes: Light, Dark, High Contrast
+- UI elements use CSS classes like:
+  main-header, feature-card, info-box, welcome-banner, severity-*, language-badge
+
+OBJECTIVE:
+Replace the current theme palettes with a calm, professional,
+healthcare-grade color system suitable for long usage and multilingual users.
+
+STEP 1 — UPDATE theme_palettes DICTIONARY
+
+Replace theme_palettes with the following values:
+
+Light Theme:
+- bg_primary: #F7F9FC
+- bg_secondary: #EEF2FF
+- bg_card: #FFFFFF
+- text_primary: #1F2937
+- text_secondary: #6B7280
+- border_color: #E5E7EB
+- sidebar_bg: #EEF2FF
+- sidebar_text: #1F2937
+
+Dark Theme:
+- bg_primary: #0F172A
+- bg_secondary: #1E293B
+- bg_card: #1E293B
+- text_primary: #E5E7EB
+- text_secondary: #9CA3AF
+- border_color: #334155
+- sidebar_bg: #020617
+- sidebar_text: #E5E7EB
+
+High Contrast Theme (WCAG AAA):
+- bg_primary: #000000
+- bg_secondary: #000000
+- bg_card: #0A0A0A
+- text_primary: #FFFFFF
+- text_secondary: #FFD400
+- border_color: #FFFFFF
+- sidebar_bg: #000000
+- sidebar_text: #FFFFFF
+
+STEP 2 — STANDARDIZE SEMANTIC COLORS (do NOT hardcode randomly)
+
+Use these constants consistently:
+- Primary / Action: #4F7CF3
+- Success / Health: #2CB9A8
+- Warning: #F4B740
+- Danger / SOS: #E5533D
+- Info: #6366F1
+
+Apply them to:
+- Buttons
+- Severity indicators
+- Feature card borders
+- Info boxes
+
+STEP 3 — REDUCE GRADIENT OVERUSE
+
+- Keep gradients ONLY for:
+  - main-header
+  - welcome-banner
+- Replace other gradients with solid colors using theme variables
+- Especially remove gradients from:
+  - info-box.*
+  - stat-card.*
+  - sidebar background
+
+STEP 4 — ACCESSIBILITY FIXES
+
+- Ensure text_secondary never drops below contrast ratio in Dark mode
+- In High Contrast mode:
+  - All text must be either white or yellow
+  - Buttons must have visible borders
+  - Links must be cyan (#00FFFF)
+
+STEP 5 — DO NOT CHANGE:
+- Emojis
+- Language strings
+- Layout structure
+- Component hierarchy
+- Animations or transitions
+- Session state logic
+
+FINAL VALIDATION:
+- Theme switch must work instantly
+- No visual regression
+- UI should feel medical, calm, and trustworthy
+- High Contrast must be usable by elderly users
+
+Only output updated code for inject_custom_css().
