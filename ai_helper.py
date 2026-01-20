@@ -1,6 +1,7 @@
 import json
 import os
 import time
+import streamlit as st
 from google import genai
 from google.genai import types
 
@@ -8,7 +9,11 @@ from google.genai import types
 # Using Google Gemini API via blueprint:python_gemini
 # Models: gemini-2.5-flash (fast, cheap) and gemini-2.5-pro (complex reasoning)
 
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+
+def get_gemini_api_key():
+    return st.secrets.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")
+
+
 MAX_RETRIES = 3
 RETRY_DELAY = 2
 
@@ -23,18 +28,15 @@ SUPPORTED_LANGUAGES = {
     "ಕನ್ನಡ (Kannada)": "kn",
     "മലയാളം (Malayalam)": "ml",
     "ਪੰਜਾਬੀ (Punjabi)": "pa"
-}
+    
+}def get_gemini_client():
+    api_key = get_gemini_api_key()
+    if not api_key:
+        raise ValueError("Gemini API key not configured")
 
-def validate_api_key():
-    if not GEMINI_API_KEY:
-        return False, "Gemini API key not configured. Please set GEMINI_API_KEY environment variable."
-    return True, ""
+    genai.configure(api_key=api_key)
+    return genai.Client(api_key=api_key)
 
-def get_gemini_client():
-    is_valid, error_msg = validate_api_key()
-    if not is_valid:
-        raise ValueError(error_msg)
-    return genai.Client(api_key=GEMINI_API_KEY)
 
 def call_gemini_with_retry(func):
     for attempt in range(MAX_RETRIES):
