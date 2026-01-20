@@ -29,5 +29,39 @@
     },
     "date": "2026-01-19",
     "created_at": "2026-01-19T21:52:12.348967"
+  },
+  {
+    "id": 2,
+    "patient_name": "Ishan Jharia",
+    "record_type": "Symptom Analysis",
+    "description": "I have fever what to do ?",
+    "language": "English",
+    "report_data": {
+      "symptoms_summary": "You are experiencing a fever, which means your body temperature is higher than normal. This is a common sign that your body is fighting off an illness, such as a cold or the flu.",
+      "possible_conditions": [
+        "Common Cold",
+        "Flu (Influenza)",
+        "Viral Infection",
+        "Bacterial Infection"
+      ],
+      "severity_level": "Low",
+      "recommendations": [
+        "Get plenty of rest to help your body recover.",
+        "Drink lots of fluids like water, broth, or diluted juice to prevent dehydration.",
+        "Take over-the-counter fever reducers like acetaminophen or ibuprofen as directed on the package.",
+        "Wear light clothing and use a light blanket to stay comfortable and avoid overheating."
+      ],
+      "urgent_care_needed": false,
+      "when_to_see_doctor": "You should see a doctor if your fever is very high (above 103\u00b0F or 39.4\u00b0C), lasts longer than three days, or is accompanied by a severe headache, stiff neck, rash, or difficulty breathing.",
+      "allergy_warnings": [
+        "Ensure your resting area is clean and free from dust to avoid triggering allergy symptoms while you recover."
+      ],
+      "condition_considerations": "",
+      "disclaimer": "This is not a medical diagnosis. Please consult a doctor for proper evaluation.",
+      "success": true,
+      "error": null
+    },
+    "date": "2026-01-19",
+    "created_at": "2026-01-19T21:56:34.904503"
   }
 ]
