@@ -3,7 +3,7 @@ import os
 from datetime import datetime, timedelta
 import pandas as pd
 
-DATA_DIR = "health_data"
+DATA_DIR = /tmp/health_data
 APPOINTMENTS_FILE = os.path.join(DATA_DIR, "appointments.json")
 PRESCRIPTIONS_FILE = os.path.join(DATA_DIR, "prescriptions.json")
 HEALTH_RECORDS_FILE = os.path.join(DATA_DIR, "health_records.json")

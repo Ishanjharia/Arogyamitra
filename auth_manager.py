@@ -4,7 +4,8 @@ import hashlib
 import secrets
 from datetime import datetime
 
-DATA_DIR = "health_data"
+DATA_DIR = "/tmp/health_data"
+
 USERS_FILE = os.path.join(DATA_DIR, "users.json")
 
 def ensure_users_file():

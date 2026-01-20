@@ -29,7 +29,9 @@ SUPPORTED_LANGUAGES = {
     "മലയാളം (Malayalam)": "ml",
     "ਪੰਜਾਬੀ (Punjabi)": "pa"
     
-}def get_gemini_client():
+}
+
+def get_gemini_client():
     api_key = get_gemini_api_key()
     if not api_key:
         raise ValueError("Gemini API key not configured")
