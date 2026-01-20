@@ -1674,7 +1674,42 @@ def health_records_page():
         if records:
             st.success(f"Found {len(records)} record(s)")
             
+            symptom_records = [r for r in records if 'Symptom' in r.get('record_type', '')]
+            if symptom_records:
+                st.markdown(f"### 📈 {get_text('symptom_timeline', lang)}")
+                
+                dates = []
+                severities = []
+                severity_map = {'Low': 1, 'Medium': 2, 'High': 3, 'Critical': 4}
+                
+                sorted_symptom_records = sorted(symptom_records, key=lambda x: x.get('date', ''))
+                for record in sorted_symptom_records:
+                    dates.append(record.get('date', 'Unknown'))
+                    report_data = record.get('report_data', {})
+                    severity = report_data.get('severity', 'Medium') if isinstance(report_data, dict) else 'Medium'
+                    severities.append(severity_map.get(severity, 2))
+                
+                if dates and severities:
+                    import pandas as pd
+                    chart_data = pd.DataFrame({
+                        'Date': dates,
+                        'Severity Level': severities
+                    })
+                    st.bar_chart(chart_data.set_index('Date'))
+                    
+                    st.markdown(f"""
+                    <div class="info-box info">
+                        <strong>📊 {get_text('severity_scale', lang)}:</strong><br>
+                        1 = Low | 2 = Medium | 3 = High | 4 = Critical
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                st.markdown("<div class='gradient-divider'></div>", unsafe_allow_html=True)
+            
+            st.markdown(f"### 📋 All Records")
+            
             for i, record in enumerate(records, 1):
+                record_id = record.get('id')
                 with st.expander(f"📄 {record['record_type']} - {record['date']}"):
                     st.markdown(f"**Type:** {record['record_type']}")
                     st.markdown(f"**Date:** {record['date']}")
@@ -1682,10 +1717,14 @@ def health_records_page():
                     st.markdown(f"**Description:** {record['description']}")
                     
                     if record.get('report_data'):
-                        st.markdown("**Analysis Report:**")
-                        st.json(record['report_data'])
+                        if isinstance(record['report_data'], dict):
+                            st.markdown(f"**Severity:** {record['report_data'].get('severity', 'N/A')}")
+                            if record['report_data'].get('possible_conditions'):
+                                st.markdown("**Possible Conditions:**")
+                                for cond in record['report_data'].get('possible_conditions', []):
+                                    st.markdown(f"- {cond}")
                     
-                    action_col1, action_col2, action_col3 = st.columns(3)
+                    action_col1, action_col2, action_col3, action_col4 = st.columns(4)
                     with action_col1:
                         if st.button(f"🔊 Read Aloud", key=f"read_rec_{i}"):
                             text_to_read = record.get('description', '')
@@ -1707,6 +1746,25 @@ def health_records_page():
                         share_text = f"Health Record: {record.get('record_type', 'Report')}\nDate: {record['date']}\nDescription: {record.get('description', '')[:200]}"
                         whatsapp_url = generate_whatsapp_share_url(share_text)
                         st.markdown(f"<a href='{whatsapp_url}' target='_blank' style='display:inline-block;background:#25D366;color:white;padding:0.5rem 1rem;border-radius:5px;text-decoration:none;'>📱 WhatsApp</a>", unsafe_allow_html=True)
+                    
+                    with action_col4:
+                        delete_key = f"delete_rec_{record_id}_{i}"
+                        if st.button(f"🗑️ {get_text('delete', lang)}", key=delete_key, type="secondary"):
+                            st.session_state[f"confirm_delete_{record_id}"] = True
+                        
+                        if st.session_state.get(f"confirm_delete_{record_id}", False):
+                            st.warning(get_text('confirm_delete', lang))
+                            col_yes, col_no = st.columns(2)
+                            with col_yes:
+                                if st.button("✅ Yes", key=f"yes_del_{record_id}"):
+                                    data_manager.delete_health_record(record_id)
+                                    st.session_state[f"confirm_delete_{record_id}"] = False
+                                    st.success(get_text('record_deleted', lang))
+                                    st.rerun()
+                            with col_no:
+                                if st.button("❌ No", key=f"no_del_{record_id}"):
+                                    st.session_state[f"confirm_delete_{record_id}"] = False
+                                    st.rerun()
         else:
             st.info("No health records yet. Use the Symptom Checker to create your first record.")
     else:
@@ -2919,7 +2977,6 @@ def main():
                 home_page,
                 health_profile_page,
                 symptom_checker_page,
-                symptom_history_page,
                 ai_chat_page,
                 prescription_page,
                 health_records_page,

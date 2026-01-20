@@ -274,5 +274,29 @@
     "phone": "",
     "created_at": "2026-01-19T21:51:33.099147",
     "last_login": "2026-01-19T21:51:41.864516"
+  },
+  {
+    "id": 24,
+    "name": "Record Test Bw9S",
+    "email": "healthrecord_sham5b@test.com",
+    "password_hash": "0f2c58eaac348828916423ece3f382e39c40ef3ec9ce557a0869d140a7222065",
+    "salt": "09ed8df6f9fb7374664c2086fed84211",
+    "role": "Patient",
+    "language": "English",
+    "phone": "",
+    "created_at": "2026-01-20T14:13:24.684245",
+    "last_login": "2026-01-20T14:13:35.646932"
+  },
+  {
+    "id": 25,
+    "name": "RecTest Php_",
+    "email": "healthrec2_bw-vzy@test.com",
+    "password_hash": "a20a65ca12c48b3dbd19d1b821c533842346b74b8d92e02d8d484ae457da0052",
+    "salt": "0aee70de9e391519fac61fcbb2e33d88",
+    "role": "Patient",
+    "language": "English",
+    "phone": "",
+    "created_at": "2026-01-20T14:15:42.594963",
+    "last_login": "2026-01-20T14:15:54.373850"
   }
 ]
