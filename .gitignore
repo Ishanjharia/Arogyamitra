@@ -1,0 +1,7 @@
+__pycache__/
+.streamlit/
+.local/
+.env
+*.pyc
+health_data/
+attached_assets/
