@@ -1,0 +1,9 @@
+# Web app framework
+streamlit
+
+# Google Gemini AI API
+google-generativeai
+
+# Data handling
+pandas
+
