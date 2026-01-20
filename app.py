@@ -1,4 +1,4 @@
 import streamlit as st
-import ai_helper
+import data_manager
 
-st.write("Imported ai_helper")
+st.write("Imported data_manager")
