@@ -1,5 +1,4 @@
 import streamlit as st
+import ai_helper
 
-st.set_page_config(page_title="Test")
-
-st.write("STREAMLIT BOOTED SUCCESSFULLY")
+st.write("Imported ai_helper")
