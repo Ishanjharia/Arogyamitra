@@ -32,8 +32,8 @@ genai.configure(api_key=GEMINI_API_KEY)
 # ⚙️ GLOBAL SETTINGS
 # =========================================================
 
-MODEL_FAST = "gemini-1.5-flash"
-MODEL_PRO = "gemini-1.5-pro"
+MODEL_FAST = "gemini-1.5-flash-latest"
+MODEL_PRO = "gemini-1.5-pro-latest"
 
 MAX_RETRIES = 3
 RETRY_DELAY = 2
