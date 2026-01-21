@@ -1,3 +1,8 @@
+# ai_helper.py
+# =========================================================
+# AROGYAMITRA — Gemini AI Helper (FINAL, STABLE VERSION)
+# =========================================================
+
 import os
 import json
 import time
@@ -5,7 +10,7 @@ import streamlit as st
 import google.generativeai as genai
 
 # =========================================================
-# 🔑 API KEY HANDLING (Railway + Streamlit compatible)
+# 🔑 API KEY (Railway + Streamlit compatible)
 # =========================================================
 
 def get_gemini_api_key():
@@ -24,7 +29,7 @@ if not GEMINI_API_KEY:
 genai.configure(api_key=GEMINI_API_KEY)
 
 # =========================================================
-# ⚙️ GLOBAL CONFIG
+# ⚙️ GLOBAL SETTINGS
 # =========================================================
 
 MODEL_FAST = "gemini-1.5-flash"
@@ -43,7 +48,7 @@ SUPPORTED_LANGUAGES = {
     "ગુજરાતી (Gujarati)": "gu",
     "ಕನ್ನಡ (Kannada)": "kn",
     "മലയാളം (Malayalam)": "ml",
-    "ਪੰਜਾਬੀ (Punjabi)": "pa"
+    "ਪੰਜਾਬੀ (Punjabi)": "pa",
 }
 
 # =========================================================
@@ -68,10 +73,9 @@ def translate_text(text, source_language, target_language):
     def _run():
         model = genai.GenerativeModel(MODEL_FAST)
         prompt = (
-            f"You are a medical translator.\n"
+            f"You are a professional medical translator.\n"
             f"Translate the following text from {source_language} to {target_language}.\n"
-            f"Keep medical terms accurate.\n\n"
-            f"{text}"
+            f"Keep medical terms accurate.\n\n{text}"
         )
         response = model.generate_content(prompt)
         return {"success": True, "translation": response.text}
@@ -91,12 +95,12 @@ def analyze_symptoms(symptoms_text, language, health_context=None, user_role="Pa
             MODEL_PRO if user_role == "Doctor" else MODEL_FAST
         )
 
-        context_block = f"\nPatient Context:\n{health_context}\n" if health_context else ""
+        context = f"\nPatient Context:\n{health_context}\n" if health_context else ""
 
         prompt = (
             f"You are an AI medical assistant.\n"
             f"Language: {language}\n"
-            f"{context_block}\n"
+            f"{context}\n"
             f"Symptoms:\n{symptoms_text}\n\n"
             f"Respond ONLY in valid JSON with:\n"
             f"- symptoms_summary\n"
@@ -105,7 +109,7 @@ def analyze_symptoms(symptoms_text, language, health_context=None, user_role="Pa
             f"- recommendations (list)\n"
             f"- urgent_care_needed (true/false)\n"
             f"- follow_up_questions (list)\n"
-            f"- disclaimer\n"
+            f"- disclaimer"
         )
 
         response = model.generate_content(prompt)
@@ -125,7 +129,7 @@ def analyze_symptoms(symptoms_text, language, health_context=None, user_role="Pa
             "recommendations": [],
             "urgent_care_needed": False,
             "follow_up_questions": [],
-            "disclaimer": "This is not medical advice."
+            "disclaimer": "This is not medical advice.",
         }
 
 # =========================================================
@@ -137,15 +141,15 @@ def medical_chat_response(message, language, user_role, health_context=None, sev
         model = genai.GenerativeModel(MODEL_FAST)
 
         context = f"\nPatient Context:\n{health_context}\n" if health_context else ""
-        urgency = f"\nSeverity: {severity_level}\n" if severity_level else ""
+        severity = f"\nSeverity: {severity_level}\n" if severity_level else ""
 
         prompt = (
             f"You are a medical AI assistant.\n"
             f"User Role: {user_role}\n"
             f"Language: {language}\n"
-            f"{context}{urgency}\n"
+            f"{context}{severity}\n"
             f"User Message:\n{message}\n\n"
-            f"Respond clearly and safely."
+            f"Respond clearly, safely, and responsibly."
         )
 
         response = model.generate_content(prompt)
@@ -163,13 +167,16 @@ def medical_chat_response(message, language, user_role, health_context=None, sev
 def transcribe_audio(audio_file_path):
     def _run():
         model = genai.GenerativeModel(MODEL_FAST)
+
         with open(audio_file_path, "rb") as f:
             audio_bytes = f.read()
 
-        response = model.generate_content([
-            {"mime_type": "audio/wav", "data": audio_bytes},
-            "Transcribe this audio accurately."
-        ])
+        response = model.generate_content(
+            [
+                {"mime_type": "audio/wav", "data": audio_bytes},
+                "Transcribe this audio accurately.",
+            ]
+        )
         return {"success": True, "transcription": response.text}
 
     try:
