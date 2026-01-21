@@ -8,3 +8,4 @@ google-generativeai
 pandas
 
 audio-recorder-streamlit
+gTTS
