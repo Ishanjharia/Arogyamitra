@@ -7,27 +7,12 @@ import tempfile
 import base64
 import random
 from fpdf import FPDF
-from streamlit_theme import st_theme
 
 import ai_helper
 import data_manager
 import auth_manager
 from translations import get_text, get_greeting, get_nav_items, TRANSLATIONS
 
-def sync_theme_with_streamlit():
-    """Sync our custom theme with Streamlit's active theme"""
-    try:
-        streamlit_theme = st_theme()
-        if streamlit_theme:
-            base = streamlit_theme.get('base', 'light')
-            current_theme = st.session_state.get('theme_mode', 'Light')
-            
-            if base == 'dark' and current_theme == 'Light':
-                st.session_state.theme_mode = 'Dark'
-            elif base == 'light' and current_theme == 'Dark':
-                st.session_state.theme_mode = 'Light'
-    except Exception:
-        pass
 
 HEALTH_TIPS = {
     "English": [
