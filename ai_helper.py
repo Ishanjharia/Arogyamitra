@@ -27,7 +27,7 @@ def get_gemini_api_key():
 # ===============================
 # Constants
 # ===============================
-MODEL_NAME = "models/gemini-pro"
+MODEL_NAME = "gemini-3-flash-preview"
 MAX_RETRIES = 3
 RETRY_DELAY = 2
 
