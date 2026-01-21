@@ -7,16 +7,22 @@ import google.generativeai as genai
 # ===============================
 # Gemini API Key Loader
 # ===============================
+
 def get_gemini_api_key():
-    if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
-        return st.secrets["GEMINI_API_KEY"]
-    return os.environ.get("GEMINI_API_KEY")
+    # 1. Try environment variable FIRST (Railway, Docker, Prod)
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if api_key:
+        return api_key
 
-GEMINI_API_KEY = get_gemini_api_key()
-if not GEMINI_API_KEY:
-    raise RuntimeError("GEMINI_API_KEY is not set")
+    # 2. Try Streamlit secrets ONLY if available
+    try:
+        import streamlit as st
+        if "GEMINI_API_KEY" in st.secrets:
+            return st.secrets["GEMINI_API_KEY"]
+    except Exception:
+        pass
 
-genai.configure(api_key=GEMINI_API_KEY)
+    return None
 
 # ===============================
 # Constants
@@ -24,6 +30,13 @@ genai.configure(api_key=GEMINI_API_KEY)
 MODEL_NAME = "gemini-pro"
 MAX_RETRIES = 3
 RETRY_DELAY = 2
+
+GEMINI_API_KEY = get_gemini_api_key()
+
+if not GEMINI_API_KEY:
+    raise RuntimeError("GEMINI_API_KEY is not set")
+
+genai.configure(api_key=GEMINI_API_KEY)
 
 SUPPORTED_LANGUAGES = {
     "English": "en",
