@@ -1,11 +1,9 @@
-# Web app framework
 streamlit
-
-# Google Gemini AI API
 google-generativeai
-
-# Data handling
 pandas
-
 audio-recorder-streamlit
 gTTS
+numpy
+requests
+fpdf2
+SpeechRecognition
