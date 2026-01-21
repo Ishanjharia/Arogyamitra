@@ -1,4 +1,12 @@
 import streamlit as st
+
+st.set_page_config(
+    page_title="Arogya Mitra - आरोग्य मित्र",
+    page_icon="🏥",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
 import os
 from datetime import datetime, timedelta
 from audio_recorder_streamlit import audio_recorder
@@ -57,12 +65,6 @@ EMERGENCY_CONTACTS = {
     "emergency": "112"
 }
 
-st.set_page_config(
-    page_title="Arogya Mitra - आरोग्य मित्र",
-    page_icon="🏥",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
 
 def generate_whatsapp_share_url(text):
     import urllib.parse
