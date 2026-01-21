@@ -4,3 +4,5 @@ __pycache__/
 *.pyc
 health_data/
 attached_assets/
+.streamlit/*
+!.streamlit/config.toml
