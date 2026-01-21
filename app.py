@@ -2940,7 +2940,6 @@ def home_page():
 def main():
     data_manager.ensure_data_directory()
     initialize_session_state()
-    sync_theme_with_streamlit()
     
     if not st.session_state.authenticated:
         if st.session_state.show_auth:
