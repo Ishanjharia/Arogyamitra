@@ -2,8 +2,8 @@ import json
 import os
 import time
 import streamlit as st
-from google import genai
-from google.genai import types
+import google.generativeai as genai
+from google.generativeai.types import GenerationConfig
 
 # IMPORTANT: KEEP THIS COMMENT
 # Using Google Gemini API via blueprint:python_gemini
@@ -36,7 +36,7 @@ def get_gemini_client():
     if not api_key:
         raise ValueError("Gemini API key not configured")
 
-    genai.configure(api_key=api_key)
+    genai.configure(api_key=GEMINI_API_KEY)
     return genai.Client(api_key=api_key)
 
 
@@ -62,7 +62,7 @@ def translate_text(text, source_language, target_language):
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             contents=text,
-            config=types.GenerateContentConfig(
+            config=GenerationConfig(
                 system_instruction=system_instruction,
                 max_output_tokens=2048
             )
@@ -127,7 +127,7 @@ def analyze_symptoms(symptoms_text, language, health_context=None, user_role="Pa
         response = client.models.generate_content(
             model="gemini-2.5-pro",
             contents=symptoms_text,
-            config=types.GenerateContentConfig(
+            config=GenerationConfig(
                 system_instruction=system_instruction,
                 response_mime_type="application/json",
                 max_output_tokens=2048
@@ -178,7 +178,7 @@ def generate_prescription_translation(prescription_text, doctor_language, patien
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             contents=prescription_text,
-            config=types.GenerateContentConfig(
+            config=GenerationConfig(
                 system_instruction=system_instruction,
                 max_output_tokens=2048
             )
@@ -240,7 +240,7 @@ def medical_chat_response(message, language, user_role, health_context=None, sev
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             contents=message,
-            config=types.GenerateContentConfig(
+            config=GenerationConfig(
                 system_instruction=system_instruction,
                 max_output_tokens=2048 if user_role == "Doctor" else 1024
             )
@@ -299,7 +299,7 @@ def generate_doctor_notes(conversation_text, patient_language, doctor_language):
         response = client.models.generate_content(
             model="gemini-2.5-pro",
             contents=conversation_text,
-            config=types.GenerateContentConfig(
+            config=GenerationConfig(
                 system_instruction=system_instruction,
                 max_output_tokens=2048
             )
@@ -333,7 +333,7 @@ def find_nearby_hospitals(city, specialty=None, language="English"):
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             contents=f"Find hospitals near {city}{specialty_filter}",
-            config=types.GenerateContentConfig(
+            config=GenerationConfig(
                 system_instruction=system_instruction,
                 response_mime_type="application/json",
                 max_output_tokens=4096
