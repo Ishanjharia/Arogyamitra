@@ -11,7 +11,18 @@ from google.generativeai.types import GenerationConfig
 
 
 def get_gemini_api_key():
-    return st.secrets.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")
+    try:
+        import streamlit as st
+        if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
+            return st.secrets["GEMINI_API_KEY"]
+    except:
+        pass
+    return os.environ.get("GEMINI_API_KEY")
+
+GEMINI_API_KEY = get_gemini_api_key()
+
+if not GEMINI_API_KEY:
+    raise RuntimeError("GEMINI_API_KEY is not set")
 
 
 MAX_RETRIES = 3
