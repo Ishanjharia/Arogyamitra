@@ -67,10 +67,21 @@ def call_with_retry(func):
 # ===============================
 # Symptom Analysis
 # ===============================
-def analyze_symptoms(symptoms_text, language="English", user_role="Patient"):
+def analyze_symptoms(
+    symptoms_text,
+    language="English",
+    health_context=None,
+    user_role="Patient"
+):
+
     def _run():
         model = genai.GenerativeModel(MODEL_NAME)
+        
+        context_block = ""
+        if health_context:
+            context_block = f"\nPatient Health Context:\n{health_context}\n"
 
+            
         prompt = f"""
 You are a medical AI assistant.
 
