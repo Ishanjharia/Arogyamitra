@@ -55,14 +55,21 @@ def call_openrouter_with_retry(func):
 
 
 def _extract_text(message):
-    content = message.content
+    if isinstance(message, dict):
+        content = message.get("content", "")
+    else:
+        content = getattr(message, "content", "")
+
     if isinstance(content, str):
         return content.strip()
     if isinstance(content, list):
         parts = []
         for item in content:
             if isinstance(item, dict) and item.get("type") == "text":
-                parts.append(item.get("text", ""))
+                text_value = item.get("text", "")
+                if isinstance(text_value, dict):
+                    text_value = text_value.get("value", "")
+                parts.append(text_value)
             else:
                 text_value = getattr(item, "text", None)
                 if text_value:
