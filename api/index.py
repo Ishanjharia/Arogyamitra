@@ -1,7 +1,6 @@
 import os
-import tempfile
 
-from fastapi import FastAPI, File, Form, UploadFile
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -76,7 +75,6 @@ def root():
             "/prescription-translation",
             "/doctor-notes",
             "/find-hospitals",
-            "/transcribe-audio",
         ],
     }
 
@@ -147,25 +145,3 @@ def find_hospitals(payload: HospitalSearchRequest):
         payload.specialty,
         payload.language,
     )
-
-
-@app.post("/transcribe-audio")
-async def transcribe_audio(
-    file: UploadFile = File(...),
-    language: str | None = Form(default=None),
-):
-    suffix = os.path.splitext(file.filename or "audio.wav")[1] or ".wav"
-    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_file:
-        temp_file.write(await file.read())
-        temp_path = temp_file.name
-
-    try:
-        result = ai_helper.transcribe_audio(temp_path)
-        if language and result.get("success"):
-            result["requested_language"] = language
-        return result
-    finally:
-        try:
-            os.remove(temp_path)
-        except OSError:
-            pass
