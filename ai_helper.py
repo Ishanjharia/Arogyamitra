@@ -1,72 +1,149 @@
 import json
 import os
 import time
-from google import genai
-from google.genai import types
+
+from openai import OpenAI
 
 # IMPORTANT: KEEP THIS COMMENT
-# Using Google Gemini API via blueprint:python_gemini
-# Models: gemini-2.5-flash (fast, cheap) and gemini-2.5-pro (complex reasoning)
+# Using OpenRouter free models via the OpenAI-compatible API for demo usage.
 
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 MAX_RETRIES = 3
 RETRY_DELAY = 2
+FAST_MODEL = os.environ.get("OPENROUTER_FAST_MODEL", "openrouter/free")
+COMPLEX_MODEL = os.environ.get("OPENROUTER_COMPLEX_MODEL", "openrouter/free")
 
 SUPPORTED_LANGUAGES = {
     "English": "en",
-    "हिंदी (Hindi)": "hi",
-    "मराठी (Marathi)": "mr",
-    "தமிழ் (Tamil)": "ta",
-    "తెలుగు (Telugu)": "te",
-    "বাংলা (Bengali)": "bn",
-    "ગુજરાતી (Gujarati)": "gu",
-    "ಕನ್ನಡ (Kannada)": "kn",
-    "മലയാളം (Malayalam)": "ml",
-    "ਪੰਜਾਬੀ (Punjabi)": "pa"
+    "à¤¹à¤¿à¤‚à¤¦à¥€ (Hindi)": "hi",
+    "à¤®à¤°à¤¾à¤ à¥€ (Marathi)": "mr",
+    "à®¤à®®à®¿à®´à¯ (Tamil)": "ta",
+    "à°¤à±†à°²à±à°—à± (Telugu)": "te",
+    "à¦¬à¦¾à¦‚à¦²à¦¾ (Bengali)": "bn",
+    "àª—à«àªœàª°àª¾àª¤à«€ (Gujarati)": "gu",
+    "à²•à²¨à³à²¨à²¡ (Kannada)": "kn",
+    "à´®à´²à´¯à´¾à´³à´‚ (Malayalam)": "ml",
+    "à¨ªà©°à¨œà¨¾à¨¬à©€ (Punjabi)": "pa",
 }
 
+
 def validate_api_key():
-    if not GEMINI_API_KEY:
-        return False, "Gemini API key not configured. Please set GEMINI_API_KEY environment variable."
+    if not os.environ.get("OPENROUTER_API_KEY"):
+        return False, "Free demo API key not configured. Please set OPENROUTER_API_KEY."
     return True, ""
 
-def get_gemini_client():
+
+def get_openrouter_client():
     is_valid, error_msg = validate_api_key()
     if not is_valid:
         raise ValueError(error_msg)
-    return genai.Client(api_key=GEMINI_API_KEY)
+    return OpenAI(
+        api_key=os.environ["OPENROUTER_API_KEY"],
+        base_url=OPENROUTER_BASE_URL,
+        timeout=120.0,
+    )
 
-def call_gemini_with_retry(func):
+
+def call_openrouter_with_retry(func):
     for attempt in range(MAX_RETRIES):
         try:
             return func()
         except Exception as e:
-            error_msg = str(e)
-            if "503" in error_msg or "overloaded" in error_msg.lower() or "UNAVAILABLE" in error_msg:
-                if attempt < MAX_RETRIES - 1:
-                    time.sleep(RETRY_DELAY * (attempt + 1))
-                    continue
-                else:
-                    return {"success": False, "error": "The AI service is currently busy. Please try again in a moment."}
+            error_msg = str(e).lower()
+            retryable = any(
+                marker in error_msg
+                for marker in ["429", "503", "overloaded", "unavailable", "rate limit", "timeout"]
+            )
+            if retryable and attempt < MAX_RETRIES - 1:
+                time.sleep(RETRY_DELAY * (attempt + 1))
+                continue
+            if retryable:
+                return {
+                    "success": False,
+                    "error": "The free AI service is busy right now. Please try again in a moment.",
+                }
             raise e
+
+
+def _extract_text(message):
+    content = message.content
+    if isinstance(content, str):
+        return content.strip()
+    if isinstance(content, list):
+        parts = []
+        for item in content:
+            if isinstance(item, dict) and item.get("type") == "text":
+                parts.append(item.get("text", ""))
+            else:
+                text_value = getattr(item, "text", None)
+                if text_value:
+                    parts.append(text_value)
+        return "\n".join(part for part in parts if part).strip()
+    return str(content).strip()
+
+
+def _clean_json_payload(raw_text):
+    text = raw_text.strip()
+    if text.startswith("```"):
+        lines = text.splitlines()
+        if lines:
+            lines = lines[1:]
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+        text = "\n".join(lines).strip()
+    return text
+
+
+def _chat_completion(user_content, system_instruction, model, max_output_tokens, response_format=None):
+    client = get_openrouter_client()
+    extra_headers = {
+        "HTTP-Referer": os.environ.get("OPENROUTER_SITE_URL", "https://arogyamitra-demo.local"),
+        "X-Title": os.environ.get("OPENROUTER_APP_NAME", "ArogyaMitra Demo"),
+    }
+    request_payload = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": system_instruction},
+            {"role": "user", "content": user_content},
+        ],
+        "max_tokens": max_output_tokens,
+        "extra_headers": extra_headers,
+    }
+    if response_format:
+        request_payload["response_format"] = response_format
+
+    response = client.chat.completions.create(**request_payload)
+    return _extract_text(response.choices[0].message)
+
+
+def _json_completion(user_content, system_instruction, model, max_output_tokens):
+    raw_text = _chat_completion(
+        user_content=user_content,
+        system_instruction=system_instruction,
+        model=model,
+        max_output_tokens=max_output_tokens,
+        response_format={"type": "json_object"},
+    )
+    return json.loads(_clean_json_payload(raw_text))
+
 
 def translate_text(text, source_language, target_language):
     def _translate():
-        client = get_gemini_client()
-        system_instruction = f"You are a professional medical translator. Translate the following text from {source_language} to {target_language}. Maintain medical terminology accuracy and cultural sensitivity. Only provide the translation, no explanations."
-        
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=text,
-            config=types.GenerateContentConfig(
-                system_instruction=system_instruction,
-                max_output_tokens=2048
-            )
+        system_instruction = (
+            f"You are a professional medical translator. Translate the following text from "
+            f"{source_language} to {target_language}. Maintain medical terminology accuracy and "
+            "cultural sensitivity. Only provide the translation, no explanations."
         )
-        return {"success": True, "translation": response.text, "error": None}
-    
+        translation = _chat_completion(
+            user_content=text,
+            system_instruction=system_instruction,
+            model=FAST_MODEL,
+            max_output_tokens=2048,
+        )
+        return {"success": True, "translation": translation, "error": None}
+
     try:
-        result = call_gemini_with_retry(_translate)
+        result = call_openrouter_with_retry(_translate)
         if isinstance(result, dict) and not result.get("success"):
             return result
         return result
@@ -75,18 +152,25 @@ def translate_text(text, source_language, target_language):
     except Exception as e:
         return {"success": False, "translation": None, "error": f"Translation failed: {str(e)}"}
 
+
 def analyze_symptoms(symptoms_text, language, health_context=None, user_role="Patient"):
     try:
-        client = get_gemini_client()
-        
         health_info = ""
         if health_context:
-            health_info = f"\n\nIMPORTANT PATIENT INFORMATION:\n{health_context}\n\nConsider this health profile when analyzing symptoms. Pay special attention to:\n- Any allergies when suggesting treatments\n- Existing chronic conditions that might be related\n- Current medications that might interact or cause side effects\n- Lifestyle factors that could be relevant\n\n"
-        
+            health_info = (
+                "\n\nIMPORTANT PATIENT INFORMATION:\n"
+                f"{health_context}\n\n"
+                "Consider this health profile when analyzing symptoms. Pay special attention to:\n"
+                "- Any allergies when suggesting treatments\n"
+                "- Existing chronic conditions that might be related\n"
+                "- Current medications that might interact or cause side effects\n"
+                "- Lifestyle factors that could be relevant\n\n"
+            )
+
         if user_role == "Patient":
             system_instruction = (
-                f"You are an AI medical assistant analyzing patient symptoms. The patient is describing symptoms in {language}. "
-                f"{health_info}"
+                f"You are an AI medical assistant analyzing patient symptoms. The patient is "
+                f"describing symptoms in {language}. {health_info}"
                 "Generate a structured medical report with the following sections in JSON format: "
                 "1) 'symptoms_summary': Brief, easy-to-understand summary (2-3 sentences max) "
                 "2) 'possible_conditions': List of 2-4 possible conditions using simple terms (not a diagnosis) "
@@ -102,8 +186,8 @@ def analyze_symptoms(symptoms_text, language, health_context=None, user_role="Pa
             )
         else:
             system_instruction = (
-                f"You are an AI clinical decision support system. Analyzing symptoms described in {language}. "
-                f"{health_info}"
+                f"You are an AI clinical decision support system. Analyzing symptoms described in "
+                f"{language}. {health_info}"
                 "Generate a comprehensive clinical assessment in JSON format: "
                 "1) 'symptoms_summary': Detailed symptom characterization with onset, duration, quality, severity "
                 "2) 'possible_conditions': Comprehensive differential diagnosis list with ICD-10 codes where applicable "
@@ -116,21 +200,15 @@ def analyze_symptoms(symptoms_text, language, health_context=None, user_role="Pa
                 "9) 'allergy_warnings': Drug allergy considerations for treatment planning "
                 "10) 'condition_considerations': Comorbidity interactions and management considerations "
                 "11) 'references': Relevant clinical guidelines or literature "
-                "Use proper medical terminology. Be thorough and precise. "
-                "Respond with valid JSON only."
+                "Use proper medical terminology. Be thorough and precise. Respond with valid JSON only."
             )
-        
-        response = client.models.generate_content(
-            model="gemini-2.5-pro",
-            contents=symptoms_text,
-            config=types.GenerateContentConfig(
-                system_instruction=system_instruction,
-                response_mime_type="application/json",
-                max_output_tokens=2048
-            )
+
+        result = _json_completion(
+            user_content=symptoms_text,
+            system_instruction=system_instruction,
+            model=COMPLEX_MODEL,
+            max_output_tokens=2048,
         )
-        
-        result = json.loads(response.text)
         result["success"] = True
         result["error"] = None
         return result
@@ -141,9 +219,9 @@ def analyze_symptoms(symptoms_text, language, health_context=None, user_role="Pa
             "symptoms_summary": "AI service not configured",
             "possible_conditions": [],
             "severity_level": "Unknown",
-            "recommendations": "Please configure Gemini API key to use this feature",
+            "recommendations": "Please configure OPENROUTER_API_KEY to use this feature",
             "urgent_care_needed": False,
-            "follow_up_questions": []
+            "follow_up_questions": [],
         }
     except Exception as e:
         return {
@@ -154,14 +232,15 @@ def analyze_symptoms(symptoms_text, language, health_context=None, user_role="Pa
             "severity_level": "Unknown",
             "recommendations": "Please consult a doctor",
             "urgent_care_needed": False,
-            "follow_up_questions": []
+            "follow_up_questions": [],
         }
+
 
 def generate_prescription_translation(prescription_text, doctor_language, patient_language):
     try:
-        client = get_gemini_client()
         system_instruction = (
-            f"You are a medical translator specializing in prescriptions. Translate the following prescription from {doctor_language} to {patient_language}. "
+            f"You are a medical translator specializing in prescriptions. Translate the following "
+            f"prescription from {doctor_language} to {patient_language}. "
             "Maintain exact medication names, dosages, and timing. Format the translation clearly with: "
             "1) Medication names (keep generic/brand names) "
             "2) Dosage and frequency "
@@ -170,42 +249,47 @@ def generate_prescription_translation(prescription_text, doctor_language, patien
             "5) Warnings/precautions. "
             "Use simple, clear language that patients can easily understand."
         )
-        
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prescription_text,
-            config=types.GenerateContentConfig(
-                system_instruction=system_instruction,
-                max_output_tokens=2048
-            )
+        translation = _chat_completion(
+            user_content=prescription_text,
+            system_instruction=system_instruction,
+            model=FAST_MODEL,
+            max_output_tokens=2048,
         )
-        return {"success": True, "translation": response.text, "error": None}
+        return {"success": True, "translation": translation, "error": None}
     except ValueError as e:
         return {"success": False, "translation": None, "error": str(e)}
     except Exception as e:
         return {"success": False, "translation": None, "error": f"Translation failed: {str(e)}"}
 
+
 def medical_chat_response(message, language, user_role, health_context=None, severity_level=None):
     def _chat():
-        client = get_gemini_client()
-        
         health_info = ""
         if health_context and user_role == "Patient":
-            health_info = f"\n\nPatient Health Profile:\n{health_context}\n\nUse this information to provide personalized responses. Consider their allergies, existing conditions, and current medications when giving advice.\n\n"
-        
+            health_info = (
+                "\n\nPatient Health Profile:\n"
+                f"{health_context}\n\n"
+                "Use this information to provide personalized responses. Consider their allergies, "
+                "existing conditions, and current medications when giving advice.\n\n"
+            )
+
         severity_guidance = ""
         if severity_level:
             if severity_level in ["High", "Critical"]:
-                severity_guidance = "IMPORTANT: This appears to be a high-severity situation. Strongly emphasize seeking immediate medical attention. Be direct about urgency while remaining calm. "
+                severity_guidance = (
+                    "IMPORTANT: This appears to be a high-severity situation. Strongly emphasize "
+                    "seeking immediate medical attention. Be direct about urgency while remaining calm. "
+                )
             elif severity_level == "Medium":
-                severity_guidance = "This is a moderate concern. Recommend scheduling a doctor visit soon. Provide helpful interim guidance. "
-        
-        system_instruction = ""
+                severity_guidance = (
+                    "This is a moderate concern. Recommend scheduling a doctor visit soon. "
+                    "Provide helpful interim guidance. "
+                )
+
         if user_role == "Patient":
             system_instruction = (
                 f"You are a compassionate AI health assistant helping patients in {language}. "
-                f"{health_info}"
-                f"{severity_guidance}"
+                f"{health_info}{severity_guidance}"
                 "RESPONSE GUIDELINES FOR PATIENTS:\n"
                 "- Keep responses SHORT and SIMPLE (2-4 paragraphs max)\n"
                 "- Use everyday language, avoid medical jargon\n"
@@ -217,6 +301,7 @@ def medical_chat_response(message, language, user_role, health_context=None, sev
                 "- End with a clear next step the patient can take\n"
                 "- Include disclaimer: 'This is not medical advice. Please consult a doctor.'"
             )
+            max_output_tokens = 1024
         else:
             system_instruction = (
                 f"You are an AI clinical assistant helping doctors in {language}. "
@@ -232,19 +317,18 @@ def medical_chat_response(message, language, user_role, health_context=None, sev
                 "- Reference treatment protocols and clinical pathways\n"
                 "- Be thorough and precise - doctors need complete information"
             )
-        
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=message,
-            config=types.GenerateContentConfig(
-                system_instruction=system_instruction,
-                max_output_tokens=2048 if user_role == "Doctor" else 1024
-            )
+            max_output_tokens = 2048
+
+        response_text = _chat_completion(
+            user_content=message,
+            system_instruction=system_instruction,
+            model=FAST_MODEL,
+            max_output_tokens=max_output_tokens,
         )
-        return {"success": True, "response": response.text, "error": None}
-    
+        return {"success": True, "response": response_text, "error": None}
+
     try:
-        result = call_gemini_with_retry(_chat)
+        result = call_openrouter_with_retry(_chat)
         if isinstance(result, dict) and not result.get("success"):
             return result
         return result
@@ -253,37 +337,24 @@ def medical_chat_response(message, language, user_role, health_context=None, sev
     except Exception as e:
         return {"success": False, "response": None, "error": f"Chat failed: {str(e)}"}
 
+
 def transcribe_audio(audio_file_path):
-    """
-    Note: Gemini supports audio transcription. We'll use gemini-2.5-flash for this.
-    """
-    try:
-        client = get_gemini_client()
-        with open(audio_file_path, "rb") as f:
-            audio_bytes = f.read()
-        
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=[
-                types.Part.from_bytes(
-                    data=audio_bytes,
-                    mime_type="audio/wav",
-                ),
-                "Transcribe this audio accurately. Only provide the transcription text, no explanations."
-            ]
-        )
-        return {"success": True, "transcription": response.text, "error": None}
-    except ValueError as e:
-        return {"success": False, "transcription": None, "error": str(e)}
-    except Exception as e:
-        return {"success": False, "transcription": None, "error": f"Transcription failed: {str(e)}"}
+    _ = audio_file_path
+    return {
+        "success": False,
+        "transcription": None,
+        "error": (
+            "Audio transcription is disabled in the free demo setup. "
+            "Use text input for the demo, or add a separate speech-to-text service later."
+        ),
+    }
+
 
 def generate_doctor_notes(conversation_text, patient_language, doctor_language):
     try:
-        client = get_gemini_client()
         system_instruction = (
-            f"You are an AI medical documentation assistant. The conversation was in {patient_language}. "
-            f"Generate structured clinical notes in {doctor_language} with: "
+            f"You are an AI medical documentation assistant. The conversation was in "
+            f"{patient_language}. Generate structured clinical notes in {doctor_language} with: "
             "1) Chief Complaint "
             "2) History of Present Illness "
             "3) Symptoms Summary "
@@ -291,30 +362,32 @@ def generate_doctor_notes(conversation_text, patient_language, doctor_language):
             "5) Suggested Plan. "
             "Use standard medical terminology and format."
         )
-        
-        response = client.models.generate_content(
-            model="gemini-2.5-pro",
-            contents=conversation_text,
-            config=types.GenerateContentConfig(
-                system_instruction=system_instruction,
-                max_output_tokens=2048
-            )
+        notes = _chat_completion(
+            user_content=conversation_text,
+            system_instruction=system_instruction,
+            model=COMPLEX_MODEL,
+            max_output_tokens=2048,
         )
-        return {"success": True, "notes": response.text, "error": None}
+        return {"success": True, "notes": notes, "error": None}
     except ValueError as e:
         return {"success": False, "notes": None, "error": str(e)}
     except Exception as e:
         return {"success": False, "notes": None, "error": f"Note generation failed: {str(e)}"}
 
+
 def find_nearby_hospitals(city, specialty=None, language="English"):
     def _find():
-        client = get_gemini_client()
-        specialty_filter = f" specializing in {specialty}" if specialty and specialty != "All Specialties" else ""
+        specialty_filter = (
+            f" specializing in {specialty}"
+            if specialty and specialty != "All Specialties"
+            else ""
+        )
         system_instruction = (
-            f"You are a healthcare location assistant helping find hospitals in India. "
+            "You are a healthcare location assistant helping find hospitals in India. "
             f"Find 5-8 hospitals{specialty_filter} near {city}, India. "
             f"Respond in {language} with valid JSON only. "
-            "Return a JSON array with each hospital having these fields: "
+            "Return a JSON object with a 'hospitals' array. "
+            "Each hospital must have these fields: "
             "1) 'name': Hospital name "
             "2) 'address': Full address "
             "3) 'phone': Phone number (use realistic format like +91-XXXX-XXXXXX) "
@@ -325,22 +398,17 @@ def find_nearby_hospitals(city, specialty=None, language="English"):
             "8) 'emergency': true or false for 24/7 emergency services. "
             "Include a mix of government and private hospitals. Use realistic Indian hospital names and addresses."
         )
-        
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=f"Find hospitals near {city}{specialty_filter}",
-            config=types.GenerateContentConfig(
-                system_instruction=system_instruction,
-                response_mime_type="application/json",
-                max_output_tokens=4096
-            )
+        payload = _json_completion(
+            user_content=f"Find hospitals near {city}{specialty_filter}",
+            system_instruction=system_instruction,
+            model=FAST_MODEL,
+            max_output_tokens=4096,
         )
-        
-        hospitals = json.loads(response.text)
+        hospitals = payload.get("hospitals", payload if isinstance(payload, list) else [])
         return {"success": True, "hospitals": hospitals, "error": None}
-    
+
     try:
-        result = call_gemini_with_retry(_find)
+        result = call_openrouter_with_retry(_find)
         if isinstance(result, dict) and not result.get("success"):
             return result
         return result
