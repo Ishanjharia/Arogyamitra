@@ -2,7 +2,7 @@ import json
 import os
 import time
 
-from openai import OpenAI
+import requests
 
 # IMPORTANT: KEEP THIS COMMENT
 # Using OpenRouter free models via the OpenAI-compatible API for demo usage.
@@ -31,17 +31,6 @@ def validate_api_key():
     if not os.environ.get("OPENROUTER_API_KEY"):
         return False, "Free demo API key not configured. Please set OPENROUTER_API_KEY."
     return True, ""
-
-
-def get_openrouter_client():
-    is_valid, error_msg = validate_api_key()
-    if not is_valid:
-        raise ValueError(error_msg)
-    return OpenAI(
-        api_key=os.environ["OPENROUTER_API_KEY"],
-        base_url=OPENROUTER_BASE_URL,
-        timeout=120.0,
-    )
 
 
 def call_openrouter_with_retry(func):
@@ -95,7 +84,10 @@ def _clean_json_payload(raw_text):
 
 
 def _chat_completion(user_content, system_instruction, model, max_output_tokens, response_format=None):
-    client = get_openrouter_client()
+    is_valid, error_msg = validate_api_key()
+    if not is_valid:
+        raise ValueError(error_msg)
+
     extra_headers = {
         "HTTP-Referer": os.environ.get("OPENROUTER_SITE_URL", "https://arogyamitra-demo.local"),
         "X-Title": os.environ.get("OPENROUTER_APP_NAME", "ArogyaMitra Demo"),
@@ -107,13 +99,23 @@ def _chat_completion(user_content, system_instruction, model, max_output_tokens,
             {"role": "user", "content": user_content},
         ],
         "max_tokens": max_output_tokens,
-        "extra_headers": extra_headers,
     }
     if response_format:
         request_payload["response_format"] = response_format
 
-    response = client.chat.completions.create(**request_payload)
-    return _extract_text(response.choices[0].message)
+    response = requests.post(
+        f"{OPENROUTER_BASE_URL}/chat/completions",
+        headers={
+            "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
+            "Content-Type": "application/json",
+            **extra_headers,
+        },
+        json=request_payload,
+        timeout=120,
+    )
+    response.raise_for_status()
+    payload = response.json()
+    return _extract_text(payload["choices"][0]["message"])
 
 
 def _json_completion(user_content, system_instruction, model, max_output_tokens):
