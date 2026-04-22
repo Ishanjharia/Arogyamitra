@@ -5,7 +5,7 @@ A comprehensive multilingual healthcare platform that enables seamless communica
 
 ## Current Status
 **MVP Complete** - All core features implemented and tested
-**AI Provider:** Switched to OpenRouter free models for demo usage
+**AI Provider:** Switched to Groq for fast, free developer-tier demos
 **Authentication:** Complete user signup/login/logout system implemented
 **UI Localization:** Complete - All UI elements support 10 Indian languages
 **Last Updated:** January 18, 2026
@@ -161,7 +161,7 @@ A comprehensive multilingual healthcare platform that enables seamless communica
 
 ### Core Modules
 - **app.py** - Main Streamlit application with role-based UI and authentication
-- **ai_helper.py** - OpenRouter free-model integration for translation, analysis, and chat
+- **ai_helper.py** - Groq integration for translation, analysis, and chat
 - **api/index.py** - FastAPI backend for Vercel deployment
 - **data_manager.py** - JSON-based data persistence with full CRUD operations
 - **auth_manager.py** - User authentication with password hashing and session management
@@ -172,14 +172,14 @@ English, Hindi (हिंदी), Marathi (मराठी), Tamil (தமிழ
 
 ### Dependencies
 - **Streamlit** - Web UI framework
-- **OpenRouter free models** - AI-powered demo features via the OpenAI-compatible API
+- **Groq API** - AI-powered demo features via the OpenAI-compatible API
 - **SpeechRecognition** - Audio input processing
 - **gTTS** - Text-to-speech output
 - **audio-recorder-streamlit** - Voice recording component
 - **Pandas** - Data management
 
 ### Environment Variables
-- **OPENROUTER_API_KEY** - Required for demo AI features
+- **GROQ_API_KEY** - Required for demo AI features
 - **SESSION_SECRET** - Session management
 
 ## Data Storage
@@ -200,7 +200,7 @@ All AI helper functions return structured responses:
 }
 ```
 
-The UI checks `success` before processing responses and displays user-friendly error messages when API calls fail or when `OPENROUTER_API_KEY` is not configured.
+The UI checks `success` before processing responses and displays user-friendly error messages when API calls fail or when `GROQ_API_KEY` is not configured.
 
 **Retry Logic:** Automatic retry with exponential backoff for API overload errors (503 UNAVAILABLE), with user-friendly message after max retries.
 
@@ -208,7 +208,7 @@ The UI checks `success` before processing responses and displays user-friendly e
 - **User Authentication** - Complete signup/login/logout system
 - **Password Hashing** - SHA-256 with unique salt per user
 - **Session Management** - Secure session state for authenticated users
-- API key validation before OpenRouter calls
+- API key validation before Groq calls
 - No exposed secrets in code
 - Structured error handling prevents crashes
 - Environment-based configuration
@@ -255,8 +255,8 @@ The UI checks `success` before processing responses and displays user-friendly e
 - Real Twilio SMS integration
 
 ## Development Notes
-- All AI calls now use OpenRouter free models (`openrouter/free` by default)
-- Rate limits and reliability now follow OpenRouter's free-model availability
+- All AI calls now use Groq-hosted models (`llama-3.1-8b-instant` by default)
+- Rate limits and reliability now follow your Groq developer-tier account limits
 - Automatic retry logic for API overload (503) errors with exponential backoff
 - Error handling prevents crashes when API key is missing
 - CRUD operations available for all data entities
@@ -267,7 +267,7 @@ The UI checks `success` before processing responses and displays user-friendly e
 - ✅ App successfully runs on port 5000
 - ✅ Role selection works
 - ✅ Language switching functional
-- ✅ Free demo API integration wired through `ai_helper.py`
+- ✅ Groq API integration wired through `ai_helper.py`
 - ✅ Multilingual chat tested (Hindi)
 - ✅ Error handling tested (API key validation and retry logic)
 - ✅ End-to-end testing completed

@@ -49,7 +49,7 @@ class HospitalSearchRequest(BaseModel):
 app = FastAPI(
     title="ArogyaMitra API",
     version="1.0.0",
-    description="Vercel-ready backend for free demo healthcare assistant features.",
+    description="Backend for demo healthcare assistant features powered by Groq.",
 )
 
 app.add_middleware(
@@ -66,7 +66,7 @@ def root():
     return {
         "name": "ArogyaMitra API",
         "status": "ok",
-        "provider": "OpenRouter free models",
+        "provider": "Groq",
         "ui_note": "The original Streamlit UI remains in app.py for local/dev use. Vercel serves this FastAPI backend.",
         "routes": [
             "/translate",
@@ -83,10 +83,10 @@ def root():
 def health():
     return {
         "status": "ok",
-        "provider": "OpenRouter free models",
-        "api_key_configured": bool(os.environ.get("OPENROUTER_API_KEY")),
-        "fast_model": os.environ.get("OPENROUTER_FAST_MODEL", "openrouter/free"),
-        "complex_model": os.environ.get("OPENROUTER_COMPLEX_MODEL", "openrouter/free"),
+        "provider": "Groq",
+        "api_key_configured": bool(os.environ.get("GROQ_API_KEY")),
+        "fast_model": os.environ.get("GROQ_FAST_MODEL", "llama-3.1-8b-instant"),
+        "complex_model": os.environ.get("GROQ_COMPLEX_MODEL", "llama-3.1-8b-instant"),
     }
 
 

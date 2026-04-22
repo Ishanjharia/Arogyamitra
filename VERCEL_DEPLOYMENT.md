@@ -11,15 +11,13 @@ The original app is built with Streamlit. Vercel's official Python support is fo
 
 ## Required environment variables
 
-- `OPENROUTER_API_KEY`
-- `OPENROUTER_FAST_MODEL` optional, defaults to `openrouter/free`
-- `OPENROUTER_COMPLEX_MODEL` optional, defaults to `openrouter/free`
-- `OPENROUTER_SITE_URL` optional
-- `OPENROUTER_APP_NAME` optional
+- `GROQ_API_KEY`
+- `GROQ_FAST_MODEL` optional, defaults to `llama-3.1-8b-instant`
+- `GROQ_COMPLEX_MODEL` optional, defaults to `llama-3.1-8b-instant`
 
 ## Demo caveat
 
-This setup is intentionally optimized for a free project demo, not for production reliability. OpenRouter free models can be rate-limited, slower, or temporarily unavailable. Audio transcription is also disabled in this free configuration.
+This setup is intentionally optimized for a free project demo, not for production reliability. Groq developer-tier access can still hit limits or temporary capacity issues. Audio transcription is also disabled in this configuration.
 
 ## Main API routes
 

@@ -5,13 +5,13 @@ import time
 import requests
 
 # IMPORTANT: KEEP THIS COMMENT
-# Using OpenRouter free models via the OpenAI-compatible API for demo usage.
+# Using Groq's free developer API via the OpenAI-compatible chat API.
 
-OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+GROQ_BASE_URL = "https://api.groq.com/openai/v1"
 MAX_RETRIES = 3
 RETRY_DELAY = 2
-FAST_MODEL = os.environ.get("OPENROUTER_FAST_MODEL", "openrouter/free")
-COMPLEX_MODEL = os.environ.get("OPENROUTER_COMPLEX_MODEL", "openrouter/free")
+FAST_MODEL = os.environ.get("GROQ_FAST_MODEL", "llama-3.1-8b-instant")
+COMPLEX_MODEL = os.environ.get("GROQ_COMPLEX_MODEL", "llama-3.1-8b-instant")
 
 SUPPORTED_LANGUAGES = {
     "English": "en",
@@ -28,12 +28,12 @@ SUPPORTED_LANGUAGES = {
 
 
 def validate_api_key():
-    if not os.environ.get("OPENROUTER_API_KEY"):
-        return False, "Free demo API key not configured. Please set OPENROUTER_API_KEY."
+    if not os.environ.get("GROQ_API_KEY"):
+        return False, "Groq API key not configured. Please set GROQ_API_KEY."
     return True, ""
 
 
-def call_openrouter_with_retry(func):
+def call_groq_with_retry(func):
     for attempt in range(MAX_RETRIES):
         try:
             return func()
@@ -49,7 +49,7 @@ def call_openrouter_with_retry(func):
             if retryable:
                 return {
                     "success": False,
-                    "error": "The free AI service is busy right now. Please try again in a moment.",
+                    "error": "The AI service is busy right now. Please try again in a moment.",
                 }
             raise e
 
@@ -66,6 +66,11 @@ def _extract_text(message):
         parts = []
         for item in content:
             if isinstance(item, dict) and item.get("type") == "text":
+                text_value = item.get("text", "")
+                if isinstance(text_value, dict):
+                    text_value = text_value.get("value", "")
+                parts.append(text_value)
+            elif isinstance(item, dict) and "text" in item:
                 text_value = item.get("text", "")
                 if isinstance(text_value, dict):
                     text_value = text_value.get("value", "")
@@ -95,10 +100,6 @@ def _chat_completion(user_content, system_instruction, model, max_output_tokens,
     if not is_valid:
         raise ValueError(error_msg)
 
-    extra_headers = {
-        "HTTP-Referer": os.environ.get("OPENROUTER_SITE_URL", "https://arogyamitra-demo.local"),
-        "X-Title": os.environ.get("OPENROUTER_APP_NAME", "ArogyaMitra Demo"),
-    }
     request_payload = {
         "model": model,
         "messages": [
@@ -111,11 +112,10 @@ def _chat_completion(user_content, system_instruction, model, max_output_tokens,
         request_payload["response_format"] = response_format
 
     response = requests.post(
-        f"{OPENROUTER_BASE_URL}/chat/completions",
+        f"{GROQ_BASE_URL}/chat/completions",
         headers={
-            "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
+            "Authorization": f"Bearer {os.environ['GROQ_API_KEY']}",
             "Content-Type": "application/json",
-            **extra_headers,
         },
         json=request_payload,
         timeout=120,
@@ -152,7 +152,7 @@ def translate_text(text, source_language, target_language):
         return {"success": True, "translation": translation, "error": None}
 
     try:
-        result = call_openrouter_with_retry(_translate)
+        result = call_groq_with_retry(_translate)
         if isinstance(result, dict) and not result.get("success"):
             return result
         return result
@@ -228,7 +228,7 @@ def analyze_symptoms(symptoms_text, language, health_context=None, user_role="Pa
             "symptoms_summary": "AI service not configured",
             "possible_conditions": [],
             "severity_level": "Unknown",
-            "recommendations": "Please configure OPENROUTER_API_KEY to use this feature",
+            "recommendations": "Please configure GROQ_API_KEY to use this feature",
             "urgent_care_needed": False,
             "follow_up_questions": [],
         }
@@ -337,7 +337,7 @@ def medical_chat_response(message, language, user_role, health_context=None, sev
         return {"success": True, "response": response_text, "error": None}
 
     try:
-        result = call_openrouter_with_retry(_chat)
+        result = call_groq_with_retry(_chat)
         if isinstance(result, dict) and not result.get("success"):
             return result
         return result
@@ -417,7 +417,7 @@ def find_nearby_hospitals(city, specialty=None, language="English"):
         return {"success": True, "hospitals": hospitals, "error": None}
 
     try:
-        result = call_openrouter_with_retry(_find)
+        result = call_groq_with_retry(_find)
         if isinstance(result, dict) and not result.get("success"):
             return result
         return result
